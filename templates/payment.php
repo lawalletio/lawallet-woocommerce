@@ -57,9 +57,7 @@ $payReq = $callResponse->payment_request;
   })
 
   ;(function updateExpiry() {
-    console.log('expiry: ' + expires_at);
     var left = expires_at - (+new Date()/1000|0)
-    debugger;
     if (left <= 0) {
       if (first_check) return location.reload();
       $('#invoice_expires_label').text('<?=__('Generating new invoice', 'lnd-woocommerce')?>...');
