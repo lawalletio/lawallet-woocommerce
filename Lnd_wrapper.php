@@ -133,20 +133,6 @@ class LndWrapper
         return $invoiceInfoResponse;
     }
 
-    public function getLivePrice() {
-        $ticker = "BTCUSD";
-        $tickerUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/" . $ticker;
-        $aHTTP = array(
-          'http' =>
-            array(
-            'method'  => 'GET',
-              )
-        );
-        $content = file_get_contents($tickerUrl, false);
-
-        return json_decode($content, true)['ask'];
-    }
-
     public function generateAddress () {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $createAddressResponse = $this->curlWrap( $this->endpoint . '/v1/newaddress', null, 'GET', $header );

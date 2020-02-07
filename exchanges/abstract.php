@@ -1,7 +1,16 @@
 <?
 class Exchange {
+  protected $fiatList = [];
 
-  public function request($url, $action='GET', $data=null) {
+  public function hasFiat($fiat) {
+    return in_array($fiat, $this->getFiatList());
+  }
+
+  public function getFiatList() {
+    return $this->fiatList;
+  }
+
+  protected function request($url, $action='GET', $data=null) {
     $ch			=			curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
 

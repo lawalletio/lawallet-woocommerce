@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="<?php echo plugins_url('css/payment.css', dirname(__FILE__))?>" type="text/css">
 <noscript><style>.yesscript{display:none}</style></noscript>
-<?php
+<?
 $expiry_datestr = $callResponse->creation_date + $callResponse->expiry;
 $payReq = $callResponse->payment_request;
 ?>

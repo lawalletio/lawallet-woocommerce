@@ -11,21 +11,6 @@
     GitHub Plugin URI: https://github.com/agustinkassis/lnd-woocommerce
 */
 
-// Exchanges Tickers for ARS
-require('exchanges/abstract.php');
-
-require('exchanges/satoshitango.php');
-require('exchanges/ripio.php');
-require('exchanges/bitso.php');
-require('exchanges/bitex.php');
-
-$exchangesList = [
-  'satoshi_tango' => new SatoshiTango(),
-  'ripio' => new Ripio(),
-  'bitso' => new Bitso(),
-  'bitex' => new Bitex(),
-];
-
 if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
@@ -37,12 +22,7 @@ register_activation_hook( __FILE__, function(){
 });
 
 require_once 'Lnd_wrapper.php';
-
-
-// function debug_load_textdomain( $domain , $mofile  ){
-//     echo "Trying ",$domain," at ",$mofile,"<br />\n";
-// }
-// add_action('load_textdomain','debug_load_textdomain');
+require_once 'TickerManager.php';
 
 if (!function_exists('init_wc_lightning')) {
 
@@ -69,7 +49,15 @@ if (!function_exists('init_wc_lightning')) {
         $this->endpoint = $this->get_option( 'endpoint' );
         $this->macaroon = $this->get_option( 'macaroon' );
         $this->lndCon = LndWrapper::instance();
+        $this->tickerManager = TickerManager::instance();
+
         $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->get_option( 'macaroon' ), $this->get_option( 'ssl' ));
+
+        try {
+          $this->tickerManager->setExchange($this->get_option( 'ticker' ));
+        } catch (\Exception $e) {
+          $this->enabled = 'no';
+        }
 
         add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
         add_action('woocommerce_update_options_payment_gateways_lightning', array($this, 'process_admin_options'));
@@ -83,8 +71,7 @@ if (!function_exists('init_wc_lightning')) {
        * Initialise Gateway Settings Form Fields.
        */
       public function init_form_fields() {
-        global $exchangesList;
-
+        $this->tickerManager = TickerManager::instance();
         $tlsPath = plugin_dir_path(__FILE__).'tls/tls.cert';
         $this->form_fields = array(
           'enabled' => array(
@@ -108,7 +95,7 @@ if (!function_exists('init_wc_lightning')) {
             'default'     => 'BTC',
             'options'     => array_map(function($exchange) {
               return $exchange->name;
-            }, $exchangesList),
+            }, $this->tickerManager->getValid()),
             'desc_tip'    => true,
           ),
           'rate_markup' => array(
@@ -160,18 +147,17 @@ if (!function_exists('init_wc_lightning')) {
        * Get ticker from ARS Exchanges
        * @return float Price
        */
-      public function getAlternativePrice() {
-        global $exchangesList;
-        $price = $exchangesList[$this->get_option('ticker')]->getPrice();
-        // echo "Price Modafakaaa!! : $price";
-        // die();
-        return $price;
-      }
 
       public function getTicker($addMarkup=false) {
+        $exchangesList = $this->tickerManager->getAll();
         $currency = get_woocommerce_currency();
-        $rate = ($currency == 'ARS') ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
 
+        if ($currency == 'ARS') {
+          $exchange = $exchangesList[$this->get_option('ticker')];
+        } else {
+          $exchange = $this->lndCon;
+        }
+        $rate = $exchange->getRate();
         $markup = 0;
         if ($addMarkup) {
           $markup = (float) $this->get_option('rate_markup');
@@ -195,7 +181,9 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
         $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
 
-        return $this->lndCon->createInvoice ( $invoiceInfo );
+        $invoice = $this->lndCon->createInvoice ( $invoiceInfo );
+        $invoice->value = $invoiceInfo['value'];
+        return $invoice;
       }
 
       public function updatePostMeta($order, $invoice, $ticker) {
@@ -204,7 +192,11 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
         update_post_meta( $order->get_id(), 'LN_HASH', $invoice->r_hash);
-        $order->add_order_note(__('Awaiting payment of ', 'lnd-woocommerce') . number_format((float)$invoice->value, 7, '.', '') . " BTC@ 1 BTC ~ " . $ticker->rate ."(+" . $ticker->markup . "%) " . $ticker->currency . ". <br> Invoice ID: " . $invoice->payment_request);
+
+        $order->add_order_note('LN_HASH: ' . $invoice->r_hash);
+
+        $btcPrice = $this->format_msat($invoice->value);
+        $order->add_order_note(__('Awaiting payment of', 'lnd-woocommerce') . ' ' .  $invoice->value . ' sats (' . $btcPrice . ')' . " @ 1 BTC ~ " . number_format($ticker->rate, 2) . " " . $ticker->currency . " (+" . $ticker->markup . "% " . __("applied", "lnd-woocommerce") . "). <br> Invoice ID: " . $invoice->payment_request);
       }
 
       /**
@@ -214,7 +206,14 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
-        $ticker = $this->getTicker(true);
+        try {
+          $ticker = $this->getTicker(true);
+        } catch (\Exception $e) {
+          wc_add_notice( __('Error: ') . __('Couldn\'t get quote from ticker.', 'lnd-woocommerce'), 'error' );
+          return;
+        }
+
+        $order->add_order_note(json_encode($ticker)); // Remove
         $invoice = $this->create_invoice($order, $ticker);
 
         if(property_exists($invoice, 'error')){
@@ -266,7 +265,14 @@ if (!function_exists('init_wc_lightning')) {
         if($invoiceTime < time()) {
 
           //Invoice expired
-          $ticker = $this->getTicker(true);
+          try {
+            $ticker = $this->getTicker(true);
+          } catch (\Exception $e) { // Can't get ticker
+            status_header(500);
+            wp_send_json(false);
+          }
+
+          $order->add_order_note(json_encode($ticker)); // Remove
           $invoice = $this->create_invoice($order, $ticker);
           $this->updatePostMeta($order, $invoice, $ticker);
 
@@ -295,7 +301,7 @@ if (!function_exists('init_wc_lightning')) {
        * Hooks into the checkout page to display Lightning-related payment info.
        */
       public function show_payment_info($order_id) {
-        global $wp, $exchangesList;
+        global $wp;
 
         $order = wc_get_order($order_id);
 
@@ -316,7 +322,7 @@ if (!function_exists('init_wc_lightning')) {
           $qr_uri = $this->lndCon->generateQr( get_post_meta( $order_id, 'LN_INVOICE', true ) );
           $payHash = get_post_meta( $order_id, 'LN_HASH', true );
           $rate = number_format((float)get_post_meta( $order_id, 'LN_RATE', true ), 2, '.', ',');
-          $exchange = $exchangesList[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
+          $exchange = $this->tickerManager->getAll()[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
           $currency = $order->get_currency();
           $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode($payHash)) );
           require __DIR__.'/templates/payment.php';
