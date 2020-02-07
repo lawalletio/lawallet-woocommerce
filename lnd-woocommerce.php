@@ -70,7 +70,6 @@ if (!function_exists('init_wc_lightning')) {
         $this->macaroon = $this->get_option( 'macaroon' );
         $this->lndCon = LndWrapper::instance();
         $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->get_option( 'macaroon' ), $this->get_option( 'ssl' ));
-        $this->lndCon->setCoin( $this->get_option( 'coin' ) );
 
         add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
         add_action('woocommerce_update_options_payment_gateways_lightning', array($this, 'process_admin_options'));
@@ -101,17 +100,6 @@ if (!function_exists('init_wc_lightning')) {
             'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lnd-woocommerce'),
             'default'     => __('Bitcoin Lightning', 'lnd-woocommerce'),
             'desc_tip'    => true,
-          ),
-         'coin' => array(
-           'title'       => __('Coin', 'lnd-woocommerce'),
-           'type'        => 'select',
-           'description' => __('Select the coin network your LND is connected to.', 'lnd-woocommerce'),
-           'default'     => 'BTC',
-           'options'     => array(
-                          'BTC'   => 'BTC',
-                          'LTC'  => 'LTC'
-           ),
-           'desc_tip'    => true,
           ),
           'ticker' => array(
             'title'       => __('Ticker', 'lnd-woocommerce'),
@@ -217,7 +205,7 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value'], true);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request, true);
         update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash, true);
-        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
+        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " BTC@ 1 BTC ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
 
         return array(
           'result'   => 'success',
@@ -274,7 +262,7 @@ if (!function_exists('init_wc_lightning')) {
           update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value']);
           update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request);
           update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash);
-          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
+          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " BTC@ 1 BTC ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
           status_header(410);
           wp_send_json(false);
           return;
@@ -339,8 +327,8 @@ if (!function_exists('init_wc_lightning')) {
         return $methods;
       }
 
-      protected static function format_msat($msat, $coin) {
-        return rtrim(rtrim(number_format($msat/100000000, 8), '0'), '.') . ' ' . $coin;
+      protected static function format_msat($msat) {
+        return rtrim(rtrim(number_format($msat/100000000, 8), '0'), '.') . ' BTC';
       }
     }
 

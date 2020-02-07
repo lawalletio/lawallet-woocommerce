@@ -9,7 +9,7 @@ $payReq = $callResponse->payment_request;
   <h1><?=__('Pay with Lightning', 'lnd-woocommerce')?></h1>
   <h3>
     <?php if ($order->get_currency() !== 'BTC'): ?> <?php echo $order->get_total() ?> <?=$currency ?> = <?php endif ?>
-    <?php echo self::format_msat($callResponse->value, $this->lndCon->getCoin()) ?>
+    <?php echo self::format_msat($callResponse->value) ?>
   </h3>
   <h4>
     <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>

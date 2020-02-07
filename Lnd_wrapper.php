@@ -134,11 +134,7 @@ class LndWrapper
     }
 
     public function getLivePrice() {
-
         $ticker = "BTCUSD";
-        if($this->coin === 'LTC'){
-            $ticker = 'LTCUSD';
-        }
         $tickerUrl = "https://apiv2.bitcoinaverage.com/indices/global/ticker/" . $ticker;
         $aHTTP = array(
           'http' =>

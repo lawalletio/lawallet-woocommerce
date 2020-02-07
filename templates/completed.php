@@ -11,6 +11,6 @@
     <?=__('Lightning rhash', 'lnd-woocommerce')?>: <strong><?php echo $invoiceRep->r_hash ?></strong>
   </li>
   <li>
-    <?=__('Invoice amount', 'lnd-woocommerce')?>: <strong><?php echo self::format_msat($invoiceRep->value, $this->lndCon->getCoin()) ?></strong>
+    <?=__('Invoice amount', 'lnd-woocommerce')?>: <strong><?php echo self::format_msat($invoiceRep->value) ?></strong>
   </li>
 </ul>
