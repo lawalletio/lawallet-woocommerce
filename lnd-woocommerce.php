@@ -1,18 +1,17 @@
 <?php
 /*
-    Plugin Name: WooCommerce Lightning Gateway
-    Plugin URI:  https://joaoalmeida.me
-    Description: Enable instant and fee-reduced payments in BTC and LTC through Lightning Network.
-    Author:      João Almeida
-    Author URI:  https://joaoalmeida.me
-
+    Plugin Name: LND for WooCommerce
+    Plugin URI:  https://github.com/agustinkassis/lnd-woocommerce
+    Text Domain: lnd-woocommerce
+    Domain Path: /languages
+    Description: Enable instant and fee-reduced payments in BTC through Lightning Network.
+    Author:      Agustin Kassis
+    Author URI:  https://github.com/agustinkassis
     Version:           0.1.0
-    GitHub Plugin URI: https://github.com/joaodealmeida/woocommerce-gateway-zap
+    GitHub Plugin URI: https://github.com/agustinkassis/lnd-woocommerce
 */
 
-/*
-Exchanges Tickers for ARS
- */
+// Exchanges Tickers for ARS
 require('exchanges/abstract.php');
 
 require('exchanges/satoshitango.php');
@@ -39,6 +38,12 @@ register_activation_hook( __FILE__, function(){
 
 require_once 'Lnd_wrapper.php';
 
+
+// function debug_load_textdomain( $domain , $mofile  ){
+//     echo "Trying ",$domain," at ",$mofile,"<br />\n";
+// }
+// add_action('load_textdomain','debug_load_textdomain');
+
 if (!function_exists('init_wc_lightning')) {
 
   function init_wc_lightning() {
@@ -48,9 +53,9 @@ if (!function_exists('init_wc_lightning')) {
 
       public function __construct() {
         $this->id                 = 'lightning';
-        $this->order_button_text  = __('Proceed to Lightning Payment', 'woocommerce');
-        $this->method_title       = __('Lightning', 'woocommerce');
-        $this->method_description = __('Lightning Network Payment');
+        $this->order_button_text  = __('Proceed to Lightning Payment', 'lnd-woocommerce');
+        $this->method_title       = __('Lightning', 'lnd-woocommerce');
+        $this->method_description = __('Lightning Network Payment', 'lnd-woocommerce');
         $this->icon               = plugin_dir_url(__FILE__).'img/logo.png';
         $this->supports           = array();
 
@@ -74,6 +79,7 @@ if (!function_exists('init_wc_lightning')) {
         add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
 
+        //load_plugin_textdomain( 'lnd-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
         //echo $this->lndCon->generateAddress();
         // echo "Bueno bueno!!!";
         // die();
@@ -88,79 +94,79 @@ if (!function_exists('init_wc_lightning')) {
         $tlsPath = plugin_dir_path(__FILE__).'tls/tls.cert';
         $this->form_fields = array(
           'enabled' => array(
-            'title'       => __( 'Enable/Disable', 'woocommerce-gateway-lightning' ),
-            'label'       => __( 'Enable Lightning payments', 'woocommerce-gateway-lightning' ),
+            'title'       => __( 'Enable/Disable', 'lnd-woocommerce' ),
+            'label'       => __( 'Enable Lightning payments', 'lnd-woocommerce' ),
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no',
           ),
           'title' => array(
-            'title'       => __('Title', 'lightning'),
+            'title'       => __('Title'),
             'type'        => 'text',
-            'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lightning'),
-            'default'     => __('Bitcoin Lightning', 'lightning'),
+            'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lnd-woocommerce'),
+            'default'     => __('Bitcoin Lightning', 'lnd-woocommerce'),
             'desc_tip'    => true,
           ),
          'coin' => array(
-           'title'       => __('Coin', 'lightning'),
+           'title'       => __('Coin', 'lnd-woocommerce'),
            'type'        => 'select',
-           'description' => __('Select the coin network your LND is connected to.', 'lightning'),
-           'default'     => __('BTC', 'lightning'),
+           'description' => __('Select the coin network your LND is connected to.', 'lnd-woocommerce'),
+           'default'     => 'BTC',
            'options'     => array(
-                          'BTC'   => __('BTC','lightning'),
-                          'LTC'  => __('LTC','lightning')
+                          'BTC'   => 'BTC',
+                          'LTC'  => 'LTC'
            ),
            'desc_tip'    => true,
           ),
           'ticker' => array(
-            'title'       => __('Ticker', 'lightning'),
+            'title'       => __('Ticker', 'lnd-woocommerce'),
             'type'        => 'select',
-            'description' => __('Select Exchange for rate calculation.', 'lightning'),
-            'default'     => __('BTC', 'lightning'),
+            'description' => __('Select Exchange for rate calculation.', 'lnd-woocommerce'),
+            'default'     => 'BTC',
             'options'     => array_map(function($exchange) {
               return $exchange->name;
             }, $exchangesList),
             'desc_tip'    => true,
           ),
           'rate_markup' => array(
-            'title'       => __('Rate Markup', 'lightning'),
+            'title'       => __('Rate Markup', 'lnd-woocommerce'),
             'type'        => 'text',
-            'description' => __('Increases exchange rate with a percentage', 'lightning'),
+            'description' => __('Increases exchange rate with a percentage', 'lnd-woocommerce'),
             'default'     => 1, // 5 minutes
             'desc_tip'    => true,
           ),
           'invoice_expiry' => array(
-            'title'       => __('Invoice Expiration', 'lightning'),
+            'title'       => __('Invoice Expiration', 'lnd-woocommerce'),
             'type'        => 'text',
-            'description' => __('Invoice expiration time in seconds', 'lightning'),
+            'description' => __('Invoice expiration time in seconds', 'lnd-woocommerce'),
             'default'     => 300, // 5 minutes
             'desc_tip'    => true,
           ),
           'endpoint' => array(
-            'title'       => __( 'Endpoint', 'lightning' ),
+            'title'       => __( 'Endpoint', 'lnd-woocommerce' ),
             'type'        => 'textarea',
-            'description' => __( 'Place here the API endpoint', 'lightning' ),
+            'description' => __( 'Place here the API endpoint', 'lnd-woocommerce' ),
             'default'     => 'https://localhost:8080',
             'desc_tip'    => true,
           ),
           'macaroon' => array(
-            'title'       => __('Macaroon Hex', 'lightning'),
+            'title'       => __('Macaroon Hex', 'lnd-woocommerce'),
             'type'        => 'textarea',
-            'description' => __('Input Macaroon Hex to get access to LND API', 'lightning'),
+            'description' => __('Input Macaroon Hex to get access to LND API', 'lnd-woocommerce'),
             'default'     => '',
             'desc_tip'    => true,
           ),
           'description' => array(
-            'title'       => __('Customer Message', 'lightning'),
+            'title'       => __('Customer Message', 'lnd-woocommerce'),
             'type'        => 'textarea',
-            'description' => __('Message to explain how the customer will be paying for the purchase.', 'lightning'),
-            'default'     => 'You will pay using the Lightning Network.',
+            'description' => __('Message to explain how the customer will be paying for the purchase.', 'lnd-woocommerce'),
+            'default'     => __('You will pay using the Lightning Network.', 'lnd-woocommerce'),
             'desc_tip'    => true,
           ),
           'ssl' => array(
-            'title'       => __('SSL Certificate Path', 'lightning'),
+            'title'       => __('SSL Certificate Path', 'lnd-woocommerce'),
             'type'        => 'textarea',
-            'description' => __('Put your LND SSL certificate path.', 'lightning'),
+            'description' => __('Put your LND SSL certificate path.', 'lnd-woocommerce'),
             'default'     => $tlsPath,
             'desc_tip'    => true,
           )
@@ -202,12 +208,12 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
 
         if(property_exists($invoiceResponse, 'error')){
-          wc_add_notice( __('Error: ', 'lightning') . $invoiceResponse->error, 'error' );
+          wc_add_notice( __('Error: ') . $invoiceResponse->error, 'error' );
           return;
         }
 
         if(!property_exists($invoiceResponse, 'payment_request')) {
-          wc_add_notice( __('Error: ', 'lightning') . 'Lightning Node is not reachable at this time. Please contact the store administrator.', 'error' );
+          wc_add_notice( __('Error: ') . 'Lightning Node is not reachable at this time. Please contact the store administrator.', 'error' );
           return;
         }
 
