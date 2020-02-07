@@ -21,18 +21,23 @@ $payReq = $callResponse->payment_request;
   <code class="payreq"><?php echo $payReq ?></code>
   <p>
     <noscript>Your browser has JavaScript turned off. Please refresh the page manually after making the payment.</noscript>
-    <span class="yesscript"><img src="<?php echo plugins_url( '../img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading"> <?=__('Awaiting payment', 'lnd-woocommerce')?>. </span>
-    <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<?php echo $expiry_datestr ?>"><?php echo $expiry_datestr ?></span>.
+    <span class="yesscript"><img src="<?php echo plugins_url( '../img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">
+      <span id="invoice_expires_label">
+        <?=__('Awaiting payment', 'lnd-woocommerce')?>.
+        <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<?php echo $expiry_datestr ?>"><?php echo $expiry_datestr ?></span>.
+      </span>
+    </span>
   </p>
   <a class="checkout-button button alt btn btn-default" href="lightning:<?php echo get_post_meta( $order->get_id(), 'LN_INVOICE', true ); ?>"><?=__('Pay with Lightning', 'lnd-woocommerce')?></a>
 </div>
 
 <script>
 (function($, ajax_url, invoice_id, redir_url, expires_at){
+  var first_check = false;
   $(function poll() {
     $.post(ajax_url, { action: 'ln_wait_invoice', invoice_id: invoice_id })
       .success((code, state, res) => {
-        console.log(res.responseJSON)
+        first_check = true;
         if (res.responseJSON === true) {
           playPayedAnimation();
           return document.location = redir_url;
@@ -52,9 +57,15 @@ $payReq = $callResponse->payment_request;
   })
 
   ;(function updateExpiry() {
+    console.log('expiry: ' + expires_at);
     var left = expires_at - (+new Date()/1000|0)
-    if (left <= 0) return location.reload()
-    $('#expiry-timer').text('in '+formatDur(left))
+    debugger;
+    if (left <= 0) {
+      if (first_check) return location.reload();
+      $('#invoice_expires_label').text('<?=__('Generating new invoice', 'lnd-woocommerce')?>...');
+    } else {
+      $('#expiry-timer').text('<?=__('in', 'lnd-woocommerce')?> '+formatDur(left))
+    }
     setTimeout(updateExpiry, 1000)
   })()
 
