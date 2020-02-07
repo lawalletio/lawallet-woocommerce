@@ -1,1 +1,4 @@
-tls/.DS_Store
+.DS_Store
+*.cert
+*.pot~
+/test.php
