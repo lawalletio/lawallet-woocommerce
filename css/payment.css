@@ -17,15 +17,15 @@ header.entry-header, .order_details {
 }
 
 .ln-pay .qr {
-  display: block;
+  /* display: block;
   float: right;
-  width: 200px;
-  margin-top: -10px;
+  width: 300px;
+  margin-top: -10px; */
 }
 
 .ln-pay .payreq {
   word-wrap: break-word;
-  margin-right: 220px;
+  margin-right: 300px;
 }
 
 .ln-pay code {
@@ -46,4 +46,48 @@ header.entry-header, .order_details {
   .ln-pay { text-align: center; }
   .ln-pay .qr { float: none; margin: 0 auto; }
   .ln-pay .payreq { margin-right: 0; }
+}
+
+.qr_container {
+  /* position: relative; */
+  display: block;
+  float: right;
+  width: 300px;
+  margin-top: -10px;
+}
+
+/*
+Check Animation
+ */
+
+.ln-pay .check {
+  position: absolute;
+  z-index: 1;
+  margin: 25px;
+}
+
+.ln-pay .check path {
+    fill:none;
+    stroke:#2ABA66;
+    stroke-miterlimit:10;
+    stroke-width: 35px;
+
+
+    margin: 40px;
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+    animation: draw 1.2s linear forwards;
+
+}
+
+.ln-pay svg { overflow:visible }
+
+@keyframes draw {
+    from {
+        stroke-linecap: round;
+    }
+    to {
+        stroke-linecap: round;
+        stroke-dashoffset: 0;
+    }
 }

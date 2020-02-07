@@ -10,6 +10,23 @@
     GitHub Plugin URI: https://github.com/joaodealmeida/woocommerce-gateway-zap
 */
 
+/*
+Exchanges Tickers for ARS
+ */
+require('exchanges/abstract.php');
+
+require('exchanges/satoshitango.php');
+require('exchanges/ripio.php');
+require('exchanges/bitso.php');
+require('exchanges/bitex.php');
+
+$exchangesList = [
+  'satoshi_tango' => new SatoshiTango(),
+  'ripio' => new Ripio(),
+  'bitso' => new Bitso(),
+  'bitex' => new Bitex(),
+];
+
 if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
@@ -35,7 +52,7 @@ if (!function_exists('init_wc_lightning')) {
         $this->method_title       = __('Lightning', 'woocommerce');
         $this->method_description = __('Lightning Network Payment');
         $this->icon               = plugin_dir_url(__FILE__).'img/logo.png';
-        $this->supports           = array();       
+        $this->supports           = array();
 
         // Load the settings.
         $this->init_form_fields();
@@ -47,7 +64,7 @@ if (!function_exists('init_wc_lightning')) {
         $this->endpoint = $this->get_option( 'endpoint' );
         $this->macaroon = $this->get_option( 'macaroon' );
         $this->lndCon = LndWrapper::instance();
-        $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->get_option( 'macaroon' ), $this->get_option( 'ssl' ));        
+        $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->get_option( 'macaroon' ), $this->get_option( 'ssl' ));
         $this->lndCon->setCoin( $this->get_option( 'coin' ) );
 
         add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
@@ -56,12 +73,18 @@ if (!function_exists('init_wc_lightning')) {
         add_action('woocommerce_thankyou_lightning', array($this, 'show_payment_info'));
         add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
+
+        //echo $this->lndCon->generateAddress();
+        // echo "Bueno bueno!!!";
+        // die();
       }
 
       /**
        * Initialise Gateway Settings Form Fields.
        */
       public function init_form_fields() {
+        global $exchangesList;
+
         $tlsPath = plugin_dir_path(__FILE__).'tls/tls.cert';
         $this->form_fields = array(
           'enabled' => array(
@@ -77,18 +100,42 @@ if (!function_exists('init_wc_lightning')) {
             'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lightning'),
             'default'     => __('Bitcoin Lightning', 'lightning'),
             'desc_tip'    => true,
+          ),
+         'coin' => array(
+           'title'       => __('Coin', 'lightning'),
+           'type'        => 'select',
+           'description' => __('Select the coin network your LND is connected to.', 'lightning'),
+           'default'     => __('BTC', 'lightning'),
+           'options'     => array(
+                          'BTC'   => __('BTC','lightning'),
+                          'LTC'  => __('LTC','lightning')
            ),
-           'coin' => array(
-             'title'       => __('Coin', 'lightning'),
-             'type'        => 'select',
-             'description' => __('Select the coin network your LND is connected to.', 'lightning'),
-             'default'     => __('BTC', 'lightning'),
-             'options'     => array(
-                            'BTC'   => __('BTC','lightning'),
-                            'LTC'  => __('LTC','lightning')
-             ),
-             'desc_tip'    => true, 
-            ),
+           'desc_tip'    => true,
+          ),
+          'ticker' => array(
+            'title'       => __('Ticker', 'lightning'),
+            'type'        => 'select',
+            'description' => __('Select Exchange for rate calculation.', 'lightning'),
+            'default'     => __('BTC', 'lightning'),
+            'options'     => array_map(function($exchange) {
+              return $exchange->name;
+            }, $exchangesList),
+            'desc_tip'    => true,
+          ),
+          'rate_markup' => array(
+            'title'       => __('Rate Markup', 'lightning'),
+            'type'        => 'text',
+            'description' => __('Increases exchange rate with a percentage', 'lightning'),
+            'default'     => 1, // 5 minutes
+            'desc_tip'    => true,
+          ),
+          'invoice_expiry' => array(
+            'title'       => __('Invoice Expiration', 'lightning'),
+            'type'        => 'text',
+            'description' => __('Invoice expiration time in seconds', 'lightning'),
+            'default'     => 300, // 5 minutes
+            'desc_tip'    => true,
+          ),
           'endpoint' => array(
             'title'       => __( 'Endpoint', 'lightning' ),
             'type'        => 'textarea',
@@ -117,8 +164,20 @@ if (!function_exists('init_wc_lightning')) {
             'default'     => $tlsPath,
             'desc_tip'    => true,
           )
-          
+
         );
+      }
+      /**
+       * Get ticker from ARS Exchanges
+       * @return float Price
+       */
+      public function getAlternativePrice() {
+        global $exchangesList;
+        print_r($exchangesList);
+        $price = $exchangesList[$this->get_option('ticker')]->getPrice();
+        // echo "Price Modafakaaa!! : $price";
+        // die();
+        return $price;
       }
 
       /**
@@ -129,12 +188,15 @@ if (!function_exists('init_wc_lightning')) {
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
         $usedCurrency = get_woocommerce_currency();
-        $livePrice = $this->lndCon->getLivePrice();
+        $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
+        $markup = (float)$this->get_option('rate_markup')/100;
+        $livePrice = $livePrice/(1+$markup);
 
         $invoiceInfo = array();
         $btcPrice = $order->get_total() * ((float)1/ $livePrice);
-        
+
         $invoiceInfo['value'] = round($btcPrice * 100000000);
+        $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
         $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
 
         $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
@@ -149,9 +211,12 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
+        update_post_meta( $order->get_id(), 'LN_RATE', $livePrice, true);
+        update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'), true);
+        update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value'], true);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request, true);
         update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash, true);
-        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ." USD. <br> Invoice ID: " . $invoiceResponse->payment_request);
+        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
 
         return array(
           'result'   => 'success',
@@ -165,15 +230,15 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function wait_invoice() {
 
-        $order = wc_get_order($_POST['invoice_id']);         
-        
+        $order = wc_get_order($_POST['invoice_id']);
+
         if($order->get_status() == 'processing'){
           status_header(200);
           wp_send_json(true);
           return;
         }
         /**
-         * 
+         *
          * Check if invoice is paid
          */
 
@@ -190,31 +255,39 @@ if (!function_exists('init_wc_lightning')) {
         if($invoiceTime < time()) {
 
           //Invoice expired
-          $livePrice = $this->lndCon->getLivePrice();
+          $usedCurrency = get_woocommerce_currency();
+          $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
+          $markup = (float)$this->get_option('rate_markup')/100;
+          $livePrice = $livePrice/(1+$markup);
+
           $invoiceInfo = array();
           $btcPrice = $order->get_total() * ((float)1/ $livePrice);
-          
+
           $invoiceInfo['value'] = round($btcPrice * 100000000);
+          $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
           $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
-  
+
           $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
+          update_post_meta( $order->get_id(), 'LN_RATE', $livePrice);
+          update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
+          update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value']);
           update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request);
           update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash);
-          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ." USD. <br> Invoice ID: " . $invoiceResponse->payment_request);          
+          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
           status_header(410);
           wp_send_json(false);
           return;
         }
-        
+
         if(!property_exists( $callResponse, 'settled' )){
           status_header(402);
           wp_send_json(false);
           return;
         }
-        
+
         if ($callResponse->settled) {
           $order->payment_complete();
-          $order->add_order_note('Lightning Payment received on ' . $invoiceRep->settle_date);
+          $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
           status_header(200);
           wp_send_json(true);
           return;
@@ -226,7 +299,7 @@ if (!function_exists('init_wc_lightning')) {
        * Hooks into the checkout page to display Lightning-related payment info.
        */
       public function show_payment_info($order_id) {
-        global $wp;
+        global $wp, $exchangesList;
 
         $order = wc_get_order($order_id);
 
@@ -246,6 +319,9 @@ if (!function_exists('init_wc_lightning')) {
           //Prepare information for payment page
           $qr_uri = $this->lndCon->generateQr( get_post_meta( $order_id, 'LN_INVOICE', true ) );
           $payHash = get_post_meta( $order_id, 'LN_HASH', true );
+          $rate = number_format((float)get_post_meta( $order_id, 'LN_RATE', true ), 2, '.', ',');
+          $exchange = $exchangesList[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
+          $currency = $order->get_currency();
           $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode($payHash)) );
           require __DIR__.'/templates/payment.php';
 

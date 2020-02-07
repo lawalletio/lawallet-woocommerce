@@ -103,9 +103,10 @@ class LndWrapper
     }
 
     public function generateQr( $paymentRequest ){
-        $size = "150x150";
+        $size = "300x300";
+        $margin = "0";
         $encoding = "UTF-8";
-        return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chl=' . $paymentRequest . '&choe=' . $encoding;
+        return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
     }
 
     /**
@@ -150,4 +151,10 @@ class LndWrapper
         return json_decode($content, true)['ask'];
     }
 
+    public function generateAddress () {
+        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
+        $createAddressResponse = $this->curlWrap( $this->endpoint . '/v1/newaddress', null, 'GET', $header );
+        $createAddressResponse = json_decode($createAddressResponse);
+        return $createAddressResponse->address;
+    }
 }

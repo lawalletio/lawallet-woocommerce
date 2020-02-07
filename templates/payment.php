@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="<?php echo plugins_url('css/payment.css', dirname(__FILE__))?>" type="text/css">
 <noscript><style>.yesscript{display:none}</style></noscript>
-<?php 
+<?php
 $expiry_datestr = $callResponse->creation_date + $callResponse->expiry;
 $payReq = $callResponse->payment_request;
 ?>
@@ -8,10 +8,16 @@ $payReq = $callResponse->payment_request;
 <div class="ln-pay">
   <h1>Pay with Lightning</h1>
   <h3>
-    <?php if ($order->get_currency() !== 'BTC'): ?> <?php echo $order->get_total() ?> <?php echo $order->get_currency() ?> = <?php endif ?>
+    <?php if ($order->get_currency() !== 'BTC'): ?> <?php echo $order->get_total() ?> <?=$currency ?> = <?php endif ?>
     <?php echo self::format_msat($callResponse->value, $this->lndCon->getCoin()) ?>
   </h3>
-  <img class="qr" src="<?php echo $qr_uri ?>">
+  <h4>
+    <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
+  </h4>
+  <div class="qr_container">
+    <svg style="display: none" xmlns="http://www.w3.org/2000/svg" class="check" width="250" height="250" viewBox="-40 -10 246 180.9"><path d="M0.3 96l62.4 54.1L165.6 0.3"/></svg>
+    <img class="qr" src="<?php echo $qr_uri ?>">
+  </div>
   <code class="payreq"><?php echo $payReq ?></code>
   <p>
     <noscript>Your browser has JavaScript turned off. Please refresh the page manually after making the payment.</noscript>
@@ -27,7 +33,10 @@ $payReq = $callResponse->payment_request;
     $.post(ajax_url, { action: 'ln_wait_invoice', invoice_id: invoice_id })
       .success((code, state, res) => {
         console.log(res.responseJSON)
-        if (res.responseJSON === true) return document.location = redir_url
+        if (res.responseJSON === true) {
+          playPayedAnimation();
+          return document.location = redir_url;
+        }
 
         setTimeout(poll, 10000);
         throw new Error('succesful response, but not the expected one')
@@ -37,7 +46,7 @@ $payReq = $callResponse->payment_request;
         if (res.status === 402) return poll()
         // 410 Gone: invoice expired and can not longer be paid
         if (res.status === 410) return location.reload()
-        
+
         throw new Error('unexpected status code '+res.status)
       })
   })
@@ -49,6 +58,15 @@ $payReq = $callResponse->payment_request;
     setTimeout(updateExpiry, 1000)
   })()
 
+  function playPayedAnimation() {
+    $('.ln-pay .check').css({
+      display: 'block'
+    });
+    $('.ln-pay .qr').css({
+      opacity: 0.3
+    });
+  }
+
   function formatDur(x) {
     var h=x/3600|0, m=x%3600/60|0, s=x%60
     return ''+(h>0?h+':':'')+(m<10&&h>0?'0':'')+m+':'+(s<10?'0':'')+s
@@ -57,4 +75,3 @@ $payReq = $callResponse->payment_request;
            <?php echo json_encode($order->get_checkout_order_received_url()) ?>, <?php echo $expiry_datestr ?>)
 
 </script>
-
