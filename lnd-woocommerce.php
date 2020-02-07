@@ -162,11 +162,49 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function getAlternativePrice() {
         global $exchangesList;
-        print_r($exchangesList);
         $price = $exchangesList[$this->get_option('ticker')]->getPrice();
         // echo "Price Modafakaaa!! : $price";
         // die();
         return $price;
+      }
+
+      public function getTicker($addMarkup=false) {
+        $currency = get_woocommerce_currency();
+        $rate = ($currency == 'ARS') ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
+
+        $markup = 0;
+        if ($addMarkup) {
+          $markup = (float) $this->get_option('rate_markup');
+          $rate = $rate/(1+$markup/100);
+        }
+
+        return (object) array(
+          'currency' => $currency,
+          'rate' => $rate,
+          'markup' => $markup
+        );
+      }
+
+      public function create_invoice($order, $ticker) {
+        $livePrice = $ticker->rate;
+
+        $invoiceInfo = array();
+        $btcPrice = $order->get_total() * ((float)1/ $livePrice);
+
+        $invoiceInfo['value'] = round($btcPrice * 100000000);
+        $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
+        $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
+
+        return $this->lndCon->createInvoice ( $invoiceInfo );
+      }
+
+      public function updatePostMeta($order, $invoice, $ticker) {
+        update_post_meta( $order->get_id(), 'LN_RATE', $ticker->rate);
+        update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
+        update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
+        update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
+        update_post_meta( $order->get_id(), 'LN_HASH', $invoice->r_hash);
+        $order->add_order_note(__('Awaiting payment of ', 'lnd-woocommerce') . number_format((float)$invoice->value, 7, '.', '') . " BTC@ 1 BTC ~ " . $ticker->rate ."(+" . $ticker->markup . "%) " . $ticker->currency . ". <br> Invoice ID: " . $invoice->payment_request);
       }
 
       /**
@@ -176,43 +214,26 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
-        $usedCurrency = get_woocommerce_currency();
-        $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
-        $markup = (float)$this->get_option('rate_markup')/100;
-        $livePrice = $livePrice/(1+$markup);
+        $ticker = $this->getTicker(true);
+        $invoice = $this->create_invoice($order, $ticker);
 
-        $invoiceInfo = array();
-        $btcPrice = $order->get_total() * ((float)1/ $livePrice);
-
-        $invoiceInfo['value'] = round($btcPrice * 100000000);
-        $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
-        $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
-
-        $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
-
-        if(property_exists($invoiceResponse, 'error')){
-          wc_add_notice( __('Error: ') . $invoiceResponse->error, 'error' );
+        if(property_exists($invoice, 'error')){
+          wc_add_notice( __('Error: ') . $invoice->error, 'error' );
           return;
         }
 
-        if(!property_exists($invoiceResponse, 'payment_request')) {
-          wc_add_notice( __('Error: ') . 'Lightning Node is not reachable at this time. Please contact the store administrator.', 'error' );
+        if(!property_exists($invoice, 'payment_request')) {
+          wc_add_notice( __('Error: ') . __('Lightning Node is not reachable at this time. Please contact the store administrator.', 'lnd-woocommerce'), 'error' );
           return;
         }
 
-        update_post_meta( $order->get_id(), 'LN_RATE', $livePrice, true);
-        update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'), true);
-        update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value'], true);
-        update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request, true);
-        update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash, true);
-        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " BTC@ 1 BTC ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
+        $this->updatePostMeta($order, $invoice, $ticker);
 
         return array(
           'result'   => 'success',
           'redirect' => $order->get_checkout_payment_url(true)
         );
       }
-
 
       /**
        * JSON endpoint for long polling payment updates.
@@ -241,28 +262,14 @@ if (!function_exists('init_wc_lightning')) {
         }
 
         $invoiceTime = $callResponse->creation_date + $callResponse->expiry;
+
         if($invoiceTime < time()) {
 
           //Invoice expired
-          $usedCurrency = get_woocommerce_currency();
-          $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
-          $markup = (float)$this->get_option('rate_markup')/100;
-          $livePrice = $livePrice/(1+$markup);
+          $ticker = $this->getTicker(true);
+          $invoice = $this->create_invoice($order, $ticker);
+          $this->updatePostMeta($order, $invoice, $ticker);
 
-          $invoiceInfo = array();
-          $btcPrice = $order->get_total() * ((float)1/ $livePrice);
-
-          $invoiceInfo['value'] = round($btcPrice * 100000000);
-          $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
-          $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
-
-          $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
-          update_post_meta( $order->get_id(), 'LN_RATE', $livePrice);
-          update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
-          update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value']);
-          update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request);
-          update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash);
-          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " BTC@ 1 BTC ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
           status_header(410);
           wp_send_json(false);
           return;
