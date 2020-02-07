@@ -78,11 +78,6 @@ if (!function_exists('init_wc_lightning')) {
         add_action('woocommerce_thankyou_lightning', array($this, 'show_payment_info'));
         add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
-
-        //load_plugin_textdomain( 'lnd-woocommerce', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-        //echo $this->lndCon->generateAddress();
-        // echo "Bueno bueno!!!";
-        // die();
       }
 
       /**
