@@ -1,0 +1,158 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LND for WooCommerce\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-07 18:17+0000\n"
+"PO-Revision-Date: 2020-02-07 18:41+0000\n"
+"Last-Translator: masize <webmaster@masize.com>\n"
+"Language-Team: Español de Argentina\n"
+"Language: es_AR\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.3.1; wp-5.3.2"
+
+#: lnd-woocommerce.php:56
+msgid "Proceed to Lightning Payment"
+msgstr "Pagar con Lightning"
+
+#: lnd-woocommerce.php:57
+msgid "Lightning"
+msgstr "Lightning"
+
+#: lnd-woocommerce.php:58
+msgid "Lightning Network Payment"
+msgstr "Pago con Lightning Network"
+
+#: lnd-woocommerce.php:97
+msgid "Enable/Disable"
+msgstr "Habilitar/Deshabilitar"
+
+#: lnd-woocommerce.php:98
+msgid "Enable Lightning payments"
+msgstr "Habilitar pago con Lightning"
+
+#: lnd-woocommerce.php:106
+msgid ""
+"Controls the name of this payment method as displayed to the customer during "
+"checkout."
+msgstr ""
+"Controla el nombre de este método de pago, como se muestra para el cliente "
+"durante el proceso de compra."
+
+#: lnd-woocommerce.php:107
+msgid "Bitcoin Lightning"
+msgstr "Bitcoin Lightning"
+
+#: lnd-woocommerce.php:111
+msgid "Coin"
+msgstr "Moneda"
+
+#: lnd-woocommerce.php:113
+msgid "Select the coin network your LND is connected to."
+msgstr "Seleccione la moneda en la red de tu LND."
+
+#: lnd-woocommerce.php:122
+msgid "Ticker"
+msgstr "Cotización"
+
+#: lnd-woocommerce.php:124
+msgid "Select Exchange for rate calculation."
+msgstr "Seleccione el Exchange para el cálculo de cotización."
+
+#: lnd-woocommerce.php:132
+msgid "Rate Markup"
+msgstr "Markup de Cotización"
+
+#: lnd-woocommerce.php:134
+msgid "Increases exchange rate with a percentage"
+msgstr "Incrementa la cotización recibida con el porcentaje (1 = 1%)"
+
+#: lnd-woocommerce.php:139
+msgid "Invoice Expiration"
+msgstr "Expiración de Invoice"
+
+#: lnd-woocommerce.php:141
+msgid "Invoice expiration time in seconds"
+msgstr "Expiración de la invoice en segundos"
+
+#: lnd-woocommerce.php:146
+msgid "Endpoint"
+msgstr "URL"
+
+#: lnd-woocommerce.php:148
+msgid "Place here the API endpoint"
+msgstr ""
+"Coloque aquí la URL de la API de LND (Ejemplo: https://localhost:8081), "
+"Valor de restlisten en lnd.conf"
+
+#: lnd-woocommerce.php:153
+msgid "Macaroon Hex"
+msgstr "Macaroon Hex"
+
+#: lnd-woocommerce.php:155
+msgid "Input Macaroon Hex to get access to LND API"
+msgstr "Archivo Macaroon en heaxdecimal"
+
+#: lnd-woocommerce.php:160
+msgid "Customer Message"
+msgstr "Mensaje Del Cliente"
+
+#: lnd-woocommerce.php:162
+msgid "Message to explain how the customer will be paying for the purchase."
+msgstr "Mensaje para explicar cómo el cliente va a pagar por la compra."
+
+#: lnd-woocommerce.php:163
+msgid "You will pay using the Lightning Network."
+msgstr "Usted tendrá que pagar utilizando Lightning Network."
+
+#: lnd-woocommerce.php:167
+msgid "SSL Certificate Path"
+msgstr "Ruta del Certificado SSL"
+
+#: lnd-woocommerce.php:169
+msgid "Put your LND SSL certificate path."
+msgstr ""
+"Ubicación absolute de certificado SSL de LND. (Suele encontrarse en la "
+"carpeta del usuario de sistema .lnd/tls.cert)"
+
+#: templates/payment.php:9 templates/payment.php:27
+msgid "Pay with Lightning"
+msgstr "Pagar con Lightning"
+
+#: templates/payment.php:24
+msgid "Awaiting payment"
+msgstr "Esperando pago"
+
+#: templates/payment.php:25
+msgid "The invoice expires"
+msgstr "La invoice vence"
+
+#: templates/completed.php:1
+msgid "Payment completed successfully"
+msgstr "Pago recibido exitosamente"
+
+#: templates/completed.php:8
+msgid "Payment completed at"
+msgstr "Pago competado en"
+
+#: templates/completed.php:11
+msgid "Lightning rhash"
+msgstr "Lightning rhash"
+
+#: templates/completed.php:14
+msgid "Invoice amount"
+msgstr "Monto de Invoice"
+
+#. Name of the plugin
+msgid "LND for WooCommerce"
+msgstr "LND para WooCommerce"
+
+#. Description of the plugin
+msgid ""
+"Enable instant and fee-reduced payments in BTC through Lightning Network."
+msgstr ""
+"Habilita pagos instantáneos y de tarifa reducida con BTC a través de "
+"Lightning Network."
