@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
+if ( ! defined( 'WC_LND_BASENAME' ) )
+    define( 'WC_LND_BASENAME', plugin_basename( __FILE__ ) );
+
 register_activation_hook( __FILE__, function(){
   if (!extension_loaded('gd') || !extension_loaded('curl')) {
     die('The php-curl and php-gd extensions are required. Please contact your hosting provider for additional help.');
@@ -59,6 +62,8 @@ if (!function_exists('init_wc_lightning')) {
           $this->enabled = 'no';
         }
 
+        add_filter('plugin_action_links_' . WC_LND_BASENAME, array($this, 'lndwoocommerce_settings_link'));
+
         add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
         add_action('woocommerce_update_options_payment_gateways_lightning', array($this, 'process_admin_options'));
         add_action('woocommerce_receipt_lightning', array($this, 'show_payment_info'));
@@ -67,6 +72,17 @@ if (!function_exists('init_wc_lightning')) {
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
       }
 
+      // Add settings link on plugin page.
+      public function lndwoocommerce_settings_link($links)
+      {
+          $plugin_links = [
+            '<b><a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=lightning') . '">' . __('Settings', 'lnd-woocommerce') . '</a></b>'
+          ];
+          // $plugin_links[] = '<a target="_blank" href="' . 'https://wordpress.org/support/plugin/woocommerce-mercadopago/reviews/?rate=5#new-post' . '">' . __('Your opinion helps us get better', 'woocommerce-mercadopago') . '</a>';
+          // $plugin_links[] = '<br><a target="_blank" href="' . 'https://www.mercadopago.com.ar/developers/en/plugins_sdks/plugins/woocommerce/introduction/' . '">' . __('Guides and Documentation', 'woocommerce-mercadopago') . '</a>';
+          // $plugin_links[] = '<a target="_blank" href="' . 'https://www.mercadopago.com.br/ajuda' . '">' . __('Report Problem', 'woocommerce-mercadopago') . '</a>';
+          return array_merge($links, $plugin_links);
+      }
       /**
        * Initialise Gateway Settings Form Fields.
        */
