@@ -44,7 +44,7 @@ class TickerManager {
   public function setExchange($exchangeSlug) {
 
     if (!array_key_exists($exchangeSlug, $this->exchangesList)) {
-      throw new \Exception(sprintf(__( 'Exchange name "%s" not found. .', 'lnd-woocommerce' ), $exchangeSlug ), 1);
+      throw new \Exception(sprintf(__( 'Exchange name "%s" not found.', 'lnd-woocommerce' ), $exchangeSlug ), 1);
     }
     $exchange = $this->exchangesList[$exchangeSlug];
 
@@ -67,7 +67,7 @@ class TickerManager {
           <b><a href="./admin.php?page=wc-settings&tab=checkout&section=lightning#woocommerce_lightning_ticker"><?=__('Change Ticker', 'lnd-wocommerce') ?></a></b>
         </p>
         <p>
-          <?=__( 'You should select another exchange or change the FIAT currency from Woocommerce .', 'lnd-woocommerce' ) ?>
+          <?=__( 'You should select another exchange or change the FIAT currency from Woocommerce.', 'lnd-woocommerce' ) ?>
           <b><a href="./admin.php?page=wc-settings#woocommerce_currency"><?=__('Change Woocommerce Currency', 'lnd-wocommerce') ?></a></b>
         </p>
       </div>

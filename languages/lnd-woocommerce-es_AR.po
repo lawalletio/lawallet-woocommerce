@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-07 18:17+0000\n"
-"PO-Revision-Date: 2020-02-07 18:41+0000\n"
+"POT-Creation-Date: 2020-02-08 00:38+0000\n"
+"PO-Revision-Date: 2020-02-08 00:40+0000\n"
 "Last-Translator: masize <webmaster@masize.com>\n"
 "Language-Team: Español de Argentina\n"
 "Language: es_AR\n"
@@ -14,27 +14,27 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.3.2"
 
-#: lnd-woocommerce.php:56
+#: lnd-woocommerce.php:36
 msgid "Proceed to Lightning Payment"
 msgstr "Pagar con Lightning"
 
-#: lnd-woocommerce.php:57
+#: lnd-woocommerce.php:37
 msgid "Lightning"
 msgstr "Lightning"
 
-#: lnd-woocommerce.php:58
+#: lnd-woocommerce.php:38
 msgid "Lightning Network Payment"
 msgstr "Pago con Lightning Network"
 
-#: lnd-woocommerce.php:97
+#: lnd-woocommerce.php:78
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
 
-#: lnd-woocommerce.php:98
+#: lnd-woocommerce.php:79
 msgid "Enable Lightning payments"
 msgstr "Habilitar pago con Lightning"
 
-#: lnd-woocommerce.php:106
+#: lnd-woocommerce.php:87
 msgid ""
 "Controls the name of this payment method as displayed to the customer during "
 "checkout."
@@ -42,93 +42,141 @@ msgstr ""
 "Controla el nombre de este método de pago, como se muestra para el cliente "
 "durante el proceso de compra."
 
-#: lnd-woocommerce.php:107
+#: lnd-woocommerce.php:88
 msgid "Bitcoin Lightning"
 msgstr "Bitcoin Lightning"
 
-#: lnd-woocommerce.php:111
-msgid "Coin"
-msgstr "Moneda"
-
-#: lnd-woocommerce.php:113
-msgid "Select the coin network your LND is connected to."
-msgstr "Seleccione la moneda en la red de tu LND."
-
-#: lnd-woocommerce.php:122
+#: lnd-woocommerce.php:92
 msgid "Ticker"
 msgstr "Cotización"
 
-#: lnd-woocommerce.php:124
+#: lnd-woocommerce.php:94
 msgid "Select Exchange for rate calculation."
 msgstr "Seleccione el Exchange para el cálculo de cotización."
 
-#: lnd-woocommerce.php:132
+#: lnd-woocommerce.php:102
 msgid "Rate Markup"
 msgstr "Markup de Cotización"
 
-#: lnd-woocommerce.php:134
+#: lnd-woocommerce.php:104
 msgid "Increases exchange rate with a percentage"
 msgstr "Incrementa la cotización recibida con el porcentaje (1 = 1%)"
 
-#: lnd-woocommerce.php:139
+#: lnd-woocommerce.php:109
 msgid "Invoice Expiration"
 msgstr "Expiración de Invoice"
 
-#: lnd-woocommerce.php:141
+#: lnd-woocommerce.php:111
 msgid "Invoice expiration time in seconds"
 msgstr "Expiración de la invoice en segundos"
 
-#: lnd-woocommerce.php:146
+#: lnd-woocommerce.php:116
 msgid "Endpoint"
 msgstr "URL"
 
-#: lnd-woocommerce.php:148
+#: lnd-woocommerce.php:118
 msgid "Place here the API endpoint"
 msgstr ""
 "Coloque aquí la URL de la API de LND (Ejemplo: https://localhost:8081), "
 "Valor de restlisten en lnd.conf"
 
-#: lnd-woocommerce.php:153
+#: lnd-woocommerce.php:123
 msgid "Macaroon Hex"
 msgstr "Macaroon Hex"
 
-#: lnd-woocommerce.php:155
+#: lnd-woocommerce.php:125
 msgid "Input Macaroon Hex to get access to LND API"
 msgstr "Archivo Macaroon en heaxdecimal"
 
-#: lnd-woocommerce.php:160
+#: lnd-woocommerce.php:130
 msgid "Customer Message"
 msgstr "Mensaje Del Cliente"
 
-#: lnd-woocommerce.php:162
+#: lnd-woocommerce.php:132
 msgid "Message to explain how the customer will be paying for the purchase."
 msgstr "Mensaje para explicar cómo el cliente va a pagar por la compra."
 
-#: lnd-woocommerce.php:163
+#: lnd-woocommerce.php:133
 msgid "You will pay using the Lightning Network."
 msgstr "Usted tendrá que pagar utilizando Lightning Network."
 
-#: lnd-woocommerce.php:167
+#: lnd-woocommerce.php:137
 msgid "SSL Certificate Path"
 msgstr "Ruta del Certificado SSL"
 
-#: lnd-woocommerce.php:169
+#: lnd-woocommerce.php:139
 msgid "Put your LND SSL certificate path."
 msgstr ""
 "Ubicación absolute de certificado SSL de LND. (Suele encontrarse en la "
 "carpeta del usuario de sistema .lnd/tls.cert)"
 
-#: templates/payment.php:9 templates/payment.php:27
+#: lnd-woocommerce.php:199
+msgid "Awaiting payment of"
+msgstr "Esperando pago de"
+
+#: lnd-woocommerce.php:199
+msgid "applied"
+msgstr "aplicado"
+
+#: lnd-woocommerce.php:212
+msgid "Couldn't get quote from ticker."
+msgstr "No se pudo obtener la cotización del exchange"
+
+#: lnd-woocommerce.php:225
+msgid ""
+"Lightning Node is not reachable at this time. Please contact the store "
+"administrator."
+msgstr ""
+"No puede conectarse al nodo de Lightning en este momento. Por favor, "
+"contactate con el administrador."
+
+#: TickerManager.php:47
+#, php-format
+msgid "Exchange name \"%s\" not found."
+msgstr "El Exchange con nombre \"%s\" no fué encontrado."
+
+#: TickerManager.php:55
+msgid "Can't load Exchange."
+msgstr "No se puede cargar el Exchange"
+
+#: TickerManager.php:63
+msgid "LND Woocommerce disabled"
+msgstr "LND Woocommerce deshabilitado"
+
+#: TickerManager.php:66
+#, php-format
+msgid "The current Exchange \"%s\" doesn't have ticker for %s currency."
+msgstr ""
+"El Exchange seleccionado \"%s\" no tiene una cotización disponible para la "
+"moneda %s."
+
+#: TickerManager.php:70
+msgid ""
+"You should select another exchange or change the FIAT currency from "
+"Woocommerce."
+msgstr ""
+"Tenes que seleccionar otro exchange o cambiar la moneda configurada en "
+"Woocommerce."
+
+#: templates/payment.php:9 templates/payment.php:31
 msgid "Pay with Lightning"
 msgstr "Pagar con Lightning"
 
-#: templates/payment.php:24
+#: templates/payment.php:26
 msgid "Awaiting payment"
 msgstr "Esperando pago"
 
-#: templates/payment.php:25
+#: templates/payment.php:27
 msgid "The invoice expires"
 msgstr "La invoice vence"
+
+#: templates/payment.php:63
+msgid "Generating new invoice"
+msgstr "Generando nueva invoice"
+
+#: templates/payment.php:65
+msgid "in"
+msgstr "en"
 
 #: templates/completed.php:1
 msgid "Payment completed successfully"

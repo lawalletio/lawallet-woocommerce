@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-07 18:17+0000\n"
+"POT-Creation-Date: 2020-02-08 00:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -15,114 +15,156 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.1; wp-5.3.2"
 
-#: lnd-woocommerce.php:56
+#: lnd-woocommerce.php:36
 msgid "Proceed to Lightning Payment"
 msgstr ""
 
-#: lnd-woocommerce.php:57
+#: lnd-woocommerce.php:37
 msgid "Lightning"
 msgstr ""
 
-#: lnd-woocommerce.php:58
+#: lnd-woocommerce.php:38
 msgid "Lightning Network Payment"
 msgstr ""
 
-#: lnd-woocommerce.php:97
+#: lnd-woocommerce.php:78
 msgid "Enable/Disable"
 msgstr ""
 
-#: lnd-woocommerce.php:98
+#: lnd-woocommerce.php:79
 msgid "Enable Lightning payments"
 msgstr ""
 
-#: lnd-woocommerce.php:106
+#: lnd-woocommerce.php:87
 msgid ""
 "Controls the name of this payment method as displayed to the customer during "
 "checkout."
 msgstr ""
 
-#: lnd-woocommerce.php:107
+#: lnd-woocommerce.php:88
 msgid "Bitcoin Lightning"
 msgstr ""
 
-#: lnd-woocommerce.php:111
-msgid "Coin"
-msgstr ""
-
-#: lnd-woocommerce.php:113
-msgid "Select the coin network your LND is connected to."
-msgstr ""
-
-#: lnd-woocommerce.php:122
+#: lnd-woocommerce.php:92
 msgid "Ticker"
 msgstr ""
 
-#: lnd-woocommerce.php:124
+#: lnd-woocommerce.php:94
 msgid "Select Exchange for rate calculation."
 msgstr ""
 
-#: lnd-woocommerce.php:132
+#: lnd-woocommerce.php:102
 msgid "Rate Markup"
 msgstr ""
 
-#: lnd-woocommerce.php:134
+#: lnd-woocommerce.php:104
 msgid "Increases exchange rate with a percentage"
 msgstr ""
 
-#: lnd-woocommerce.php:139
+#: lnd-woocommerce.php:109
 msgid "Invoice Expiration"
 msgstr ""
 
-#: lnd-woocommerce.php:141
+#: lnd-woocommerce.php:111
 msgid "Invoice expiration time in seconds"
 msgstr ""
 
-#: lnd-woocommerce.php:146
+#: lnd-woocommerce.php:116
 msgid "Endpoint"
 msgstr ""
 
-#: lnd-woocommerce.php:148
+#: lnd-woocommerce.php:118
 msgid "Place here the API endpoint"
 msgstr ""
 
-#: lnd-woocommerce.php:153
+#: lnd-woocommerce.php:123
 msgid "Macaroon Hex"
 msgstr ""
 
-#: lnd-woocommerce.php:155
+#: lnd-woocommerce.php:125
 msgid "Input Macaroon Hex to get access to LND API"
 msgstr ""
 
-#: lnd-woocommerce.php:160
+#: lnd-woocommerce.php:130
 msgid "Customer Message"
 msgstr ""
 
-#: lnd-woocommerce.php:162
+#: lnd-woocommerce.php:132
 msgid "Message to explain how the customer will be paying for the purchase."
 msgstr ""
 
-#: lnd-woocommerce.php:163
+#: lnd-woocommerce.php:133
 msgid "You will pay using the Lightning Network."
 msgstr ""
 
-#: lnd-woocommerce.php:167
+#: lnd-woocommerce.php:137
 msgid "SSL Certificate Path"
 msgstr ""
 
-#: lnd-woocommerce.php:169
+#: lnd-woocommerce.php:139
 msgid "Put your LND SSL certificate path."
 msgstr ""
 
-#: templates/payment.php:9 templates/payment.php:27
+#: lnd-woocommerce.php:199
+msgid "Awaiting payment of"
+msgstr ""
+
+#: lnd-woocommerce.php:199
+msgid "applied"
+msgstr ""
+
+#: lnd-woocommerce.php:212
+msgid "Couldn't get quote from ticker."
+msgstr ""
+
+#: lnd-woocommerce.php:225
+msgid ""
+"Lightning Node is not reachable at this time. Please contact the store "
+"administrator."
+msgstr ""
+
+#: TickerManager.php:47
+#, php-format
+msgid "Exchange name \"%s\" not found."
+msgstr ""
+
+#: TickerManager.php:55
+msgid "Can't load Exchange."
+msgstr ""
+
+#: TickerManager.php:63
+msgid "LND Woocommerce disabled"
+msgstr ""
+
+#: TickerManager.php:66
+#, php-format
+msgid "The current Exchange \"%s\" doesn't have ticker for %s currency."
+msgstr ""
+
+#: TickerManager.php:70
+msgid ""
+"You should select another exchange or change the FIAT currency from "
+"Woocommerce."
+msgstr ""
+
+#: templates/payment.php:9 templates/payment.php:31
 msgid "Pay with Lightning"
 msgstr ""
 
-#: templates/payment.php:24
+#: templates/payment.php:26
 msgid "Awaiting payment"
 msgstr ""
 
-#: templates/payment.php:25
+#: templates/payment.php:27
 msgid "The invoice expires"
+msgstr ""
+
+#: templates/payment.php:63
+msgid "Generating new invoice"
+msgstr ""
+
+#: templates/payment.php:65
+msgid "in"
 msgstr ""
 
 #: templates/completed.php:1
