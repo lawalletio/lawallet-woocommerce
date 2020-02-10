@@ -1,4 +1,4 @@
-<?php
+<?
 /*
     Plugin Name: LND for WooCommerce
     Plugin URI:  https://github.com/agustinkassis/lnd-woocommerce
@@ -24,8 +24,8 @@ register_activation_hook( __FILE__, function(){
   }
 });
 
-require_once 'Lnd_wrapper.php';
-require_once 'TickerManager.php';
+require_once 'includes/LndWrapper.php';
+require_once 'includes/TickerManager.php';
 
 if (!function_exists('init_wc_lightning')) {
 
@@ -39,7 +39,7 @@ if (!function_exists('init_wc_lightning')) {
         $this->order_button_text  = __('Proceed to Lightning Payment', 'lnd-woocommerce');
         $this->method_title       = __('Lightning', 'lnd-woocommerce');
         $this->method_description = __('Lightning Network Payment', 'lnd-woocommerce');
-        $this->icon               = plugin_dir_url(__FILE__).'img/logo.png';
+        $this->icon               = plugin_dir_url(__FILE__).'assets/img/logo.png';
         $this->supports           = array();
 
         $this->tlsPath = plugin_dir_path(__FILE__).'creds/tls.cert';
@@ -406,7 +406,7 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       public function load_admin_script() {
-      	wp_register_script( 'lnd-woocommerce', plugins_url( 'js/script.js', __FILE__ ));
+      	wp_register_script( 'lnd-woocommerce', plugins_url( 'assets/js/script.js', __FILE__ ));
         wp_enqueue_script('lnd-woocommerce');
       }
 
@@ -446,7 +446,7 @@ if (!function_exists('init_wc_lightning')) {
     				</fieldset>
     			</td>
     		</tr>
-    		<?php
+    		<?
     		return ob_get_clean();
     	}
     }

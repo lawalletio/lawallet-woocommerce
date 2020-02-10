@@ -1,26 +1,22 @@
 <?
-require('exchanges/abstract.php');
+require('Exchange.php');
 
-require('exchanges/bitcoinaverage.php');
-require('exchanges/satoshitango.php');
-require('exchanges/ripio.php');
-require('exchanges/bitso.php');
-require('exchanges/bitex.php');
+require(__DIR__ . '/../exchanges/bitcoinaverage.php');
+require(__DIR__ . '/../exchanges/satoshitango.php');
+require(__DIR__ . '/../exchanges/ripio.php');
+require(__DIR__ . '/../exchanges/bitso.php');
+require(__DIR__ . '/../exchanges/bitex.php');
 
 class TickerManager {
-
   /**
    * Call this method to get singleton
    */
-  public static function instance()
-  {
+  public static function instance() {
     static $instance = false;
-    if( $instance === false )
-    {
+    if( $instance === false ) {
       // Late static binding (PHP 5.3+)
       $instance = new static();
     }
-
     return $instance;
   }
 
@@ -36,13 +32,10 @@ class TickerManager {
       'bitex' => new Bitex(),
       'bitcoin_average' => new BitcoinAverage()
     ];
-
     $this->currentExchange = null;
-
   }
 
   public function setExchange($exchangeSlug) {
-
     if (!array_key_exists($exchangeSlug, $this->exchangesList)) {
       throw new \Exception(sprintf(__( 'Exchange name "%s" not found.', 'lnd-woocommerce' ), $exchangeSlug ), 1);
     }
@@ -72,7 +65,7 @@ class TickerManager {
         </p>
       </div>
     </div>
-    <?php
+    <?
   }
 
   public function setCurrency($currency) {

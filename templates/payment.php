@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?php echo plugins_url('css/payment.css', dirname(__FILE__))?>" type="text/css">
+<link rel="stylesheet" href="<? echo plugins_url('assets/css/payment.css', dirname(__FILE__))?>" type="text/css">
 <noscript><style>.yesscript{display:none}</style></noscript>
 <?
 $expiry_datestr = $callResponse->creation_date + $callResponse->expiry;
@@ -8,27 +8,27 @@ $payReq = $callResponse->payment_request;
 <div class="ln-pay">
   <h1><?=__('Pay with Lightning', 'lnd-woocommerce')?></h1>
   <h3>
-    <?php if ($order->get_currency() !== 'BTC'): ?> <?php echo $order->get_total() ?> <?=$currency ?> = <?php endif ?>
-    <?php echo self::format_msat($callResponse->value) ?>
+    <? if ($order->get_currency() !== 'BTC'): ?> <? echo $order->get_total() ?> <?=$currency ?> = <? endif ?>
+    <? echo self::format_msat($callResponse->value) ?>
   </h3>
   <h4>
     <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
   </h4>
   <div class="qr_container">
     <svg style="display: none" xmlns="http://www.w3.org/2000/svg" class="check" width="250" height="250" viewBox="-40 -10 246 180.9"><path d="M0.3 96l62.4 54.1L165.6 0.3"/></svg>
-    <img class="qr" src="<?php echo $qr_uri ?>">
+    <img class="qr" src="<? echo $qr_uri ?>">
   </div>
-  <code class="payreq"><?php echo $payReq ?></code>
+  <code class="payreq"><? echo $payReq ?></code>
   <p>
     <noscript>Your browser has JavaScript turned off. Please refresh the page manually after making the payment.</noscript>
-    <span class="yesscript"><img src="<?php echo plugins_url( '../img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">
+    <span class="yesscript"><img src="<? echo plugins_url( '../assets/img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">
       <span id="invoice_expires_label">
         <?=__('Awaiting payment', 'lnd-woocommerce')?>.
-        <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<?php echo $expiry_datestr ?>"><?php echo $expiry_datestr ?></span>.
+        <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<? echo $expiry_datestr ?>"><? echo $expiry_datestr ?></span>.
       </span>
     </span>
   </p>
-  <a class="checkout-button button alt btn btn-default" href="lightning:<?php echo get_post_meta( $order->get_id(), 'LN_INVOICE', true ); ?>"><?=__('Pay with Lightning', 'lnd-woocommerce')?></a>
+  <a class="checkout-button button alt btn btn-default" href="lightning:<? echo get_post_meta( $order->get_id(), 'LN_INVOICE', true ); ?>"><?=__('Pay with Lightning', 'lnd-woocommerce')?></a>
 </div>
 
 <script>
@@ -80,7 +80,7 @@ $payReq = $callResponse->payment_request;
     var h=x/3600|0, m=x%3600/60|0, s=x%60
     return ''+(h>0?h+':':'')+(m<10&&h>0?'0':'')+m+':'+(s<10?'0':'')+s
   }
-})(jQuery, <?php echo json_encode(admin_url( 'admin-ajax.php' )) ?>, <?php echo json_encode($order->get_id()) ?>,
-           <?php echo json_encode($order->get_checkout_order_received_url()) ?>, <?php echo $expiry_datestr ?>)
+})(jQuery, <? echo json_encode(admin_url( 'admin-ajax.php' )) ?>, <? echo json_encode($order->get_id()) ?>,
+           <? echo json_encode($order->get_checkout_order_received_url()) ?>, <? echo $expiry_datestr ?>)
 
 </script>
