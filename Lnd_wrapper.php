@@ -88,9 +88,9 @@ class LndWrapper
     /**
      * Set endpoint credentials
      */
-    public function setCredentials ( $endpoint , $macaroonHex , $tlsPath){
+    public function setCredentials ( $endpoint , $macaroonPath , $tlsPath){
         $this->endpoint = $endpoint;
-        $this->macaroonHex = $macaroonHex;
+        $this->macaroonHex = bin2hex(file_get_contents($macaroonPath));
         $this->tlsPath = $tlsPath;
     }
 
