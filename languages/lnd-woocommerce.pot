@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-10 23:16+0000\n"
+"POT-Creation-Date: 2020-02-10 23:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -83,6 +83,10 @@ msgstr ""
 
 #: lnd-woocommerce.php:148
 msgid "Upload Macaroon"
+msgstr ""
+
+#: lnd-woocommerce.php:153
+msgid "Macaroon file, must have invoice permissions at least"
 msgstr ""
 
 #: lnd-woocommerce.php:158

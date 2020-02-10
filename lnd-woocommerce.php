@@ -150,7 +150,7 @@ if (!function_exists('init_wc_lightning')) {
     				'custom_attributes' => array(
     					'accept' => ".macaroon",
     				),
-    				'description'       => __( 'Macaroon file, must have invoice permissions at least' ),
+    				'description'       => __( 'Macaroon file, must have invoice permissions at least', 'lnd-woocommerce' ),
     				'desc_tip'          => true,
             'uploaded'            => file_exists($this->macaroonPath),
     			),
