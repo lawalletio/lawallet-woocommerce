@@ -83,7 +83,10 @@ class LndWrapper
     }
 
     /**
-     * Set endpoint credentials
+     * Sets LND credentials
+     * @param string $endpoint     LND URL
+     * @param string $macaroonPath Full local path for macaroon file
+     * @param string $tlsPath      Full local path for tls certificate file
      */
     public function setCredentials ( $endpoint , $macaroonPath , $tlsPath){
         $this->endpoint = $endpoint;
@@ -91,14 +94,27 @@ class LndWrapper
         $this->tlsPath = $tlsPath;
     }
 
+    /**
+     * Sets the cryptocurrency to be used
+     * @param string $coin Symbol: BTC or LTC
+     */
     public function setCoin ( $coin ){
         $this->coin = $coin;
     }
 
+    /**
+     * Gets coin's symbol
+     * @return string Symbol: BTC or LTC
+     */
     public function getCoin () {
         return $this->coin;
     }
 
+    /**
+     * Generates QR code image with Google's API
+     * @param  string $paymentRequest Invoice payment request
+     * @return string                 Remote Image's URL
+     */
     public function generateQr( $paymentRequest ){
         $size = "300x300";
         $margin = "0";
@@ -107,7 +123,9 @@ class LndWrapper
     }
 
     /**
-     * Generate Payment Request
+     * Creates invoice
+     * @param  array $invoice Invoice data for LND endpoint
+     * @return object          Invoice data from LND
      */
     public function createInvoice ( $invoice ) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
@@ -117,6 +135,11 @@ class LndWrapper
         return $createInvoiceResponse;
     }
 
+    /**
+     * Gets Invoice from LND api by pay_req
+     * @param  string $paymentRequest pay_req field
+     * @return object                 Invoice data from LND
+     */
     public function getInvoiceInfoFromPayReq ($paymentRequest) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/payreq/' . $paymentRequest,'', "GET", $header );
@@ -124,6 +147,11 @@ class LndWrapper
         return $invoiceInfoResponse;
     }
 
+    /**
+     * Gets Invoice from LND api by Payment hash
+     * @param  string $paymentHash base64 of pay_req
+     * @return object              Invoice Data
+     */
     public function getInvoiceInfoFromHash ( $paymentHash ) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/invoice/' . $paymentHash,'', "GET", $header );
@@ -131,6 +159,10 @@ class LndWrapper
         return $invoiceInfoResponse;
     }
 
+    /**
+     * Generates BTC address from LND
+     * @return string BTC address
+     */
     public function generateAddress () {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $createAddressResponse = $this->curlWrap( $this->endpoint . '/v1/newaddress', null, 'GET', $header );

@@ -5,6 +5,11 @@ class Bitex extends Exchange {
 
   public $fiatList = ['ARS', 'USD'];
 
+  /**
+   * Gets current rate
+   * @param  string $currency FIAT currency
+   * @return float           Rate
+   */
   public function getRate($currency='ARS') {
     $content = json_decode($this->request($this->endpoint . "/tickers/" . strtolower("btc_" . $currency)));
     return $content->data->attributes->bid;

@@ -5,6 +5,11 @@ class Bitso extends Exchange {
 
   public $fiatList = ['ARS'];
 
+  /**
+   * Gets current rate
+   * @param  string $currency FIAT currency
+   * @return float           Rate
+   */
   public function getRate($currency='ARS') {
     $content = json_decode($this->request($this->endpoint . "/ticker/?book=" . strtolower("btc_" . $currency)));
     return $content->payload->bid;

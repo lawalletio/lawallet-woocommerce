@@ -35,6 +35,10 @@ class TickerManager {
     $this->currentExchange = null;
   }
 
+  /**
+   * Sets exchange to be used
+   * @param string $exchangeSlug Lower case with underscore for names
+   */
   public function setExchange($exchangeSlug) {
     if (!array_key_exists($exchangeSlug, $this->exchangesList)) {
       throw new \Exception(sprintf(__( 'Exchange name "%s" not found.', 'lnd-woocommerce' ), $exchangeSlug ), 1);
@@ -50,6 +54,10 @@ class TickerManager {
     $this->currentExchange = $exchange;
   }
 
+  /**
+   * Error creator when fiat is not supported by the currenct exchange
+   * @param  object $exchange Exchange object
+   */
   public function unmatchedTicker($exchange) {
     ?>
     <div class="error notice">
@@ -68,14 +76,26 @@ class TickerManager {
     <?
   }
 
+  /**
+   * Sets cryptocurrency
+   * @param string $currency Symbol
+   */
   public function setCurrency($currency) {
     $this->currency = $currency;
   }
 
+  /**
+   * Gets full exchange list
+   * @return array Array of Exchange objects
+   */
   public function getAll() {
     return $this->exchangesList;
   }
 
+  /**
+   * Get valid exchanges for the fiat currency selected
+   * @return array Array of Exchange objects
+   */
   public function getValid() {
     return array_filter($this->exchangesList, function (Exchange $exchange) {
       return $exchange->hasFiat($this->fiat);
@@ -86,7 +106,6 @@ class TickerManager {
    * Get ticker from ARS Exchanges
    * @return float Price
    */
-
   public function getTicker($markup=0) {
     $rate = $this->currentExchange->getRate();
     if ($markup <> 0) {

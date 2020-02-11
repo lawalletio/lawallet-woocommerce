@@ -82,12 +82,16 @@ if (!function_exists('init_wc_lightning')) {
         add_action('wp_ajax_ln_upload_file', array($this, 'upload_file'));
 
 
-        if (is_admin() && $this->isManageSection()) {
+        if (is_admin() && $this->is_manage_section()) {
           add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
         }
       }
 
-      // Add settings link on plugin page.
+      /**
+       * Adds settings page link in plugins section
+       * @param  array $links Current links
+       * @return array        Returns the merged array
+       */
       public function lndwoocommerce_settings_link($links) {
           $plugin_links = [
             '<b><a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=lightning') . '">' . __('Settings', 'lnd-woocommerce') . '</a></b>'
@@ -193,7 +197,13 @@ if (!function_exists('init_wc_lightning')) {
         return $invoice;
       }
 
-      public function updatePostMeta($order, $invoice, $ticker) {
+      /**
+       * Updates post meta with LN meta data and adds order notes to the order
+       * @param  object $order   Order data
+       * @param  object $invoice Invoice data
+       * @param  array $ticker  Ticker data
+       */
+      public function update_post_meta($order, $invoice, $ticker) {
         update_post_meta( $order->get_id(), 'LN_RATE', $ticker->rate);
         update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
@@ -233,7 +243,7 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        $this->updatePostMeta($order, $invoice, $ticker);
+        $this->update_post_meta($order, $invoice, $ticker);
 
         return array(
           'result'   => 'success',
@@ -245,19 +255,17 @@ if (!function_exists('init_wc_lightning')) {
        * JSON endpoint for long polling payment updates.
        */
       public function wait_invoice() {
-
         $order = wc_get_order($_POST['invoice_id']);
 
-        if($order->get_status() == 'processing'){
+        if($order->get_status() == 'processing') {
           status_header(200);
           wp_send_json(true);
           return;
         }
+
         /**
-         *
          * Check if invoice is paid
          */
-
         $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
 
         $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode( $payHash ) ) );
@@ -270,7 +278,6 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceTime = $callResponse->creation_date + $callResponse->expiry;
 
         if($invoiceTime < time()) {
-
           //Invoice expired
           try {
             $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
@@ -281,7 +288,7 @@ if (!function_exists('init_wc_lightning')) {
 
           $order->add_order_note(json_encode($ticker)); // Remove
           $invoice = $this->create_invoice($order, $ticker);
-          $this->updatePostMeta($order, $invoice, $ticker);
+          $this->update_post_meta($order, $invoice, $ticker);
 
           status_header(410);
           wp_send_json(false);
@@ -304,6 +311,9 @@ if (!function_exists('init_wc_lightning')) {
 
       }
 
+      /**
+       * Uploads a file, called from ajax
+       */
       public function upload_file() {
         switch ($_POST['name']) {
           case 'macaroon':
@@ -381,20 +391,38 @@ if (!function_exists('init_wc_lightning')) {
         return $methods;
       }
 
+      /**
+       * Loads js scripts
+       */
       public function load_admin_script() {
       	wp_register_script( 'lnd-woocommerce', plugins_url( 'assets/js/script.js', __FILE__ ));
         wp_enqueue_script('lnd-woocommerce');
       }
 
+      /**
+       * Converts sats into BTC
+       * @param  [float] $msat Amount in Satoshis
+       * @return [float]       BTC denomination
+       */
+
       protected static function format_msat($msat) {
         return rtrim(rtrim(number_format($msat/100000000, 8), '0'), '.') . ' BTC';
       }
 
-      protected function isManageSection() {
+      /**
+       * Returns true if the user is plugin's settings page
+       * @return boolean
+       */
+      protected function is_manage_section() {
         return (isset($_GET['section']) && $_GET['section']==='lightning');
       }
 
-
+      /**
+       * Generates upload field for Woocommerce init_form_fields
+       * @param  string $key
+       * @param  array $data
+       * @return string
+       */
       public function generate_upload_html( $key, $data ) {
     		$defaults = array(
     			'css'               => '',
