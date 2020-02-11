@@ -36,7 +36,7 @@ class Exchange {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     //This is set to 0 for development mode. Set 1 when production (self-signed certificate error)
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_CAINFO, openssl_get_cert_locations()->default_cert_file);
+    //curl_setopt($ch, CURLOPT_CAINFO, openssl_get_cert_locations()['default_cert_file']);
     //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 

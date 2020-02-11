@@ -58,7 +58,10 @@ if (!function_exists('init_wc_lightning')) {
         $this->tickerManager = TickerManager::instance();
 
         if (file_exists($this->tlsPath) && file_exists($this->macaroonPath)) {
-          $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->macaroonPath, $this->get_option( 'ssl' ));
+          $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->macaroonPath, $this->tlsPath);
+
+        } else {
+          $this->enabled = 'no';
         }
 
         try {
@@ -174,33 +177,6 @@ if (!function_exists('init_wc_lightning')) {
 
         );
       }
-      /**
-       * Get ticker from ARS Exchanges
-       * @return float Price
-       */
-
-      public function getTicker($addMarkup=false) {
-        $exchangesList = $this->tickerManager->getAll();
-        $currency = get_woocommerce_currency();
-
-        if ($currency == 'ARS') {
-          $exchange = $exchangesList[$this->get_option('ticker')];
-        } else {
-          $exchange = $this->lndCon;
-        }
-        $rate = $exchange->getRate();
-        $markup = 0;
-        if ($addMarkup) {
-          $markup = (float) $this->get_option('rate_markup');
-          $rate = $rate/(1+$markup/100);
-        }
-
-        return (object) array(
-          'currency' => $currency,
-          'rate' => $rate,
-          'markup' => $markup
-        );
-      }
 
       public function create_invoice($order, $ticker) {
         $livePrice = $ticker->rate;
@@ -238,7 +214,7 @@ if (!function_exists('init_wc_lightning')) {
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
         try {
-          $ticker = $this->getTicker(true);
+          $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
         } catch (\Exception $e) {
           wc_add_notice( __('Error: ') . __('Couldn\'t get quote from ticker.', 'lnd-woocommerce'), 'error' );
           return;
@@ -297,7 +273,7 @@ if (!function_exists('init_wc_lightning')) {
 
           //Invoice expired
           try {
-            $ticker = $this->getTicker(true);
+            $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
           } catch (\Exception $e) { // Can't get ticker
             status_header(500);
             wp_send_json(false);

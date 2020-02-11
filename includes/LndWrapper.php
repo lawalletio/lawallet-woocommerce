@@ -8,7 +8,6 @@ class LndWrapper
     private $coin = 'BTC';
     private $tlsPath;
 
-
     /**
      * Call this method to get singleton
      */
@@ -74,11 +73,9 @@ class LndWrapper
 
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             //This is set to 0 for development mode. Set 1 when production (self-signed certificate error)
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_CAINFO, $this->tlsPath);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-
             $output = curl_exec($ch);
 
             curl_close($ch);
@@ -116,6 +113,7 @@ class LndWrapper
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $createInvoiceResponse = $this->curlWrap( $this->endpoint . '/v1/invoices', json_encode( $invoice ), 'POST', $header );
         $createInvoiceResponse = json_decode($createInvoiceResponse);
+
         return $createInvoiceResponse;
     }
 

@@ -82,4 +82,23 @@ class TickerManager {
     });
   }
 
+  /**
+   * Get ticker from ARS Exchanges
+   * @return float Price
+   */
+
+  public function getTicker($markup=0) {
+    $rate = $this->currentExchange->getRate();
+    if ($markup <> 0) {
+      $markup = (float) $markup;
+      $rate = $rate/(1+$markup/100);
+    }
+
+    return (object) array(
+      'currency' => $this->fiat,
+      'rate' => $rate,
+      'markup' => $markup
+    );
+  }
+
 }

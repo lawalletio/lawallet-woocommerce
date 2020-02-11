@@ -12,7 +12,7 @@ $payReq = $callResponse->payment_request;
     <? echo self::format_msat($callResponse->value) ?>
   </h3>
   <h4>
-    <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
+    <b><?=__('Rate', 'lnd-woocommerce')?></b>: <?=$currency . ' ' . $rate . ' ' . __('taken from', 'lnd-woocommerce') . ' ' . $exchange?>
   </h4>
   <div class="qr_container">
     <svg style="display: none" xmlns="http://www.w3.org/2000/svg" class="check" width="250" height="250" viewBox="-40 -10 246 180.9"><path d="M0.3 96l62.4 54.1L165.6 0.3"/></svg>
