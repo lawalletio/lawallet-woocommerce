@@ -15,8 +15,16 @@ if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
-if ( ! defined( 'WC_LND_BASENAME' ) )
-    define( 'WC_LND_BASENAME', plugin_basename( __FILE__ ) );
+if ( ! defined( 'WC_LND_BASENAME' ) ) {
+  define('WC_LND_NAME', 'lnd-woocommerce');
+  define('WC_LND_BASENAME', plugin_basename( __FILE__ ));
+  define('WC_LND_PLUGIN_PATH', plugin_dir_path(__FILE__));
+  define('WC_LND_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
+  define('WC_LND_VERSION', '0.9.1');
+
+  define('WC_LND_TLS_FILE', WC_LND_PLUGIN_PATH . 'creds/lnd.cert');
+  define('WC_LND_MACAROON_FILE', WC_LND_PLUGIN_PATH . 'creds/lnd.macaroon');
+}
 
 register_activation_hook( __FILE__, function(){
   if (!extension_loaded('gd') || !extension_loaded('curl')) {
@@ -24,8 +32,9 @@ register_activation_hook( __FILE__, function(){
   }
 });
 
-require_once 'includes/LndWrapper.php';
-require_once 'includes/TickerManager.php';
+require_once(WC_LND_PLUGIN_PATH . 'includes/LndWrapper.php');
+require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
+require_once(WC_LND_PLUGIN_PATH . 'admin/LND_Woocommerce_Admin.php');
 
 if (!function_exists('init_wc_lightning')) {
 
@@ -42,9 +51,6 @@ if (!function_exists('init_wc_lightning')) {
         $this->icon               = plugin_dir_url(__FILE__).'assets/img/logo.png';
         $this->supports           = array();
 
-        $this->tlsPath = plugin_dir_path(__FILE__).'creds/tls.cert';
-        $this->macaroonPath = plugin_dir_path(__FILE__).'creds/user.macaroon';
-
         // Load the settings.
         $this->init_form_fields();
         $this->init_settings();
@@ -52,14 +58,13 @@ if (!function_exists('init_wc_lightning')) {
         // Define user set variables.
         $this->title       = $this->get_option('title');
         $this->description = $this->get_option('description');
-        $this->endpoint = $this->get_option( 'endpoint' );
-
+        $this->endpoint = $this->get_lnd_host();
         $this->lndCon = LndWrapper::instance();
+
         $this->tickerManager = TickerManager::instance();
 
-        if (file_exists($this->tlsPath) && file_exists($this->macaroonPath)) {
-          $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->macaroonPath, $this->tlsPath);
-
+        if (file_exists(WC_LND_TLS_FILE) && file_exists(WC_LND_MACAROON_FILE)) {
+          $this->lndCon->setCredentials ( $this->endpoint, WC_LND_MACAROON_FILE, WC_LND_TLS_FILE);
         } else {
           $this->enabled = 'no';
         }
@@ -81,10 +86,22 @@ if (!function_exists('init_wc_lightning')) {
 
         add_action('wp_ajax_ln_upload_file', array($this, 'upload_file'));
 
+        if (is_admin()) {
+          $this->admin = LND_Woocommerce_Admin::get_instance();
+        }
 
         if (is_admin() && $this->is_manage_section()) {
           add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
         }
+      }
+
+      public function get_lnd_config() {
+        return get_option(WC_LND_NAME . '_lnd_config');
+      }
+
+      public function get_lnd_host() {
+        $conf = $this->get_lnd_config();
+        return 'http' . ($conf['ssl']=='1'?'s':'') . '://' . $conf['host'] . ':' . $conf['port'];
       }
 
       /**
@@ -107,8 +124,8 @@ if (!function_exists('init_wc_lightning')) {
 
         $this->form_fields = array(
           'enabled' => array(
-            'title'       => __( 'Enable/Disable', 'lnd-woocommerce' ),
-            'label'       => __( 'Enable Lightning payments', 'lnd-woocommerce' ),
+            'title'       => __( 'Enable/Disable', WC_LND_NAME ),
+            'label'       => __( 'Enable Lightning payments', WC_LND_NAME ),
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no',
@@ -144,33 +161,6 @@ if (!function_exists('init_wc_lightning')) {
             'default'     => 300, // 5 minutes
             'desc_tip'    => true,
           ),
-          'endpoint' => array(
-            'title'       => __( 'Endpoint', 'lnd-woocommerce' ),
-            'type'        => 'textarea',
-            'description' => __( 'Place here the API endpoint', 'lnd-woocommerce' ),
-            'default'     => 'https://localhost:8080',
-            'desc_tip'    => true,
-          ),
-          'macaroon' => array(
-    				'title'             => __('Upload Macaroon', 'lnd-woocommerce'),
-    				'type'              => 'upload',
-    				'custom_attributes' => array(
-    					'accept' => ".macaroon",
-    				),
-    				'description'       => __( 'Macaroon file, must have invoice permissions at least', 'lnd-woocommerce' ),
-    				'desc_tip'          => true,
-            'uploaded'            => file_exists($this->macaroonPath),
-    			),
-          'tls' => array(
-    				'title'       => __('SSL Certificate', 'lnd-woocommerce'),
-    				'type'              => 'upload',
-    				'custom_attributes' => array(
-    					'accept' => ".cert",
-    				),
-    				'description' => __('tls.cert file generated by LND.', 'lnd-woocommerce'),
-    				'desc_tip'          => true,
-            'uploaded'         => file_exists($this->tlsPath),
-    			),
           'description' => array(
             'title'       => __('Customer Message', 'lnd-woocommerce'),
             'type'        => 'textarea',
@@ -318,11 +308,11 @@ if (!function_exists('init_wc_lightning')) {
         switch ($_POST['name']) {
           case 'macaroon':
             $requiredFormat = 'macaroon';
-            $destination = $this->macaroonPath;
+            $destination = WC_LND_MACAROON_FILE;
           break;
           case 'tls':
             $requiredFormat = 'cert';
-            $destination = $this->tlsPath;
+            $destination = WC_LND_TLS_FILE;
           break;
 
           default:
@@ -395,8 +385,8 @@ if (!function_exists('init_wc_lightning')) {
        * Loads js scripts
        */
       public function load_admin_script() {
-      	wp_register_script( 'lnd-woocommerce', plugins_url( 'assets/js/script.js', __FILE__ ));
-        wp_enqueue_script('lnd-woocommerce');
+      	wp_register_script( WC_LND_NAME, plugins_url( 'assets/js/script.js', __FILE__ ));
+        wp_enqueue_script(WC_LND_NAME);
       }
 
       /**
@@ -432,7 +422,7 @@ if (!function_exists('init_wc_lightning')) {
     			'uploaded'            => false,
     		);
     		$data = wp_parse_args( $data, $defaults );
-        $filePath = $key === 'tls' ? $this->tlsPath : $this->macaroonPath;
+        $filePath = $key === 'tls' ? WC_LND_TLS_FILE : WC_LND_MACAROON_FILE;
 
     		ob_start();
     		?>

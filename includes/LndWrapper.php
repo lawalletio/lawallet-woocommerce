@@ -1,7 +1,6 @@
 <?
 
-class LndWrapper
-{
+class LndWrapper {
 
     private $macaroonHex;
     private $endpoint;
@@ -11,8 +10,7 @@ class LndWrapper
     /**
      * Call this method to get singleton
      */
-    public static function instance()
-    {
+    public static function instance() {
       static $instance = false;
       if( $instance === false )
       {
@@ -98,7 +96,7 @@ class LndWrapper
      * Sets the cryptocurrency to be used
      * @param string $coin Symbol: BTC or LTC
      */
-    public function setCoin ( $coin ){
+    public function setCoin ($coin) {
         $this->coin = $coin;
     }
 
@@ -115,7 +113,7 @@ class LndWrapper
      * @param  string $paymentRequest Invoice payment request
      * @return string                 Remote Image's URL
      */
-    public function generateQr( $paymentRequest ){
+    public function generateQr($paymentRequest) {
         $size = "300x300";
         $margin = "0";
         $encoding = "UTF-8";
@@ -123,11 +121,24 @@ class LndWrapper
     }
 
     /**
+     * Get Info
+     * @param  array $invoice Invoice data for LND endpoint
+     * @return object          Invoice data from LND
+     */
+    public function getInfo() {
+        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
+        $response = $this->curlWrap( $this->endpoint . '/v1/getinfo', '', 'GET', $header );
+        $response = json_decode($response);
+
+        return $response;
+    }
+
+    /**
      * Creates invoice
      * @param  array $invoice Invoice data for LND endpoint
      * @return object          Invoice data from LND
      */
-    public function createInvoice ( $invoice ) {
+    public function createInvoice($invoice) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $createInvoiceResponse = $this->curlWrap( $this->endpoint . '/v1/invoices', json_encode( $invoice ), 'POST', $header );
         $createInvoiceResponse = json_decode($createInvoiceResponse);
@@ -140,7 +151,7 @@ class LndWrapper
      * @param  string $paymentRequest pay_req field
      * @return object                 Invoice data from LND
      */
-    public function getInvoiceInfoFromPayReq ($paymentRequest) {
+    public function getInvoiceInfoFromPayReq($paymentRequest) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/payreq/' . $paymentRequest,'', "GET", $header );
         $invoiceInfoResponse = json_decode( $invoiceInfoResponse );
@@ -152,7 +163,7 @@ class LndWrapper
      * @param  string $paymentHash base64 of pay_req
      * @return object              Invoice Data
      */
-    public function getInvoiceInfoFromHash ( $paymentHash ) {
+    public function getInvoiceInfoFromHash($paymentHash) {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/invoice/' . $paymentHash,'', "GET", $header );
         $invoiceInfoResponse = json_decode( $invoiceInfoResponse );
@@ -163,7 +174,7 @@ class LndWrapper
      * Generates BTC address from LND
      * @return string BTC address
      */
-    public function generateAddress () {
+    public function generateAddress() {
         $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
         $createAddressResponse = $this->curlWrap( $this->endpoint . '/v1/newaddress', null, 'GET', $header );
         $createAddressResponse = json_decode($createAddressResponse);

@@ -1,0 +1,103 @@
+.wc_lnd_tabs_container {
+    border-bottom: 1px solid #ccc;
+    margin-right: 20px;
+    width: 100%;
+}
+
+wrap h2.wc_lnd_tabs_container {
+    margin-bottom: 15px;
+}
+
+#setting-error-wc_lnd_settings_updated,
+#setting-error-wc_lnd_settings_error {
+    margin-left: 2px;
+    margin-top: 1em;
+}
+
+div.wc_lnd_settings {
+    margin-top: 15px;
+}
+
+.wc_lnd_settings_container {
+    width: 100%;
+    border: 1px solid #dfdfdf;
+    border-top: none;
+    background-color: #ffffff;
+}
+
+.wc_lnd_settings_container h2, .wc_lnd_settings_container h3 {
+    padding: 20px;
+    border-bottom: 1px solid #dfdfdf;
+    border-top: 1px solid #dfdfdf;
+    background-color: #fcfcfc;
+    margin: 0;
+    overflow: hidden;
+}
+
+.woocommerce .wc_lnd_settings_container table.form-table, .wc_lnd_settings_container table.form-table {
+    margin: 10px 0 15px 25px;
+    width: auto;
+}
+
+.wc_lnd_settings_container tr {
+    height: 45px;
+}
+
+.wc_lnd_settings_container th {
+    width: 300px;
+    padding: 15px 10px 5px 0;
+}
+
+.wc_lnd_settings_container td {
+    padding: 10px 10px 5px 10px;
+}
+
+.wc_lnd_settings_container p {
+    padding: 12px 25px 0px 25px;
+}
+
+.wc_lnd_settings_container .wc_lnd_field_short {
+    min-width: 100px;
+}
+.wc_lnd_settings_container .wc_lnd_field_medium {
+    min-width: 200px;
+}
+.wc_lnd_settings_container .wc_lnd_field_long {
+    min-width: 450px;
+}
+
+.wc_lnd_settings_container select {
+    line-height: 27px;
+    height: 27px;
+}
+
+.wc_lnd_settings_container .wc_lnd_settings_hint {
+    font-style: italic;
+    font-size: 12px;
+    color: #666;
+    padding-right: 25px;
+    padding-top: 5px;
+}
+
+.wc_lnd_settings_container .wc_lnd_settings_hint {
+    font-style: italic;
+    font-size: 12px;
+    color: #666;
+    padding-right: 25px;
+    padding-top: 5px;
+}
+
+.wc_lnd_settings_container p.submit {
+    margin-top: 0;
+}
+
+.wc_lnd_settings_container p {
+    padding: 12px 25px 0px 25px;
+}
+
+.wc_lnd_settings_container .submit {
+    border-top: 1px solid #dfdfdf !important;
+    background-color: #fcfcfc;
+    padding: 20px !important;
+    margin: 0;
+}
