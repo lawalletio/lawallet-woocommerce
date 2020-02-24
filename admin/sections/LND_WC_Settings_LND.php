@@ -11,16 +11,7 @@ if (!class_exists('LND_WC_Settings_LND')) {
 
 class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
     public static $prefix = WC_LND_NAME . '_lnd_config';
-
-    /**
-     * Singleton control
-     */
-    public static function get_instance() {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
+    protected static $instance = null;
 
     public function __construct() {
         $this->title = __('LND Settings', 'lnd-woocommerce');
@@ -29,8 +20,6 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
         parent::__construct();
 
         $this->lndCon = LndWrapper::instance();
-
-        //$this->lndCon->getInfo();
 
         if (!empty($_FILES[static::$prefix]['name']['tls'])) {
           $this->upload_tls();
@@ -160,12 +149,18 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
     }
 
     public function print_template_info() {
-      $lnd = LndWrapper::instance();
-      $info = $lnd->getInfo();
-      // Print settings page content
+      try {
+        $info = $this->lndCon->getInfo();
+      } catch (\Exception $e) {
+        $message = $e->getMessage();
+        // Print settings error content
+        include WC_LND_ADMIN_PATH . '/views/error.php';
+        return;
+      }
+
       include WC_LND_ADMIN_PATH . '/views/lnd/info.php';
     }
 
 }
-LND_WC_Settings_LND::get_instance();
+LND_WC_Settings_LND::instance();
 }

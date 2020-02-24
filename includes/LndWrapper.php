@@ -6,19 +6,15 @@ class LndWrapper {
     private $endpoint;
     private $coin = 'BTC';
     private $tlsPath;
+    private $headers = [];
 
-    /**
-     * Call this method to get singleton
-     */
+    protected static $instance = false;
+
     public static function instance() {
-      static $instance = false;
-      if( $instance === false )
-      {
-        // Late static binding (PHP 5.3+)
-        $instance = new static();
-      }
-
-      return $instance;
+        if (!static::$instance) {
+            static::$instance = new static();
+        }
+        return static::$instance;
     }
 
     /**
@@ -45,10 +41,10 @@ class LndWrapper {
     /**
      * Custom function to make curl requests
      */
-    private function curlWrap( $url, $json, $action, $headers ) {
-        $ch			=			curl_init();
+    private function curlWrap( $url, $action='GET', $json=[] ) {
+        $ch	=	curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_URL, $this->endpoint . $url);
 
         switch($action){
             case "POST":
@@ -73,10 +69,17 @@ class LndWrapper {
             //This is set to 0 for development mode. Set 1 when production (self-signed certificate error)
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
             curl_setopt($ch, CURLOPT_CAINFO, $this->tlsPath);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            $output = curl_exec($ch);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
+            curl_setopt($ch, CURLOPT_VERBOSE, true);
 
+            $verbose = fopen('php://memory', 'w+');
+            curl_setopt($ch, CURLOPT_STDERR, $verbose);
+
+            $output = json_decode(curl_exec($ch));
             curl_close($ch);
+
+            $this->checkErrors($verbose, $output);
+            //die();
             return $output;
     }
 
@@ -90,6 +93,7 @@ class LndWrapper {
         $this->endpoint = $endpoint;
         $this->macaroonHex = bin2hex(file_get_contents($macaroonPath));
         $this->tlsPath = $tlsPath;
+        $this->headers = ['Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json'];
     }
 
     /**
@@ -126,9 +130,7 @@ class LndWrapper {
      * @return object          Invoice data from LND
      */
     public function getInfo() {
-        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
-        $response = $this->curlWrap( $this->endpoint . '/v1/getinfo', '', 'GET', $header );
-        $response = json_decode($response);
+        $response = $this->curlWrap('/v1/getinfo');
 
         return $response;
     }
@@ -139,9 +141,7 @@ class LndWrapper {
      * @return object          Invoice data from LND
      */
     public function createInvoice($invoice) {
-        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
-        $createInvoiceResponse = $this->curlWrap( $this->endpoint . '/v1/invoices', json_encode( $invoice ), 'POST', $header );
-        $createInvoiceResponse = json_decode($createInvoiceResponse);
+        $createInvoiceResponse = $this->curlWrap('/v1/invoices', 'POST', json_encode( $invoice ));
 
         return $createInvoiceResponse;
     }
@@ -152,9 +152,7 @@ class LndWrapper {
      * @return object                 Invoice data from LND
      */
     public function getInvoiceInfoFromPayReq($paymentRequest) {
-        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
-        $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/payreq/' . $paymentRequest,'', "GET", $header );
-        $invoiceInfoResponse = json_decode( $invoiceInfoResponse );
+        $invoiceInfoResponse = $this->curlWrap('/v1/payreq/' . $paymentRequest);
         return $invoiceInfoResponse;
     }
 
@@ -164,9 +162,7 @@ class LndWrapper {
      * @return object              Invoice Data
      */
     public function getInvoiceInfoFromHash($paymentHash) {
-        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
-        $invoiceInfoResponse = $this->curlWrap( $this->endpoint . '/v1/invoice/' . $paymentHash,'', "GET", $header );
-        $invoiceInfoResponse = json_decode( $invoiceInfoResponse );
+        $invoiceInfoResponse = $this->curlWrap('/v1/invoice/' . $paymentHash);
         return $invoiceInfoResponse;
     }
 
@@ -175,9 +171,52 @@ class LndWrapper {
      * @return string BTC address
      */
     public function generateAddress() {
-        $header = array('Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json');
-        $createAddressResponse = $this->curlWrap( $this->endpoint . '/v1/newaddress', null, 'GET', $header );
-        $createAddressResponse = json_decode($createAddressResponse);
+        $createAddressResponse = $this->curlWrap('/v1/newaddress');
         return $createAddressResponse->address;
+    }
+
+    public function listChannels() {
+        $response = $this->curlWrap('/v1/channels');
+        return $response->channels;
+    }
+
+    private function checkErrors($verbose, $output) {
+      rewind($verbose);
+      $verboseLog = stream_get_contents($verbose);
+
+      // print_r($output);
+      // print_r($verboseLog);
+      if (strpos($verboseLog, 'HTTP/1.1 200 OK') !== false) {
+
+        return true;
+      }
+
+      $errors = [
+        ["Failed to connect to", __("Server is unreacheable, must be down or wrong port is given", "lnd-woocommerce"), 1],
+        ["Recv failure: Connection reset by peer", __("Server reached but is not a LND server or you've set an invalid port", "lnd-woocommerce"), 1],
+        ["HTTP/1.0 400 Bad Request", __("Server reached but is not a Loop server or invalid port (must be restlisten)", "lnd-woocommerce"), 400],
+        ["HTTP/1.1 404 Not Found", __("Got a 404 response from server, please check if lnd wallet is created and already unlocked", "lnd-woocommerce"), 404],
+        ["Empty reply from server", __("Server reached but is not LND restlisten port. Looks like rpcport", "lnd-woocommerce"), 1],
+        ["Connection reset by peer", __("Server reached but is not LND restlisten port", "lnd-woocommerce"), 1],
+      ];
+
+      foreach ($errors as $value) {
+        if (strpos($verboseLog, $value[0]) !== false) {
+          throw new \Exception($value[1], $value[2]);
+        }
+      }
+
+      $messages = [
+        ["signature mismatch after caveat verification", __("Signature mismatch tls.cert not accepted on server", "lnd-woocommerce")],
+        ["permission denied", __("Permission denied from LND server, please check your macaroon file", "lnd-woocommerce")],
+      ];
+
+      foreach ($messages as $value) {
+        if (strpos($output->message, $value[0]) !== false) {
+          throw new \Exception($value[1], 1);
+        }
+      }
+
+      throw new \Exception('Unknown error', 1);
     }
 }

@@ -25,7 +25,7 @@ class LND_Settings_Page_Generator {
     /**
      * Singleton control
      */
-    public static function get_instance() {
+    public static function instance() {
         if (!static::$instance) {
             static::$instance = new static();
         }
@@ -164,7 +164,7 @@ class LND_Settings_Page_Generator {
      * @return mixed
      */
     public static function get($key, $default = null) {
-        $instance = static::get_instance();
+        $instance = static::instance();
 
         // Get settings value
         $value = isset($instance->settings[$key]) ? $instance->settings[$key] : $default;
@@ -218,7 +218,7 @@ class LND_Settings_Page_Generator {
             return false;
         }
 
-        $instance = static::get_instance();
+        $instance = static::instance();
 
         // Setting must be defined in static::$structure
         if (!isset($instance->settings[$key])) {
@@ -1058,7 +1058,7 @@ class LND_Settings_Page_Generator {
         echo $field_html;
 
         // Print hint
-        static::get_instance()->print_hint($params);
+        static::instance()->print_hint($params);
     }
 
     /**

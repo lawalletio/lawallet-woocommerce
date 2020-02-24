@@ -87,7 +87,7 @@ if (!function_exists('init_wc_lightning')) {
         add_action('wp_ajax_ln_upload_file', array($this, 'upload_file'));
 
         if (is_admin()) {
-          $this->admin = LND_Woocommerce_Admin::get_instance();
+          $this->admin = LND_Woocommerce_Admin::instance();
         }
 
         if (is_admin() && $this->is_manage_section()) {

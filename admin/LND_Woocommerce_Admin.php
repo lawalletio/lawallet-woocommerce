@@ -9,7 +9,7 @@ class LND_Woocommerce_Admin {
   /**
    * Singleton control
    */
-  public static function get_instance() {
+  public static function instance() {
       if (!self::$instance) {
           self::$instance = new self();
       }
@@ -35,6 +35,7 @@ class LND_Woocommerce_Admin {
   public function settings_init() {
 
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
+    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
     add_action('admin_enqueue_scripts', array($this, 'enqueue_backend_assets'), 20);
 
   }
@@ -73,7 +74,16 @@ class LND_Woocommerce_Admin {
         'manage_options',
         WC_LND_NAME .'_lnd_config',
         [$this, 'lnd_config_page']
-    );
+      );
+
+      add_submenu_page(
+        WC_LND_NAME,
+        __( 'Loop Server', WC_LND_NAME ),
+        __( 'Loop Server', WC_LND_NAME ),
+        'manage_options',
+        WC_LND_NAME .'_loop_config',
+        [$this, 'loop_config_page']
+      );
   }
 
   function dashboard_page() {
@@ -81,7 +91,12 @@ class LND_Woocommerce_Admin {
   }
 
   public function lnd_config_page() {
-    $page = LND_WC_Settings_LND::get_instance();
+    $page = LND_WC_Settings_LND::instance();
+    $page->print_settings_page();
+  }
+
+  public function loop_config_page() {
+    $page = LND_WC_Settings_Loop::instance();
     $page->print_settings_page();
   }
 }
