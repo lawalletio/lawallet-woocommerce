@@ -7,11 +7,17 @@ if (!defined('ABSPATH')) {
 
 require_once(WC_LND_PLUGIN_PATH . '/admin/includes/LND_Settings_Page_Generator.php');
 
+require_once(WC_LND_PLUGIN_PATH . '/includes/ChannelManager.php');
+
 if (!class_exists('LND_WC_Settings_LND')) {
 
 class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
     public static $prefix = WC_LND_NAME . '_lnd_config';
+    protected static $structure = null;
     protected static $instance = null;
+
+    protected $lndCon = false;
+    private $notice = null;
 
     public function __construct() {
         $this->title = __('LND Settings', 'lnd-woocommerce');
@@ -20,6 +26,9 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
         parent::__construct();
 
         $this->lndCon = LndWrapper::instance();
+        $this->channelManager = ChannelManager::instance();
+        $this->channelManager->setLND($this->lndCon);
+
 
         if (!empty($_FILES[static::$prefix]['name']['tls'])) {
           $this->upload_tls();
@@ -27,6 +36,10 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
 
         if (!empty($_FILES[static::$prefix]['name']['macaroon'])) {
           $this->upload_macaroon();
+        }
+
+        if (isset($_GET['tab']) && $_GET['tab']==='withdraw' && isset($_POST['submit'])) {
+          $this->handle_withdraw();
         }
     }
 
@@ -39,7 +52,7 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
      */
     public static function set_structure() {
         // Define main settings
-        self::$structure = array(
+        static::$structure = array(
             'settings' => array(
                 'title' => __('Config', 'lnd-woocommerce'),
                 'children' => array(
@@ -81,7 +94,7 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
                               'title'     => __('Macaroon File', 'lnd-woocommerce'),
                               'type'      => 'file',
                               'required'  => false,
-                              'hint'      => __( 'Macaroon file, must have invoice permissions at least', WC_LND_NAME ),
+                              'hint'      => __( 'Macaroon file, must have invoice permissions at least', 'lnd-woocommerce' ),
                           ),
                         ),
                     ),
@@ -90,34 +103,22 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
             'info' => array(
                 'title' => __('Server Info', 'lnd-woocommerce'),
                 'template' => 'info',
-                'children' => [
-                  'general_settings' => [
-                      'title' => __('General', 'lnd-woocommerce'),
-                      'children' => [
-                          'empty' => array(
-                              'title'     => __('Test', 'lnd-woocommerce'),
-                              'type'      => 'template',
-                              'view'      => 'footer',
-                          ),
-                      ],
-                  ],
-                ],
+                'children' => [],
+            ),
+            'channels' => array(
+                'title' => __('Channels', 'lnd-woocommerce'),
+                'template' => 'channels',
+                'children' => [],
+            ),
+            'withdraw' => array(
+                'title' => __('Withdraw', 'lnd-woocommerce'),
+                'template' => 'withdraw',
+                'children' => [],
             ),
             'debug' => array(
                 'title' => __('Debug', 'lnd-woocommerce'),
                 'template' => 'debug',
-                'children' => [
-                  'general_settings' => [
-                      'title' => __('General', 'lnd-woocommerce'),
-                      'children' => [
-                          'empty' => array(
-                              'title'     => __('Test', 'lnd-woocommerce'),
-                              'type'      => 'template',
-                              'view'      => 'footer',
-                          ),
-                      ],
-                  ],
-                ],
+                'children' => [],
             ),
         );
         return self::$structure;
@@ -159,6 +160,85 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
       }
 
       include WC_LND_ADMIN_PATH . '/views/lnd/info.php';
+    }
+
+    
+    public function print_template_channels() {
+      $ticker = TickerManager::instance()->getTicker();
+      try {
+        $balance = $this->channelManager->getBalance();
+        $channels = $this->channelManager->getChannels();
+      } catch (\Exception $e) {
+        $message = $e->getMessage();
+        // Print settings error content
+        include WC_LND_ADMIN_PATH . '/views/error.php';
+        return;
+      }
+
+      include WC_LND_ADMIN_PATH . '/views/lnd/channels.php';
+    }
+
+    /**
+     * Prints withdraw template
+     */
+    public function print_template_withdraw() {
+      try {
+        $ticker = TickerManager::instance()->getTicker();
+        $balance = $this->channelManager->getBalance();
+      } catch (\Exception $e) {
+        $message = $e->getMessage();
+        // Print settings error content
+        include WC_LND_ADMIN_PATH . '/views/error.php';
+        return;
+      }
+
+      include WC_LND_ADMIN_PATH . '/views/lnd/withdraw.php';
+    }
+
+    /**
+     * Print wp notice for succesful withdrawal
+     */
+    public function notice_withdraw_success() {
+      $amount = $this->notice->payment_route->total_amt;
+      $fees = $this->notice->payment_route->total_fees;
+      ?>
+      <div class="notice notice-success">
+        <h3><?=__('Invoice succesfully paid!', 'lnd-woocommerce')?></h3>
+        <p><?=sprintf(__( 'The amount of %s sats has successfully been transferred.', 'lnd-woocommerce' ), '<b>' . $amount . '</b>'); ?></p>
+        <p><?=sprintf(__( 'Total %s sats paid in fees.', 'lnd-woocommerce' ), '<b>' . $fees . '</b>'); ?></p>
+      </div>
+      <?
+    }
+
+    /**
+     * Print wp notice for withdrawal error
+     */
+    public function notice_withdraw_error() {
+      ?>
+      <div class="notice notice-error">
+        <h3><?=__('Error trying to pay invoice', 'lnd-woocommerce')?></h3>
+        <p><?=$this->notice->getMessage(); ?></p>
+      </div>
+      <?
+    }
+
+    /**
+     * Handle $_POST withdraw
+     */
+    public function handle_withdraw() {
+      $pay_req = $_POST['pay_req'];
+      try {
+        $this->notice = $this->lndCon->payInvoice($pay_req);
+        add_action( 'admin_notices', [$this, 'notice_withdraw_success'] );
+      } catch (\Exception $e) {
+        $this->notice = $e;
+        add_action( 'admin_notices', [$this, 'notice_withdraw_error'] );
+      }
+
+    }
+
+    private function convert_sats($sats, $ticker) {
+      return $ticker->currency . ' ' . rtrim(rtrim(number_format($sats/100000000 * $ticker->rate, 2), '0'), '.');
     }
 
 }

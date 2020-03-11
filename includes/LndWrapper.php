@@ -93,6 +93,7 @@ class LndWrapper {
         $this->endpoint = $endpoint;
         $this->macaroonHex = bin2hex(file_get_contents($macaroonPath));
         $this->tlsPath = $tlsPath;
+
         $this->headers = ['Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json'];
     }
 
@@ -144,6 +145,19 @@ class LndWrapper {
         $createInvoiceResponse = $this->curlWrap('/v1/invoices', 'POST', json_encode( $invoice ));
 
         return $createInvoiceResponse;
+    }
+
+    public function payInvoice($pay_req) {
+        $invoice = (object) ["payment_request" => $pay_req];
+        $response = $this->curlWrap('/v1/channels/transactions', 'POST', json_encode( $invoice ));
+
+        if ($response->payment_error !== "") {
+          if ($response->payment_error === 'invoice is already paid') {
+            $response->payment_error = __('Invoice is already paid', 'lnd-woocommerce');
+          }
+          throw new \Exception($response->payment_error, 1);
+        }
+        return $response;
     }
 
     /**
@@ -209,6 +223,7 @@ class LndWrapper {
       $messages = [
         ["signature mismatch after caveat verification", __("Signature mismatch tls.cert not accepted on server", "lnd-woocommerce")],
         ["permission denied", __("Permission denied from LND server, please check your macaroon file", "lnd-woocommerce")],
+        ["invoice expired", __("Invoice expired", "lnd-woocommerce")],
       ];
 
       foreach ($messages as $value) {

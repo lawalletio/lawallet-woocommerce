@@ -36,12 +36,17 @@ class LND_Woocommerce_Admin {
 
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
-    add_action('admin_enqueue_scripts', array($this, 'enqueue_backend_assets'), 20);
+    add_action('admin_enqueue_scripts', [$this, 'enqueue_backend_assets'], 20);
 
   }
 
   public function enqueue_backend_assets() {
+    // Styles
     wp_enqueue_style('admin-css', WC_LND_PLUGIN_URL . '/assets/css/admin.css', array(), WC_LND_VERSION);
+
+    // Scripts
+    wp_enqueue_script('admin-script', WC_LND_PLUGIN_URL . '/assets/js/admin.js',[], WC_LND_VERSION);
+    wp_enqueue_script('bolt11-script', WC_LND_PLUGIN_URL . '/assets/js/bolt11.js',[], WC_LND_VERSION);
   }
 
   /**
@@ -69,8 +74,8 @@ class LND_Woocommerce_Admin {
 
       add_submenu_page(
         WC_LND_NAME,
-        __( 'LND Server', WC_LND_NAME ),
-        __( 'LND Server', WC_LND_NAME ),
+        __( 'LND Server', 'lnd-woocommerce' ),
+        __( 'LND Server', 'lnd-woocommerce' ),
         'manage_options',
         WC_LND_NAME .'_lnd_config',
         [$this, 'lnd_config_page']
@@ -78,8 +83,8 @@ class LND_Woocommerce_Admin {
 
       add_submenu_page(
         WC_LND_NAME,
-        __( 'Loop Server', WC_LND_NAME ),
-        __( 'Loop Server', WC_LND_NAME ),
+        __( 'Loop Server', 'lnd-woocommerce' ),
+        __( 'Loop Server', 'lnd-woocommerce' ),
         'manage_options',
         WC_LND_NAME .'_loop_config',
         [$this, 'loop_config_page']

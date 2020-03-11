@@ -78,6 +78,7 @@ class LoopWrapper {
             $output = json_decode(curl_exec($ch));
             curl_close($ch);
 
+
             $this->checkErrors($verbose);
             return $output;
     }
@@ -96,10 +97,15 @@ class LoopWrapper {
      * @param  array $invoice Invoice data for LND endpoint
      * @return object          Invoice data from LND
      */
-    public function testPost($invoice) {
-        $createInvoiceResponse = $this->curlWrap('/v1/invoices', json_encode( $invoice ), 'POST');
+    public function loopOut($data) {
+        $response = $this->curlWrap('/v1/loop/out', 'POST', json_encode( $data ));
+        return $response;
+    }
 
-        return $createInvoiceResponse;
+    public function getOutTerms() {
+        $response = $this->curlWrap('/v1/loop/out/terms');
+
+        return $response;
     }
 
     private function checkErrors($verbose) {
@@ -124,6 +130,7 @@ class LoopWrapper {
         }
       }
 
-      throw new \Exception('Unknown error', 1);
+      print_r($verbose);
+      //throw new \Exception('Unknown error', 1);
     }
 }

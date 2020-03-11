@@ -124,8 +124,8 @@ if (!function_exists('init_wc_lightning')) {
 
         $this->form_fields = array(
           'enabled' => array(
-            'title'       => __( 'Enable/Disable', WC_LND_NAME ),
-            'label'       => __( 'Enable Lightning payments', WC_LND_NAME ),
+            'title'       => __( 'Enable/Disable', 'lnd-woocommerce' ),
+            'label'       => __( 'Enable Lightning payments', 'lnd-woocommerce' ),
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no',

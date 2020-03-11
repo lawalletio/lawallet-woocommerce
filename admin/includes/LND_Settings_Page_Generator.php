@@ -299,8 +299,7 @@ class LND_Settings_Page_Generator {
         // Check if we know tab identifier
         if (isset($_GET['tab']) && isset($structure[$_GET['tab']])) {
             return $_GET['tab'];
-        }
-        else {
+        } else {
             $array_keys = array_keys($structure);
             return array_shift($array_keys);
         }
