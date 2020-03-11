@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-23 01:55+0000\n"
+"POT-Creation-Date: 2020-03-11 05:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -29,6 +29,14 @@ msgstr ""
 
 #: lnd-woocommerce.php:114
 msgid "Settings"
+msgstr ""
+
+#: lnd-woocommerce.php:127
+msgid "Enable/Disable"
+msgstr ""
+
+#: lnd-woocommerce.php:128
+msgid "Enable Lightning payments"
 msgstr ""
 
 #: lnd-woocommerce.php:136
@@ -99,8 +107,116 @@ msgstr ""
 msgid "Already uploaded"
 msgstr ""
 
-#: admin/LND_Woocommerce_Admin.php:52 admin/LND_Woocommerce_Admin.php:53
+#: includes/LndWrapper.php:156
+msgid "Invoice is already paid"
+msgstr ""
+
+#: includes/LndWrapper.php:209 includes/LoopWrapper.php:120
+msgid "Server is unreacheable, must be down or wrong port is given"
+msgstr ""
+
+#: includes/LndWrapper.php:210
+msgid "Server reached but is not a LND server or you've set an invalid port"
+msgstr ""
+
+#: includes/LndWrapper.php:211 includes/LoopWrapper.php:122
+msgid ""
+"Server reached but is not a Loop server or invalid port (must be restlisten)"
+msgstr ""
+
+#: includes/LndWrapper.php:212
+msgid ""
+"Got a 404 response from server, please check if lnd wallet is created and "
+"already unlocked"
+msgstr ""
+
+#: includes/LndWrapper.php:213
+msgid "Server reached but is not LND restlisten port. Looks like rpcport"
+msgstr ""
+
+#: includes/LndWrapper.php:214
+msgid "Server reached but is not LND restlisten port"
+msgstr ""
+
+#: includes/LndWrapper.php:224
+msgid "Signature mismatch tls.cert not accepted on server"
+msgstr ""
+
+#: includes/LndWrapper.php:225
+msgid "Permission denied from LND server, please check your macaroon file"
+msgstr ""
+
+#: includes/LndWrapper.php:226
+msgid "Invoice expired"
+msgstr ""
+
+#: includes/LoopWrapper.php:121
+msgid "Server reached but is not a loop server or you've set an invalid port"
+msgstr ""
+
+#: includes/LoopWrapper.php:123
+msgid "Server reached but is not Loop restlisten port. Looks like rpcport"
+msgstr ""
+
+#: includes/LoopWrapper.php:124
+msgid ""
+"Server reached but is not Loop restlisten port. Looks like LND listen or "
+"restport"
+msgstr ""
+
+#: includes/TickerManager.php:44
+#, php-format
+msgid "Exchange name \"%s\" not found."
+msgstr ""
+
+#: includes/TickerManager.php:52
+msgid "Can't load Exchange."
+msgstr ""
+
+#: includes/TickerManager.php:64
+msgid "LND Woocommerce disabled"
+msgstr ""
+
+#: includes/TickerManager.php:67
+#, php-format
+msgid "The current Exchange \"%s\" doesn't have ticker for %s currency."
+msgstr ""
+
+#: includes/TickerManager.php:71
+msgid ""
+"You should select another exchange or change the FIAT currency from "
+"Woocommerce."
+msgstr ""
+
+#: includes/ChannelManager.php:68
+msgid "Amount greater than max_swap_amount terms from Loop"
+msgstr ""
+
+#: includes/ChannelManager.php:72
+msgid "Amount lesser than min_swap_amount terms from Loop"
+msgstr ""
+
+#: includes/ChannelManager.php:88
+msgid ""
+"LND server must be set to be able to execute this ChannelManager function"
+msgstr ""
+
+#: includes/ChannelManager.php:94
+msgid ""
+"Loop server must be set to be able to execute this ChannelManager function"
+msgstr ""
+
+#: admin/LND_Woocommerce_Admin.php:58 admin/LND_Woocommerce_Admin.php:59
+#: admin/sections/LND_WC_Settings_Loop.php:52
 msgid "Dashboard"
+msgstr ""
+
+#: admin/LND_Woocommerce_Admin.php:77 admin/LND_Woocommerce_Admin.php:78
+msgid "LND Server"
+msgstr ""
+
+#: admin/LND_Woocommerce_Admin.php:86 admin/LND_Woocommerce_Admin.php:87
+msgid "Loop Server"
 msgstr ""
 
 #: templates/payment.php:9 templates/payment.php:31
@@ -147,108 +263,301 @@ msgstr ""
 msgid "Invoice amount"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:26
-msgid "LND Settings"
+#: admin/sections/LND_WC_Settings_Loop.php:21
+msgid "Loop Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:55
+#: admin/sections/LND_WC_Settings_Loop.php:57
+#: admin/sections/LND_WC_Settings_LND.php:57
 msgid "Config"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:58
+#: admin/sections/LND_WC_Settings_Loop.php:60
+#: admin/sections/LND_WC_Settings_LND.php:60
 msgid "Server Config"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:61
+#: admin/sections/LND_WC_Settings_Loop.php:63
+#: admin/sections/LND_WC_Settings_LND.php:63
 msgid "Host"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:63
+#: admin/sections/LND_WC_Settings_Loop.php:65
+#: admin/sections/LND_WC_Settings_LND.php:65
 msgid "localhost"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:65
-msgid "LND host address, you can use <b>localhost</b>."
+#: admin/sections/LND_WC_Settings_Loop.php:67
+msgid "Loop host address, you can use <b>localhost</b>."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:68
+#: admin/sections/LND_WC_Settings_Loop.php:70
+#: admin/sections/LND_WC_Settings_LND.php:70
 msgid "Port"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:72
+#: admin/sections/LND_WC_Settings_Loop.php:74
+msgid ""
+"Loop port, must be the same as <b>restlisten</b>. Please type just the port "
+"number."
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Loop.php:81
+#: admin/sections/LND_WC_Settings_LND.php:104
+msgid "Server Info"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:23
+msgid "LND Settings"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:67
+msgid "LND host address, you can use <b>localhost</b>."
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:74
 msgid ""
 "LND port, must be the same as <b>restlisten</b> value from lnd.conf. Please "
 "type just the port number."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:75
+#: admin/sections/LND_WC_Settings_LND.php:77
 msgid "SSL Enabled"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:78
+#: admin/sections/LND_WC_Settings_LND.php:80
 msgid "You need to upload tls.cert below."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:83
+#: admin/sections/LND_WC_Settings_LND.php:85
 msgid "Credentials"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:86
+#: admin/sections/LND_WC_Settings_LND.php:88
 msgid "TLS File"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:89
+#: admin/sections/LND_WC_Settings_LND.php:91
 msgid "tls.cert file generated by LND."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:92
+#: admin/sections/LND_WC_Settings_LND.php:94
 msgid "Macaroon File"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:102
-msgid "Server Info"
-msgstr ""
-
-#: admin/sections/LND_WC_Settings_LND.php:106
-#: admin/sections/LND_WC_Settings_LND.php:122
-msgid "General"
+#: admin/sections/LND_WC_Settings_LND.php:97
+msgid "Macaroon file, must have invoice permissions at least"
 msgstr ""
 
 #: admin/sections/LND_WC_Settings_LND.php:109
-#: admin/sections/LND_WC_Settings_LND.php:125
-msgid "Test"
+msgid "Channels"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:118
+#: admin/sections/LND_WC_Settings_LND.php:114 admin/views/lnd/withdraw.php:86
+msgid "Withdraw"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:119
 msgid "Debug"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:206
+msgid "Invoice succesfully paid!"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:207
+#, php-format
+msgid "The amount of %s sats has successfully been transferred."
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:208
+#, php-format
+msgid "Total %s sats paid in fees."
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LND.php:219
+msgid "Error trying to pay invoice"
 msgstr ""
 
 #: admin/includes/LND_Settings_Page_Generator.php:243
 msgid "You need to be admin to access these settings"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:396
+#: admin/includes/LND_Settings_Page_Generator.php:395
 msgid "Invalid file format"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:402
+#: admin/includes/LND_Settings_Page_Generator.php:401
 msgid "Couldn't upload the file"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:843
+#: admin/includes/LND_Settings_Page_Generator.php:842
 msgid "Unable to validate settings."
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:931
+#: admin/includes/LND_Settings_Page_Generator.php:930
 msgid "Settings updated."
 msgstr ""
 
-#: admin/views/lnd/info.php:17
+#: admin/views/error.php:16
+msgid "Error connecting to Loop Server"
+msgstr ""
+
+#: admin/views/lnd/info.php:17 admin/views/loop/info.php:16
 msgid "Info Page"
+msgstr ""
+
+#: admin/views/lnd/channels.php:17 admin/views/loop/dashboard.php:16
+msgid "Summary"
+msgstr ""
+
+#: admin/views/lnd/channels.php:22 admin/views/loop/dashboard.php:20
+msgid "Inbound capacity"
+msgstr ""
+
+#: admin/views/lnd/channels.php:25 admin/views/loop/dashboard.php:23
+msgid "Total satoshis you are able to receive via Lightning"
+msgstr ""
+
+#: admin/views/lnd/channels.php:29 admin/views/loop/dashboard.php:27
+msgid "Outbound capacity"
+msgstr ""
+
+#: admin/views/lnd/channels.php:32 admin/views/lnd/withdraw.php:94
+#: admin/views/loop/dashboard.php:30
+msgid "Total satoshis you are able to send via Lightning"
+msgstr ""
+
+#: admin/views/lnd/channels.php:38
+msgid "Open Channels"
+msgstr ""
+
+#: admin/views/lnd/channels.php:43
+msgid "Channel ID"
+msgstr ""
+
+#: admin/views/lnd/channels.php:44
+msgid "Capacity"
+msgstr ""
+
+#: admin/views/lnd/channels.php:45
+msgid "Inbound"
+msgstr ""
+
+#: admin/views/lnd/channels.php:46
+msgid "Outbound"
+msgstr ""
+
+#: admin/views/lnd/channels.php:47
+msgid "Sent"
+msgstr ""
+
+#: admin/views/lnd/channels.php:48
+msgid "Received"
 msgstr ""
 
 #: admin/views/lnd/debug.php:17
 msgid "Debug Page"
+msgstr ""
+
+#: admin/views/lnd/debug.php:21
+msgid "Under construction..."
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:91
+msgid "Available Balance"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:100
+msgid "Payment Request"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:103
+msgid "pay_req for the invoice to be paid"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:109
+msgid "Amount"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:112
+msgid "Amount of satoshis to be payed"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:116
+msgid "Expires"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:119
+msgid "Invoice's expiration date"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:124
+msgid "Node Key"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:127
+msgid "Receiver Node key"
+msgstr ""
+
+#: admin/views/lnd/withdraw.php:138
+msgid "Transfer funds"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:34
+msgid "Capacity available"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:37
+msgid "Total inbound capacity related to total channel balance"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:41
+msgid "Total Channels"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:44
+msgid "Currently open channels"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:48
+msgid "Swap min amount"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:51
+msgid "Minimum amount of satoshis for swaping "
+msgstr ""
+
+#: admin/views/loop/dashboard.php:55
+msgid "Swap max amount"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:58
+msgid "Maximum amount of satoshis for swaping "
+msgstr ""
+
+#: admin/views/loop/dashboard.php:64
+msgid "Swap Capacity (Loop Out)"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:70
+msgid "Total satoshis"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:73
+msgid "Total satoshis to loop out and get on-chain transaction"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:77
+msgid "Bitcoin Address"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:80
+msgid "Bitcoin address to get the transaction"
+msgstr ""
+
+#: admin/views/loop/dashboard.php:85
+msgid "Execute Swap"
 msgstr ""
 
 #. Name of the plugin
