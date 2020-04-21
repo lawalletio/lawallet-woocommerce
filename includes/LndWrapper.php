@@ -114,18 +114,6 @@ class LndWrapper {
     }
 
     /**
-     * Generates QR code image with Google's API
-     * @param  string $paymentRequest Invoice payment request
-     * @return string                 Remote Image's URL
-     */
-    public function generateQr($paymentRequest) {
-        $size = "300x300";
-        $margin = "0";
-        $encoding = "UTF-8";
-        return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
-    }
-
-    /**
      * Get Info
      * @param  array $invoice Invoice data for LND endpoint
      * @return object          Invoice data from LND
@@ -142,9 +130,10 @@ class LndWrapper {
      * @return object          Invoice data from LND
      */
     public function createInvoice($invoice) {
-        $createInvoiceResponse = $this->curlWrap('/v1/invoices', 'POST', json_encode( $invoice ));
-
-        return $createInvoiceResponse;
+        $response = $this->curlWrap('/v1/invoices', 'POST', json_encode( $invoice ));
+        $response->payment_hash = bin2hex(base64_decode($response->r_hash));
+        $response->expiry = time() + $invoice['expiry'];
+        return $response;
     }
 
     public function payInvoice($pay_req) {
@@ -158,6 +147,15 @@ class LndWrapper {
           throw new \Exception($response->payment_error, 1);
         }
         return $response;
+    }
+
+    public function checkPayment($paymentHash) {
+      $invoice = $this->getInvoiceInfoFromHash($paymentHash);
+      if(!$invoice) {
+        throw new \Exception(__('Invoice not found', 'lnd-woocommerce'), 404);
+      }
+
+      return property_exists($invoice, 'settled') && $invoice->settled;
     }
 
     /**
@@ -224,6 +222,7 @@ class LndWrapper {
         ["signature mismatch after caveat verification", __("Signature mismatch tls.cert not accepted on server", "lnd-woocommerce")],
         ["permission denied", __("Permission denied from LND server, please check your macaroon file", "lnd-woocommerce")],
         ["invoice expired", __("Invoice expired", "lnd-woocommerce")],
+        ["payment hash must be exactly", __("Invalid Payment Hash format", "lnd-woocommerce")],
       ];
 
       foreach ($messages as $value) {

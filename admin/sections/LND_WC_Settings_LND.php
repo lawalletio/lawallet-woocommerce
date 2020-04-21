@@ -26,9 +26,9 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
         parent::__construct();
 
         $this->lndCon = LndWrapper::instance();
+        $this->lndCon->setCredentials (LND_WC_Helpers::generateEndpoint($this->settings), WC_LND_MACAROON_FILE, WC_LND_TLS_FILE);
         $this->channelManager = ChannelManager::instance();
         $this->channelManager->setLND($this->lndCon);
-
 
         if (!empty($_FILES[static::$prefix]['name']['tls'])) {
           $this->upload_tls();
@@ -115,11 +115,6 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
                 'template' => 'withdraw',
                 'children' => [],
             ),
-            'debug' => array(
-                'title' => __('Debug', 'lnd-woocommerce'),
-                'template' => 'debug',
-                'children' => [],
-            ),
         );
         return self::$structure;
     }
@@ -162,7 +157,7 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
       include WC_LND_ADMIN_PATH . '/views/lnd/info.php';
     }
 
-    
+
     public function print_template_channels() {
       $ticker = TickerManager::instance()->getTicker();
       try {

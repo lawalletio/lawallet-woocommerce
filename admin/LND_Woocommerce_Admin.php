@@ -36,6 +36,8 @@ class LND_Woocommerce_Admin {
 
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
+    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LNDHUB.php');
+    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Main.php');
     add_action('admin_enqueue_scripts', [$this, 'enqueue_backend_assets'], 20);
 
   }
@@ -55,11 +57,11 @@ class LND_Woocommerce_Admin {
   public function add_menus() {
       add_submenu_page(
         WC_LND_NAME,
-        __('Dashboard', 'lnd-woocommerce'),
-        __('Dashboard', 'lnd-woocommerce'),
+        __('Settings', 'lnd-woocommerce'),
+        __('Settings', 'lnd-woocommerce'),
         'manage_woocommerce',
         WC_LND_NAME,
-        [$this, 'dashboard_page']
+        [$this, 'lnd_config_main']
       );
 
       // add top level menu page
@@ -68,7 +70,7 @@ class LND_Woocommerce_Admin {
           'Lightning WC',
           'manage_options',
           WC_LND_NAME,
-          [$this, 'dashboard_page'],
+          [$this, 'lnd_config_main'],
           'dashicons-admin-generic'
       );
 
@@ -89,10 +91,20 @@ class LND_Woocommerce_Admin {
         WC_LND_NAME .'_loop_config',
         [$this, 'loop_config_page']
       );
+
+      add_submenu_page(
+        WC_LND_NAME,
+        __( 'LndHub', 'lnd-woocommerce' ),
+        __( 'LndHub', 'lnd-woocommerce' ),
+        'manage_options',
+        WC_LND_NAME .'_lndhub_config',
+        [$this, 'lndhub_config_page']
+      );
   }
 
-  function dashboard_page() {
-      echo '<div>No Dashboard</div>';
+  public function lnd_config_main() {
+    $page = LND_WC_Settings_Main::instance();
+    $page->print_settings_page();
   }
 
   public function lnd_config_page() {
@@ -102,6 +114,11 @@ class LND_Woocommerce_Admin {
 
   public function loop_config_page() {
     $page = LND_WC_Settings_Loop::instance();
+    $page->print_settings_page();
+  }
+
+  public function lndhub_config_page() {
+    $page = LND_WC_Settings_LNDHUB::instance();
     $page->print_settings_page();
   }
 }

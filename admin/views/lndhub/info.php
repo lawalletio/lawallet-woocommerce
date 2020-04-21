@@ -13,12 +13,17 @@ if (!defined('ABSPATH')) {
 <div class="wc_lnd_settings">
     <div class="wc_lnd_settings_container">
 
-        <h2><?=__('Error connecting to the Server', 'lnd-woocommerce')?></h2>
+        <h2><?=__('Info Page', 'lnd-woocommerce')?></h2>
         <table class="form-table" role="presentation">
           <tbody>
+            <? foreach ($info as $key => $value): ?>
             <tr>
-              <td scope="row" rowspan="0"><?=$message?></td>
+              <th scope="row"><?=$key?></th>
+              <td>
+                <textarea><?=json_encode($value)?></textarea>
+              </td>
             </tr>
+          <? endforeach; ?>
           </tbody>
         </table>
 

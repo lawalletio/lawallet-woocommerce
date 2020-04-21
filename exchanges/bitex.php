@@ -14,5 +14,9 @@ class Bitex extends Exchange {
     $content = json_decode($this->request($this->endpoint . "/tickers/" . strtolower("btc_" . $currency)));
     return $content->data->attributes->bid;
   }
+
+  public function setCredentials($data) {
+    throw new \Exception(__(printf("setCredentials for %s not implemented", $this->name), "lnd-woocommerce"), 1);
+  }
 }
 ?>

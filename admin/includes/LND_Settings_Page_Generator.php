@@ -206,32 +206,6 @@ class LND_Settings_Page_Generator {
         return true;
     }
 
-    /*
-     * Update value of a single setting
-     *
-     * @access public
-     * @return bool
-     */
-    public static function update($key, $value) {
-        // User not allowed to update settings
-        if (!is_admin()) {
-            return false;
-        }
-
-        $instance = static::instance();
-
-        // Setting must be defined in static::$structure
-        if (!isset($instance->settings[$key])) {
-            return;
-        }
-
-        // Assign new value
-        $instance->settings[$key] = $value;
-
-        // Store settings
-        return update_option(static::$prefix, $instance->settings);
-    }
-
     /**
      * Print settings page
      *
@@ -502,7 +476,6 @@ class LND_Settings_Page_Generator {
       $title = $args['field']['title'];
       // Print settings page content
       include WC_LND_ADMIN_PATH . '/views/' . $args['field']['view'] . '.php';
-      die();
     }
 
     /**

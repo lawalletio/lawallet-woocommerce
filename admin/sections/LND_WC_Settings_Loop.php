@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 require_once(WC_LND_PLUGIN_PATH . '/admin/includes/LND_Settings_Page_Generator.php');
 require_once(WC_LND_PLUGIN_PATH . '/includes/LoopWrapper.php');
 
-if (!class_exists('Loop_WC_Settings_Loop')) {
+if (!class_exists('LND_WC_Settings_Loop')) {
 
 class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
     public static $prefix = WC_LND_NAME . '_loop_config';
@@ -130,5 +130,5 @@ class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
     }
 
 }
-LND_WC_Settings_Loop::instance();
+//LND_WC_Settings_Loop::instance();
 }

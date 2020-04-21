@@ -32,7 +32,11 @@ register_activation_hook( __FILE__, function(){
   }
 });
 
+// Providers
 require_once(WC_LND_PLUGIN_PATH . 'includes/LndWrapper.php');
+require_once(WC_LND_PLUGIN_PATH . 'includes/LndHub.php');
+require_once(WC_LND_PLUGIN_PATH . 'includes/LND_WC_Helpers.php');
+
 require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
 require_once(WC_LND_PLUGIN_PATH . 'admin/LND_Woocommerce_Admin.php');
 
@@ -58,19 +62,15 @@ if (!function_exists('init_wc_lightning')) {
         // Define user set variables.
         $this->title       = $this->get_option('title');
         $this->description = $this->get_option('description');
-        $this->endpoint = $this->get_lnd_host();
-        $this->lndCon = LndWrapper::instance();
+        $this->endpoint = LND_WC_Helpers::generateEndpoint($this->get_lnd_config());
+
+        $this->settings = get_option(WC_LND_NAME, ['enabled'=> true, 'provider' => 'lnd']);
 
         $this->tickerManager = TickerManager::instance();
 
-        if (file_exists(WC_LND_TLS_FILE) && file_exists(WC_LND_MACAROON_FILE)) {
-          $this->lndCon->setCredentials ( $this->endpoint, WC_LND_MACAROON_FILE, WC_LND_TLS_FILE);
-        } else {
-          $this->enabled = 'no';
-        }
-
         try {
-          $this->tickerManager->setExchange($this->get_option( 'ticker' ));
+          $this->setup_provider();
+          $this->tickerManager->setExchange($this->get_option('ticker'));
         } catch (\Exception $e) {
           $this->enabled = 'no';
         }
@@ -141,7 +141,7 @@ if (!function_exists('init_wc_lightning')) {
             'title'       => __('Ticker', 'lnd-woocommerce'),
             'type'        => 'select',
             'description' => __('Select Exchange for rate calculation.', 'lnd-woocommerce'),
-            'default'     => 'BTC',
+            'default'     => 'satoshi_tango',
             'options'     => array_map(function($exchange) {
               return $exchange->name;
             }, $this->tickerManager->getValid()),
@@ -182,7 +182,9 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
         $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
 
-        $invoice = $this->lndCon->createInvoice ( $invoiceInfo );
+        $invoice = $this->provider->createInvoice($invoiceInfo);
+        print_r($invoice);
+
         $invoice->value = $invoiceInfo['value'];
         return $invoice;
       }
@@ -198,9 +200,11 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
-        update_post_meta( $order->get_id(), 'LN_HASH', $invoice->r_hash);
+        update_post_meta( $order->get_id(), 'LN_HASH', $invoice->payment_hash);
+        update_post_meta( $order->get_id(), 'LN_EXPIRY', $invoice->expiry);
+        update_post_meta( $order->get_id(), 'LN_INVOICE_JSON', json_encode($invoice));
 
-        $order->add_order_note('LN_HASH: ' . $invoice->r_hash);
+        $order->add_order_note('LN_HASH: ' . $invoice->payment_hash);
 
         $btcPrice = $this->format_msat($invoice->value);
         $order->add_order_note(__('Awaiting payment of', 'lnd-woocommerce') . ' ' .  $invoice->value . ' sats (' . $btcPrice . ')' . " @ 1 BTC ~ " . number_format($ticker->rate, 2) . " " . $ticker->currency . " (+" . $ticker->markup . "% " . __("applied", "lnd-woocommerce") . "). <br> Invoice ID: " . $invoice->payment_request);
@@ -212,6 +216,7 @@ if (!function_exists('init_wc_lightning')) {
        * @return array
        */
       public function process_payment( $order_id ) {
+
         $order = wc_get_order($order_id);
         try {
           $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
@@ -219,6 +224,7 @@ if (!function_exists('init_wc_lightning')) {
           wc_add_notice( __('Error: ') . __('Couldn\'t get quote from ticker.', 'lnd-woocommerce'), 'error' );
           return;
         }
+
 
         $order->add_order_note(json_encode($ticker)); // Remove
         $invoice = $this->create_invoice($order, $ticker);
@@ -256,17 +262,7 @@ if (!function_exists('init_wc_lightning')) {
         /**
          * Check if invoice is paid
          */
-        $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
-
-        $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode( $payHash ) ) );
-        if(!property_exists( $callResponse, 'r_hash' )) {
-          status_header(410);
-          wp_send_json(false);
-          return;
-        }
-
-        $invoiceTime = $callResponse->creation_date + $callResponse->expiry;
-
+        $invoiceTime = intval(get_post_meta( $_POST['invoice_id'], 'LN_EXPIRY', true ));
         if($invoiceTime < time()) {
           //Invoice expired
           try {
@@ -274,6 +270,7 @@ if (!function_exists('init_wc_lightning')) {
           } catch (\Exception $e) { // Can't get ticker
             status_header(500);
             wp_send_json(false);
+            return;
           }
 
           $order->add_order_note(json_encode($ticker)); // Remove
@@ -285,18 +282,16 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        if(!property_exists( $callResponse, 'settled' )){
-          status_header(402);
-          wp_send_json(false);
-          return;
-        }
-
-        if ($callResponse->settled) {
+        $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
+        //TODO: Set provider of invoice
+        if($this->check_payment($payHash)) {
           $order->payment_complete();
           $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
           status_header(200);
           wp_send_json(true);
-          return;
+        } else {
+          status_header(402);
+          wp_send_json(false);
         }
 
       }
@@ -358,14 +353,19 @@ if (!function_exists('init_wc_lightning')) {
           exit;
         }
 
+        //TODO: get_metadata function gets all in one query
+        $payReq = get_post_meta( $order_id, 'LN_INVOICE', true);
+        $payHash = get_post_meta( $order_id, 'LN_HASH', true );
+        $sats = get_post_meta( $order_id, 'LN_AMOUNT', true);
+
         if ($order->needs_payment()) {
           //Prepare information for payment page
-          $qr_uri = $this->lndCon->generateQr( get_post_meta( $order_id, 'LN_INVOICE', true ) );
-          $payHash = get_post_meta( $order_id, 'LN_HASH', true );
+
+          $expiry = get_post_meta( $order_id, 'LN_EXPIRY', true);
           $rate = number_format((float)get_post_meta( $order_id, 'LN_RATE', true ), 2, '.', ',');
           $exchange = $this->tickerManager->getAll()[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
+          $qr_uri = $this->generate_qr($payReq); // TODO: Generate it on clientside
           $currency = $order->get_currency();
-          $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode($payHash)) );
           require __DIR__.'/templates/payment.php';
 
         } elseif ($order->has_status(array('processing', 'completed'))) {
@@ -379,6 +379,10 @@ if (!function_exists('init_wc_lightning')) {
       public function register_gateway($methods) {
         $methods[] = $this;
         return $methods;
+      }
+
+      private function check_payment($paymentHash) {
+        return $this->provider->checkPayment($paymentHash);
       }
 
       /**
@@ -443,6 +447,57 @@ if (!function_exists('init_wc_lightning')) {
     		<?
     		return ob_get_clean();
     	}
+
+      /**
+       * Generates QR code image with Google's API
+       * @param  string $paymentRequest Invoice payment request
+       * @return string                 Remote Image's URL
+       */
+      private function generate_qr($paymentRequest) {
+          $size = "300x300";
+          $margin = "0";
+          $encoding = "UTF-8";
+          return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
+      }
+
+      private function setup_provider() {
+        $this->provider = call_user_func([$this, 'set_provider_' . $this->settings['provider']]);
+      }
+
+      private function set_provider_lnd() {
+        $lnd = LndWrapper::instance();
+        // For LND
+        if (file_exists(WC_LND_TLS_FILE) && file_exists(WC_LND_MACAROON_FILE)) {
+          $lnd->setCredentials ( $this->endpoint, WC_LND_MACAROON_FILE, WC_LND_TLS_FILE);
+        } else {
+          $this->enabled = 'no';
+        }
+        return $lnd;
+      }
+
+      private function set_provider_lndhub() {
+        $lndhub = LndHub::instance();
+        $access = get_option(WC_LND_NAME . '_lndhub_config' . '_token'); //TODO: Link with LND_WC_Settings_LNDHUB $prefix
+        $settings = get_option(WC_LND_NAME . '_lndhub_config');
+        $lndhub->setCredentials(LND_WC_Helpers::generateEndpoint($settings), $settings['userID'], $settings['password']);
+        $lndhub->setAccessToken($access);
+        $lndhub->setStoreTokenFunc([$this, 'setLndHubToken']);
+
+        return $lndhub;
+      }
+
+      //TODO: Doesnt belong here, duplication on LND_WC_Settings_LNDHUB
+      public function setLndHubToken($data) {
+        update_option(WC_LND_NAME . '_lndhub_config' . '_token', $data); //TODO: Link with LND_WC_Settings_LNDHUB $prefix
+        return $data;
+      }
+
+      public function generate_endpoint($settings) {
+        $protocol = $settings['ssl'] ? 'https' : 'http';
+        $host = $settings['host'] ? $settings['host'] : '';
+        $port = $settings['port'] ? $settings['port'] : ($protocol == 'https' ? '443' : '80');
+        return $protocol . '://' . $host . ':' . $port;
+      }
     }
 
     new WC_Gateway_Lightning();

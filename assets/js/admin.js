@@ -18,3 +18,21 @@ function formatMoney(amount, decimalCount = 2, decimal = ".", thousands = ",") {
     console.log(e)
   }
 }
+
+function decodeLndURL(str) {
+  const regex = /lndhub:\/\/([\d\w]*):([\d\w]*)@?((https?):\/\/(.+):?(\d)?)?/i;
+  const res = regex.exec(str);
+  if (res === null) {
+    throw 'invalid format';
+  }
+  let server = new URL(res[3] !== undefined ? res[3] : 'https://lndhub.herokuapp.com/');
+  return {
+    username: res[1],
+    password: res[2],
+    server: {
+      host: server.hostname,
+      port: server.port != '' ? server.port : (server.protocol === 'https:' ? '443' : '80'),
+      ssl: server.protocol === 'https:'
+    }
+  };
+}

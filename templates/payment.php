@@ -1,15 +1,11 @@
 <link rel="stylesheet" href="<? echo plugins_url('assets/css/payment.css', dirname(__FILE__))?>" type="text/css">
 <noscript><style>.yesscript{display:none}</style></noscript>
-<?
-$expiry_datestr = $callResponse->creation_date + $callResponse->expiry;
-$payReq = $callResponse->payment_request;
-?>
 
 <div class="ln-pay">
   <h1><?=__('Pay with Lightning', 'lnd-woocommerce')?></h1>
   <h3>
     <? if ($order->get_currency() !== 'BTC'): ?> <? echo $order->get_total() ?> <?=$currency ?> = <? endif ?>
-    <? echo self::format_msat($callResponse->value) ?>
+    <? echo self::format_msat($sats) ?>
   </h3>
   <h4>
     <b><?=__('Rate', 'lnd-woocommerce')?></b>: <?=$currency . ' ' . $rate . ' ' . __('taken from', 'lnd-woocommerce') . ' ' . $exchange?>
@@ -24,11 +20,11 @@ $payReq = $callResponse->payment_request;
     <span class="yesscript"><img src="<? echo plugins_url( '../assets/img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">
       <span id="invoice_expires_label">
         <?=__('Awaiting payment', 'lnd-woocommerce')?>.
-        <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<? echo $expiry_datestr ?>"><? echo $expiry_datestr ?></span>.
+        <?=__('The invoice expires', 'lnd-woocommerce')?> <span id="expiry-timer" title="<?=$expiry ?>"><?=$expiry ?></span>.
       </span>
     </span>
   </p>
-  <a class="checkout-button button alt btn btn-default" href="lightning:<? echo get_post_meta( $order->get_id(), 'LN_INVOICE', true ); ?>"><?=__('Pay with Lightning', 'lnd-woocommerce')?></a>
+  <a class="checkout-button button alt btn btn-default" href="lightning:<?=$payReq; ?>"><?=__('Pay with Lightning', 'lnd-woocommerce')?></a>
 </div>
 
 <script>
@@ -81,6 +77,6 @@ $payReq = $callResponse->payment_request;
     return ''+(h>0?h+':':'')+(m<10&&h>0?'0':'')+m+':'+(s<10?'0':'')+s
   }
 })(jQuery, <? echo json_encode(admin_url( 'admin-ajax.php' )) ?>, <? echo json_encode($order->get_id()) ?>,
-           <? echo json_encode($order->get_checkout_order_received_url()) ?>, <? echo $expiry_datestr ?>)
+           <? echo json_encode($order->get_checkout_order_received_url()) ?>, <?=$expiry ?>)
 
 </script>
