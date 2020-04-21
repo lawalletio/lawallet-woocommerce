@@ -21,14 +21,14 @@ if (!defined('ABSPATH')) {
             <tr>
               <th scope="row"><?=__('Inbound capacity', 'lnd-woocommerce')?></th>
               <td>
-                <b><?=$balance->remote_balance?></b> sats <i>(<?=$this->convert_sats($balance->remote_balance, $ticker)?>)</i>
+                <b><?=$balance->remote_balance?></b> sats <i>(<?=LND_WC_Helpers::convertSats($balance->remote_balance, $ticker)?>)</i>
                 <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to receive via Lightning', 'lnd-woocommerce')?></div>
               </td>
             </tr>
             <tr>
               <th scope="row"><?=__('Outbound capacity', 'lnd-woocommerce')?></th>
               <td>
-                <b><?=$balance->local_balance?></b> sats <i>(<?=$this->convert_sats($balance->local_balance, $ticker)?>)</i>
+                <b><?=$balance->local_balance?></b> sats <i>(<?=LND_WC_Helpers::convertSats($balance->local_balance, $ticker)?>)</i>
                 <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to send via Lightning', 'lnd-woocommerce')?></div>
               </td>
             </tr>

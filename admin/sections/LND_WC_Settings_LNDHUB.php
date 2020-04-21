@@ -234,13 +234,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
         $this->notice = $e;
         add_action( 'admin_notices', [$this, 'notice_withdraw_error'] );
       }
-
     }
-
-    private function convert_sats($sats, $ticker) {
-      return $ticker->currency . ' ' . rtrim(rtrim(number_format($sats/100000000 * $ticker->rate, 2), '0'), '.');
-    }
-
 }
 
 LND_WC_Settings_LNDHUB::instance();
