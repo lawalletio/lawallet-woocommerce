@@ -52,7 +52,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
                                 'title'     => __('Backup String', 'lnd-woocommerce'),
                                 'type'      => 'text',
                                 'placeholder' => __('Leave blank for new account on BlueWallet server', 'lnd-woocommerce'),
-                                'default'   => __('lndhub://:', 'lnd-woocommerce'),
+                                'default'   => 'lndhub://:',
                                 'hint'      => __('Backup URL by exporting wallet on BlueWallet starting with <i>lndhub://</i>. ', 'lnd-woocommerce'),
                             ),
                         ],

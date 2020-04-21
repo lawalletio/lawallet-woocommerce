@@ -2,9 +2,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-11 05:00+0000\n"
-"PO-Revision-Date: 2020-03-11 05:02+0000\n"
-"Last-Translator: masize <webmaster@masize.com>\n"
+"POT-Creation-Date: 2020-04-21 18:12+0000\n"
+"PO-Revision-Date: 2020-04-21 18:12+0000\n"
+"Last-Translator: \n"
 "Language-Team: Español de Argentina\n"
 "Language: es_AR\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
@@ -12,21 +12,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.3.1; wp-5.3.2"
+"X-Loco-Version: 2.3.3; wp-5.4"
 
-#: lnd-woocommerce.php:48
+#: lnd-woocommerce.php:52
 msgid "Proceed to Lightning Payment"
 msgstr "Pagar con Lightning"
 
-#: lnd-woocommerce.php:49
+#: lnd-woocommerce.php:53
 msgid "Lightning"
 msgstr "Lightning"
 
-#: lnd-woocommerce.php:50
+#: lnd-woocommerce.php:54
 msgid "Lightning Network Payment"
 msgstr "Pago con Lightning Network"
 
-#: lnd-woocommerce.php:114
+#: lnd-woocommerce.php:114 admin/LND_Woocommerce_Admin.php:60
+#: admin/LND_Woocommerce_Admin.php:61
+#: admin/sections/LND_WC_Settings_Main.php:33
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -86,19 +88,19 @@ msgstr "Mensaje para explicar cómo el cliente va a pagar por la compra."
 msgid "You will pay using the Lightning Network."
 msgstr "Usted tendrá que pagar utilizando Lightning Network."
 
-#: lnd-woocommerce.php:206
+#: lnd-woocommerce.php:210
 msgid "Awaiting payment of"
 msgstr "Esperando pago de"
 
-#: lnd-woocommerce.php:206
+#: lnd-woocommerce.php:210
 msgid "applied"
 msgstr "aplicado"
 
-#: lnd-woocommerce.php:219
+#: lnd-woocommerce.php:224
 msgid "Couldn't get quote from ticker."
 msgstr "No se pudo obtener la cotización del exchange"
 
-#: lnd-woocommerce.php:232
+#: lnd-woocommerce.php:238
 msgid ""
 "Lightning Node is not reachable at this time. Please contact the store "
 "administrator."
@@ -106,34 +108,39 @@ msgstr ""
 "No puede conectarse al nodo de Lightning en este momento. Por favor, "
 "contactate con el administrador."
 
-#: lnd-woocommerce.php:437
+#: lnd-woocommerce.php:441
 msgid "Already uploaded"
 msgstr "Archivo Subido"
 
-#: includes/LndWrapper.php:156
+#: includes/LndWrapper.php:145
 msgid "Invoice is already paid"
 msgstr "La Invoice fué pagada anteriormente"
 
-#: includes/LndWrapper.php:209 includes/LoopWrapper.php:120
+#: includes/LndWrapper.php:155
+msgid "Invoice not found"
+msgstr "Invoice no encontrada"
+
+#: includes/LndWrapper.php:207 includes/LoopWrapper.php:120
+#: includes/LndHub.php:246
 msgid "Server is unreacheable, must be down or wrong port is given"
 msgstr ""
 "No puede conectarse con el servidor, es probable que este inactivo, haya un "
 "firewall o el puerto sea incorrecto"
 
-#: includes/LndWrapper.php:210
+#: includes/LndWrapper.php:208
 msgid "Server reached but is not a LND server or you've set an invalid port"
 msgstr ""
 "Pudo conectarse con el servidor pero no parece ser LND o se ingresó un "
 "puerto inválido"
 
-#: includes/LndWrapper.php:211 includes/LoopWrapper.php:122
+#: includes/LndWrapper.php:209 includes/LoopWrapper.php:122
 msgid ""
 "Server reached but is not a Loop server or invalid port (must be restlisten)"
 msgstr ""
 "Pudo conectarse con el servidor pero no parece ser Loop o se ingresó un "
 "puerto inválido (Debe ser restlisten)"
 
-#: includes/LndWrapper.php:212
+#: includes/LndWrapper.php:210
 msgid ""
 "Got a 404 response from server, please check if lnd wallet is created and "
 "already unlocked"
@@ -141,28 +148,32 @@ msgstr ""
 "Se recibió un error 404 del servidor, verificá que la wallet haya sido "
 "creada y desbloqueada"
 
-#: includes/LndWrapper.php:213
+#: includes/LndWrapper.php:211
 msgid "Server reached but is not LND restlisten port. Looks like rpcport"
 msgstr ""
 "Conectado con el servidor pero no parece ser el puerto restlisten de LND. Es "
 "probable que hayas ingresado el puerto rpcport"
 
-#: includes/LndWrapper.php:214
+#: includes/LndWrapper.php:212
 msgid "Server reached but is not LND restlisten port"
 msgstr "Servidor conectado pero no es el puerto restlisten de LND"
 
-#: includes/LndWrapper.php:224
+#: includes/LndWrapper.php:222
 msgid "Signature mismatch tls.cert not accepted on server"
 msgstr ""
 "No coincide la firma, el certificado tls.cert no es aceptado por el servidor"
 
-#: includes/LndWrapper.php:225
+#: includes/LndWrapper.php:223
 msgid "Permission denied from LND server, please check your macaroon file"
 msgstr "Permiso denegado por el servidor LND, verificá el archivo macaroon"
 
-#: includes/LndWrapper.php:226
+#: includes/LndWrapper.php:224
 msgid "Invoice expired"
 msgstr "La invoice expiró"
+
+#: includes/LndWrapper.php:225
+msgid "Invalid Payment Hash format"
+msgstr "Formato de Payment Hash inválido"
 
 #: includes/LoopWrapper.php:121
 msgid "Server reached but is not a loop server or you've set an invalid port"
@@ -231,44 +242,59 @@ msgstr ""
 "El servidor Loop debe ser configurado antes de ejecutar un metodo de "
 "ChannelManager"
 
-#: admin/LND_Woocommerce_Admin.php:58 admin/LND_Woocommerce_Admin.php:59
-#: admin/sections/LND_WC_Settings_Loop.php:52
-msgid "Dashboard"
-msgstr "Escritorio"
+#: includes/LndHub.php:132
+msgid "Unable to login. UserID or password missing"
+msgstr "No puede iniciarse sesión. UserID o contraseña incorrecta"
 
-#: admin/LND_Woocommerce_Admin.php:77 admin/LND_Woocommerce_Admin.php:78
+#: includes/LndHub.php:243
+msgid "Too many requests on Lndhub"
+msgstr "Demasiados requests al servidor LndHub"
+
+#: includes/LndHub.php:250
+msgid "Bad Authentication"
+msgstr "Error de Autenticación"
+
+#: includes/LndHub.php:251
+msgid "Bad Arguments"
+msgstr "Argumentos inválidos"
+
+#: admin/LND_Woocommerce_Admin.php:79 admin/LND_Woocommerce_Admin.php:80
 msgid "LND Server"
 msgstr "Servidor LND"
 
-#: admin/LND_Woocommerce_Admin.php:86 admin/LND_Woocommerce_Admin.php:87
+#: admin/LND_Woocommerce_Admin.php:88 admin/LND_Woocommerce_Admin.php:89
 msgid "Loop Server"
 msgstr "Servidor Loop"
 
-#: templates/payment.php:9 templates/payment.php:31
+#: admin/LND_Woocommerce_Admin.php:97 admin/LND_Woocommerce_Admin.php:98
+msgid "LndHub"
+msgstr "LndHub"
+
+#: templates/payment.php:5 templates/payment.php:27
 msgid "Pay with Lightning"
 msgstr "Pagar con Lightning"
 
-#: templates/payment.php:15
+#: templates/payment.php:11
 msgid "Rate"
 msgstr "Cotización"
 
-#: templates/payment.php:15
+#: templates/payment.php:11
 msgid "taken from"
 msgstr "tomada de"
 
-#: templates/payment.php:26
+#: templates/payment.php:22
 msgid "Awaiting payment"
 msgstr "Esperando pago"
 
-#: templates/payment.php:27
+#: templates/payment.php:23
 msgid "The invoice expires"
 msgstr "La invoice vence"
 
-#: templates/payment.php:63
+#: templates/payment.php:59
 msgid "Generating new invoice"
 msgstr "Generando nueva invoice"
 
-#: templates/payment.php:65
+#: templates/payment.php:61
 msgid "in"
 msgstr "en"
 
@@ -276,15 +302,11 @@ msgstr "en"
 msgid "Payment completed successfully"
 msgstr "Pago recibido exitosamente"
 
-#: templates/completed.php:8
-msgid "Payment completed at"
-msgstr "Pago competado en"
+#: templates/completed.php:10
+msgid "Lightning hash"
+msgstr "Lightning hash"
 
-#: templates/completed.php:11
-msgid "Lightning rhash"
-msgstr "Lightning rhash"
-
-#: templates/completed.php:14
+#: templates/completed.php:13
 msgid "Invoice amount"
 msgstr "Monto de Invoice"
 
@@ -292,18 +314,25 @@ msgstr "Monto de Invoice"
 msgid "Loop Settings"
 msgstr "Configuración de Loop"
 
+#: admin/sections/LND_WC_Settings_Loop.php:52
+msgid "Dashboard"
+msgstr "Escritorio"
+
 #: admin/sections/LND_WC_Settings_Loop.php:57
 #: admin/sections/LND_WC_Settings_LND.php:57
+#: admin/sections/LND_WC_Settings_LNDHUB.php:45
 msgid "Config"
 msgstr "Configuración"
 
 #: admin/sections/LND_WC_Settings_Loop.php:60
 #: admin/sections/LND_WC_Settings_LND.php:60
+#: admin/sections/LND_WC_Settings_LNDHUB.php:61
 msgid "Server Config"
 msgstr "Config del Servidor"
 
 #: admin/sections/LND_WC_Settings_Loop.php:63
 #: admin/sections/LND_WC_Settings_LND.php:63
+#: admin/sections/LND_WC_Settings_LNDHUB.php:64
 msgid "Host"
 msgstr "Dirección del Host"
 
@@ -318,6 +347,7 @@ msgstr "Dirección de Loop, puede utilizarse localhost"
 
 #: admin/sections/LND_WC_Settings_Loop.php:70
 #: admin/sections/LND_WC_Settings_LND.php:70
+#: admin/sections/LND_WC_Settings_LNDHUB.php:71
 msgid "Port"
 msgstr "Puerto"
 
@@ -331,6 +361,7 @@ msgstr ""
 
 #: admin/sections/LND_WC_Settings_Loop.php:81
 #: admin/sections/LND_WC_Settings_LND.php:104
+#: admin/sections/LND_WC_Settings_LNDHUB.php:105
 msgid "Server Info"
 msgstr "Información del Servidor"
 
@@ -351,6 +382,7 @@ msgstr ""
 "en el lnd.conf. Por favor, escribe solo el número del puerto."
 
 #: admin/sections/LND_WC_Settings_LND.php:77
+#: admin/sections/LND_WC_Settings_LNDHUB.php:78
 msgid "SSL Enabled"
 msgstr "SSL Habilitado"
 
@@ -382,59 +414,190 @@ msgstr "Archivo Macaroon, debe tener mínimo permisos para generar invoices"
 msgid "Channels"
 msgstr "Canales"
 
-#: admin/sections/LND_WC_Settings_LND.php:114 admin/views/lnd/withdraw.php:86
+#: admin/sections/LND_WC_Settings_LND.php:114
+#: admin/sections/LND_WC_Settings_LNDHUB.php:110
+#: admin/views/lndhub/withdraw.php:86 admin/views/lnd/withdraw.php:86
 msgid "Withdraw"
 msgstr "Extraer"
 
-#: admin/sections/LND_WC_Settings_LND.php:119
-msgid "Debug"
-msgstr "Debug"
-
-#: admin/sections/LND_WC_Settings_LND.php:206
+#: admin/sections/LND_WC_Settings_LND.php:201
+#: admin/sections/LND_WC_Settings_LNDHUB.php:206
 msgid "Invoice succesfully paid!"
 msgstr "Invoice pagada exitosamente!"
 
-#: admin/sections/LND_WC_Settings_LND.php:207
+#: admin/sections/LND_WC_Settings_LND.php:202
+#: admin/sections/LND_WC_Settings_LNDHUB.php:207
 #, php-format
 msgid "The amount of %s sats has successfully been transferred."
 msgstr "El monto %s sats fué transferido exitosamente."
 
-#: admin/sections/LND_WC_Settings_LND.php:208
+#: admin/sections/LND_WC_Settings_LND.php:203
+#: admin/sections/LND_WC_Settings_LNDHUB.php:208
 #, php-format
 msgid "Total %s sats paid in fees."
 msgstr "Total de %s sats pagados en fees."
 
-#: admin/sections/LND_WC_Settings_LND.php:219
+#: admin/sections/LND_WC_Settings_LND.php:214
+#: admin/sections/LND_WC_Settings_LNDHUB.php:219
 msgid "Error trying to pay invoice"
 msgstr "Error al intentar pagar la invoice"
 
-#: admin/includes/LND_Settings_Page_Generator.php:243
+#: admin/sections/LND_WC_Settings_Main.php:18
+msgid "LND Main Settings"
+msgstr "Ajustes principales de LND"
+
+#: admin/sections/LND_WC_Settings_Main.php:36 admin/views/main/dashboard.php:16
+msgid "Main Settings"
+msgstr "Ajustes Principales"
+
+#: admin/sections/LND_WC_Settings_Main.php:39
+msgid "LND Provider"
+msgstr "Proveedor LND"
+
+#: admin/sections/LND_WC_Settings_Main.php:46
+msgid "Lnd server to be used."
+msgstr "Servidor Lnd a ser utilizado."
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:18
+msgid "LNDHub Settings"
+msgstr "Configuración de LndHub"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:49
+msgid "Backup Config"
+msgstr "Configuración de Backup"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:52
+msgid "Backup String"
+msgstr "Serializado de Texto del Backup"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:54
+msgid "Leave blank for new account on BlueWallet server"
+msgstr "Dejar vacío para crear una nueva cuenta en el servidor de BlueWallet"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:56
+msgid ""
+"Backup URL by exporting wallet on BlueWallet starting with <i>lndhub://</i>. "
+msgstr ""
+"URL de Backup al exportar la billetera de la app de BlueWallet. Empieza con "
+"<i>lndhub://</i>."
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:66
+msgid "lndhub.herokuapp.com"
+msgstr "lndhub.herokuapp.com"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:68
+msgid "LndHub host address, you can use <b>localhost</b>."
+msgstr "Dirección host de LndHub, puede usarse <b>localhost</b>."
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:75
+msgid "LndHub port, default is 3000"
+msgstr "Puerto de LndHub, predeterminado 3000 para local"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:81
+msgid "Uses HTTPS?"
+msgstr "Utiliza HTTPS?"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:86
+msgid "Authentication Credentials"
+msgstr "Credenciales de Autenticación"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:89
+#: admin/sections/LND_WC_Settings_LNDHUB.php:92
+msgid "User ID"
+msgstr "ID de Usuario"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:91
+#: admin/sections/LND_WC_Settings_LNDHUB.php:97
+msgid "Leave it blank to generate new one from server"
+msgstr "Dejar el campo vacío para generar uno nuevo desde el servidor"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:92
+#: admin/sections/LND_WC_Settings_LNDHUB.php:98
+msgid ""
+"generated by lndhub, received when creating account first time or from "
+"backup string."
+msgstr ""
+"generador por LndHub, recibido cuando se crea una nueva cuenta o con la URL "
+"de Backup"
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:95
+#: admin/sections/LND_WC_Settings_LNDHUB.php:98
+msgid "Password"
+msgstr "Contraseña"
+
+#: admin/includes/LND_Settings_Page_Generator.php:217
 msgid "You need to be admin to access these settings"
 msgstr "Debe ser administrador para acceder a esta configuración"
 
-#: admin/includes/LND_Settings_Page_Generator.php:395
+#: admin/includes/LND_Settings_Page_Generator.php:369
 msgid "Invalid file format"
 msgstr "Formato de archivo inválido"
 
-#: admin/includes/LND_Settings_Page_Generator.php:401
+#: admin/includes/LND_Settings_Page_Generator.php:375
 msgid "Couldn't upload the file"
 msgstr "No se pudo subir el archivo"
 
-#: admin/includes/LND_Settings_Page_Generator.php:842
+#: admin/includes/LND_Settings_Page_Generator.php:815
 msgid "Unable to validate settings."
 msgstr "No se puede validar la configuración"
 
-#: admin/includes/LND_Settings_Page_Generator.php:930
+#: admin/includes/LND_Settings_Page_Generator.php:903
 msgid "Settings updated."
 msgstr "Configuración actualizada."
 
 #: admin/views/error.php:16
-msgid "Error connecting to Loop Server"
-msgstr "Error al intentar conectar con el servidor de Loop"
+msgid "Error connecting to the Server"
+msgstr "Error al intentar conectar con el servidor"
 
-#: admin/views/lnd/info.php:17 admin/views/loop/info.php:16
+#: admin/views/lndhub/info.php:16 admin/views/lnd/info.php:17
+#: admin/views/loop/info.php:16
 msgid "Info Page"
 msgstr "Página de Información"
+
+#: admin/views/lndhub/withdraw.php:91 admin/views/lnd/withdraw.php:91
+msgid "Available Balance"
+msgstr "Balance Disponible"
+
+#: admin/views/lndhub/withdraw.php:94 admin/views/lnd/channels.php:32
+#: admin/views/lnd/withdraw.php:94 admin/views/loop/dashboard.php:30
+msgid "Total satoshis you are able to send via Lightning"
+msgstr "Total de satoshis que es posible enviar por Lightning"
+
+#: admin/views/lndhub/withdraw.php:100 admin/views/lnd/withdraw.php:100
+msgid "Payment Request"
+msgstr "Request de Pago"
+
+#: admin/views/lndhub/withdraw.php:103 admin/views/lnd/withdraw.php:103
+msgid "pay_req for the invoice to be paid"
+msgstr "pay_req de la invoice a pagar"
+
+#: admin/views/lndhub/withdraw.php:109 admin/views/lnd/withdraw.php:109
+msgid "Amount"
+msgstr "Monto"
+
+#: admin/views/lndhub/withdraw.php:112 admin/views/lnd/withdraw.php:112
+msgid "Amount of satoshis to be payed"
+msgstr "Monto en satoshis a pagar"
+
+#: admin/views/lndhub/withdraw.php:116 admin/views/lnd/withdraw.php:116
+msgid "Expires"
+msgstr "Expira"
+
+#: admin/views/lndhub/withdraw.php:119 admin/views/lnd/withdraw.php:119
+msgid "Invoice's expiration date"
+msgstr "Fecha de Expiración de la Invoice"
+
+#: admin/views/lndhub/withdraw.php:124 admin/views/lnd/withdraw.php:124
+msgid "Node Key"
+msgstr "Node Key"
+
+#: admin/views/lndhub/withdraw.php:127 admin/views/lnd/withdraw.php:127
+msgid "Receiver Node key"
+msgstr "Node key del Receptor"
+
+#: admin/views/lndhub/withdraw.php:138 admin/views/lnd/withdraw.php:138
+msgid "Transfer funds"
+msgstr "Transferir fondos"
 
 #: admin/views/lnd/channels.php:17 admin/views/loop/dashboard.php:16
 msgid "Summary"
@@ -451,11 +614,6 @@ msgstr "Total de satoshis que es posible recibir por Lightning"
 #: admin/views/lnd/channels.php:29 admin/views/loop/dashboard.php:27
 msgid "Outbound capacity"
 msgstr "Capacidad saliente"
-
-#: admin/views/lnd/channels.php:32 admin/views/lnd/withdraw.php:94
-#: admin/views/loop/dashboard.php:30
-msgid "Total satoshis you are able to send via Lightning"
-msgstr "Total de satoshis que es posible enviar por Lightning"
 
 #: admin/views/lnd/channels.php:38
 msgid "Open Channels"
@@ -493,45 +651,9 @@ msgstr "Debug"
 msgid "Under construction..."
 msgstr "En construcción..."
 
-#: admin/views/lnd/withdraw.php:91
-msgid "Available Balance"
-msgstr "Balance Disponible"
-
-#: admin/views/lnd/withdraw.php:100
-msgid "Payment Request"
-msgstr "Request de Pago"
-
-#: admin/views/lnd/withdraw.php:103
-msgid "pay_req for the invoice to be paid"
-msgstr "pay_req de la invoice a pagar"
-
-#: admin/views/lnd/withdraw.php:109
-msgid "Amount"
-msgstr "Monto"
-
-#: admin/views/lnd/withdraw.php:112
-msgid "Amount of satoshis to be payed"
-msgstr "Monto en satoshis a pagar"
-
-#: admin/views/lnd/withdraw.php:116
-msgid "Expires"
-msgstr "Expira"
-
-#: admin/views/lnd/withdraw.php:119
-msgid "Invoice's expiration date"
-msgstr "Fecha de Expiración de la Invoice"
-
-#: admin/views/lnd/withdraw.php:124
-msgid "Node Key"
-msgstr "Node Key"
-
-#: admin/views/lnd/withdraw.php:127
-msgid "Receiver Node key"
-msgstr "Node key del Receptor"
-
-#: admin/views/lnd/withdraw.php:138
-msgid "Transfer funds"
-msgstr "Transferir fondos"
+#: admin/views/main/dashboard.php:20
+msgid "Under construction"
+msgstr "En construcción"
 
 #: admin/views/loop/dashboard.php:34
 msgid "Capacity available"
