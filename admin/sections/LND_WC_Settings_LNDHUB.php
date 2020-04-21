@@ -11,6 +11,7 @@ require_once(WC_LND_PLUGIN_PATH . '/includes/LndHub.php');
 class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
     public static $prefix = WC_LND_NAME . '_lndhub_config';
     protected static $structure = null;
+    protected static $instance = null;
 
     protected $lndhubCon = false;
 

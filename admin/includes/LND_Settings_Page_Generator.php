@@ -1,11 +1,8 @@
 <?
-
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
     exit;
 }
-
-if (!class_exists('LND_Settings_Page_Generator')) {
 
 class LND_Settings_Page_Generator {
     // Define settings structure
@@ -1073,6 +1070,4 @@ class LND_Settings_Page_Generator {
             echo '<div class="wc_lnd_settings_hint">' . $args['data-hint'] . '</div>';
         }
     }
-}
-
 }
