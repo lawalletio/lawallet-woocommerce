@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 18:12+0000\n"
+"POT-Creation-Date: 2020-04-24 22:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -27,71 +27,71 @@ msgstr ""
 msgid "Lightning Network Payment"
 msgstr ""
 
-#: lnd-woocommerce.php:114 admin/LND_Woocommerce_Admin.php:60
-#: admin/LND_Woocommerce_Admin.php:61
-#: admin/sections/LND_WC_Settings_Main.php:33
+#: lnd-woocommerce.php:115 admin/LND_Woocommerce_Admin.php:65
+#: admin/LND_Woocommerce_Admin.php:66
+#: admin/sections/LND_WC_Settings_Main.php:40
 msgid "Settings"
 msgstr ""
 
-#: lnd-woocommerce.php:127
+#: lnd-woocommerce.php:128
 msgid "Enable/Disable"
 msgstr ""
 
-#: lnd-woocommerce.php:128
+#: lnd-woocommerce.php:129
 msgid "Enable Lightning payments"
 msgstr ""
 
-#: lnd-woocommerce.php:136
+#: lnd-woocommerce.php:137
 msgid ""
 "Controls the name of this payment method as displayed to the customer during "
 "checkout."
 msgstr ""
 
-#: lnd-woocommerce.php:137
+#: lnd-woocommerce.php:138
 msgid "Bitcoin Lightning"
 msgstr ""
 
-#: lnd-woocommerce.php:141
+#: lnd-woocommerce.php:142
 msgid "Ticker"
 msgstr ""
 
-#: lnd-woocommerce.php:143
+#: lnd-woocommerce.php:144
 msgid "Select Exchange for rate calculation."
 msgstr ""
 
-#: lnd-woocommerce.php:151
+#: lnd-woocommerce.php:152
 msgid "Rate Markup"
 msgstr ""
 
-#: lnd-woocommerce.php:153
+#: lnd-woocommerce.php:154
 msgid "Increases exchange rate with a percentage"
 msgstr ""
 
-#: lnd-woocommerce.php:158
+#: lnd-woocommerce.php:159
 msgid "Invoice Expiration"
 msgstr ""
 
-#: lnd-woocommerce.php:160
+#: lnd-woocommerce.php:161
 msgid "Invoice expiration time in seconds"
 msgstr ""
 
-#: lnd-woocommerce.php:165
+#: lnd-woocommerce.php:166
 msgid "Customer Message"
 msgstr ""
 
-#: lnd-woocommerce.php:167
+#: lnd-woocommerce.php:168
 msgid "Message to explain how the customer will be paying for the purchase."
 msgstr ""
 
-#: lnd-woocommerce.php:168
+#: lnd-woocommerce.php:169
 msgid "You will pay using the Lightning Network."
 msgstr ""
 
-#: lnd-woocommerce.php:210
+#: lnd-woocommerce.php:211
 msgid "Awaiting payment of"
 msgstr ""
 
-#: lnd-woocommerce.php:210
+#: lnd-woocommerce.php:211
 msgid "applied"
 msgstr ""
 
@@ -99,65 +99,65 @@ msgstr ""
 msgid "Couldn't get quote from ticker."
 msgstr ""
 
-#: lnd-woocommerce.php:238
+#: lnd-woocommerce.php:244
 msgid ""
 "Lightning Node is not reachable at this time. Please contact the store "
 "administrator."
 msgstr ""
 
-#: lnd-woocommerce.php:441
+#: lnd-woocommerce.php:454
 msgid "Already uploaded"
 msgstr ""
 
-#: includes/LndWrapper.php:145
+#: includes/LndWrapper.php:132
 msgid "Invoice is already paid"
 msgstr ""
 
-#: includes/LndWrapper.php:155
+#: includes/LndWrapper.php:142
 msgid "Invoice not found"
 msgstr ""
 
-#: includes/LndWrapper.php:207 includes/LoopWrapper.php:120
+#: includes/LndWrapper.php:194 includes/LoopWrapper.php:120
 #: includes/LndHub.php:246
 msgid "Server is unreacheable, must be down or wrong port is given"
 msgstr ""
 
-#: includes/LndWrapper.php:208
+#: includes/LndWrapper.php:195
 msgid "Server reached but is not a LND server or you've set an invalid port"
 msgstr ""
 
-#: includes/LndWrapper.php:209 includes/LoopWrapper.php:122
+#: includes/LndWrapper.php:196 includes/LoopWrapper.php:122
 msgid ""
 "Server reached but is not a Loop server or invalid port (must be restlisten)"
 msgstr ""
 
-#: includes/LndWrapper.php:210
+#: includes/LndWrapper.php:197
 msgid ""
 "Got a 404 response from server, please check if lnd wallet is created and "
 "already unlocked"
 msgstr ""
 
-#: includes/LndWrapper.php:211
+#: includes/LndWrapper.php:198
 msgid "Server reached but is not LND restlisten port. Looks like rpcport"
 msgstr ""
 
-#: includes/LndWrapper.php:212
+#: includes/LndWrapper.php:199
 msgid "Server reached but is not LND restlisten port"
 msgstr ""
 
-#: includes/LndWrapper.php:222
+#: includes/LndWrapper.php:209
 msgid "Signature mismatch tls.cert not accepted on server"
 msgstr ""
 
-#: includes/LndWrapper.php:223
+#: includes/LndWrapper.php:210
 msgid "Permission denied from LND server, please check your macaroon file"
 msgstr ""
 
-#: includes/LndWrapper.php:224
+#: includes/LndWrapper.php:211
 msgid "Invoice expired"
 msgstr ""
 
-#: includes/LndWrapper.php:225
+#: includes/LndWrapper.php:212
 msgid "Invalid Payment Hash format"
 msgstr ""
 
@@ -233,15 +233,15 @@ msgstr ""
 msgid "Bad Arguments"
 msgstr ""
 
-#: admin/LND_Woocommerce_Admin.php:79 admin/LND_Woocommerce_Admin.php:80
+#: admin/LND_Woocommerce_Admin.php:84 admin/LND_Woocommerce_Admin.php:85
 msgid "LND Server"
 msgstr ""
 
-#: admin/LND_Woocommerce_Admin.php:88 admin/LND_Woocommerce_Admin.php:89
+#: admin/LND_Woocommerce_Admin.php:93 admin/LND_Woocommerce_Admin.php:94
 msgid "Loop Server"
 msgstr ""
 
-#: admin/LND_Woocommerce_Admin.php:97 admin/LND_Woocommerce_Admin.php:98
+#: admin/LND_Woocommerce_Admin.php:102 admin/LND_Woocommerce_Admin.php:103
 msgid "LndHub"
 msgstr ""
 
@@ -285,230 +285,262 @@ msgstr ""
 msgid "Invoice amount"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:21
+#: admin/sections/LND_WC_Settings_Loop.php:20
 msgid "Loop Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:52
+#: admin/sections/LND_WC_Settings_Loop.php:51
 msgid "Dashboard"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:57
-#: admin/sections/LND_WC_Settings_LND.php:57
-#: admin/sections/LND_WC_Settings_LNDHUB.php:45
+#: admin/sections/LND_WC_Settings_Loop.php:56
+#: admin/sections/LND_WC_Settings_LND.php:54
+#: admin/sections/LND_WC_Settings_LNDHUB.php:57
 msgid "Config"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:60
-#: admin/sections/LND_WC_Settings_LND.php:60
-#: admin/sections/LND_WC_Settings_LNDHUB.php:61
+#: admin/sections/LND_WC_Settings_Loop.php:59
+#: admin/sections/LND_WC_Settings_LND.php:57
+#: admin/sections/LND_WC_Settings_LNDHUB.php:73
 msgid "Server Config"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:63
-#: admin/sections/LND_WC_Settings_LND.php:63
-#: admin/sections/LND_WC_Settings_LNDHUB.php:64
+#: admin/sections/LND_WC_Settings_Loop.php:62
+#: admin/sections/LND_WC_Settings_LND.php:60
+#: admin/sections/LND_WC_Settings_LNDHUB.php:76
 msgid "Host"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:65
-#: admin/sections/LND_WC_Settings_LND.php:65
+#: admin/sections/LND_WC_Settings_Loop.php:64
+#: admin/sections/LND_WC_Settings_LND.php:62
 msgid "localhost"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:67
+#: admin/sections/LND_WC_Settings_Loop.php:66
 msgid "Loop host address, you can use <b>localhost</b>."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:70
-#: admin/sections/LND_WC_Settings_LND.php:70
-#: admin/sections/LND_WC_Settings_LNDHUB.php:71
+#: admin/sections/LND_WC_Settings_Loop.php:69
+#: admin/sections/LND_WC_Settings_LND.php:67
+#: admin/sections/LND_WC_Settings_LNDHUB.php:83
 msgid "Port"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:74
+#: admin/sections/LND_WC_Settings_Loop.php:73
 msgid ""
 "Loop port, must be the same as <b>restlisten</b>. Please type just the port "
 "number."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Loop.php:81
-#: admin/sections/LND_WC_Settings_LND.php:104
-#: admin/sections/LND_WC_Settings_LNDHUB.php:105
+#: admin/sections/LND_WC_Settings_Loop.php:80
+#: admin/sections/LND_WC_Settings_LND.php:101
+#: admin/sections/LND_WC_Settings_LNDHUB.php:117
 msgid "Server Info"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:23
+#: admin/sections/LND_WC_Settings_LND.php:20
 msgid "LND Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:67
+#: admin/sections/LND_WC_Settings_LND.php:64
 msgid "LND host address, you can use <b>localhost</b>."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:74
+#: admin/sections/LND_WC_Settings_LND.php:71
 msgid ""
 "LND port, must be the same as <b>restlisten</b> value from lnd.conf. Please "
 "type just the port number."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:77
-#: admin/sections/LND_WC_Settings_LNDHUB.php:78
+#: admin/sections/LND_WC_Settings_LND.php:74
+#: admin/sections/LND_WC_Settings_LNDHUB.php:90
 msgid "SSL Enabled"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:80
+#: admin/sections/LND_WC_Settings_LND.php:77
 msgid "You need to upload tls.cert below."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:85
+#: admin/sections/LND_WC_Settings_LND.php:82
 msgid "Credentials"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:88
+#: admin/sections/LND_WC_Settings_LND.php:85
 msgid "TLS File"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:91
+#: admin/sections/LND_WC_Settings_LND.php:88
 msgid "tls.cert file generated by LND."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:94
+#: admin/sections/LND_WC_Settings_LND.php:91
 msgid "Macaroon File"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:97
+#: admin/sections/LND_WC_Settings_LND.php:94
 msgid "Macaroon file, must have invoice permissions at least"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:109
+#: admin/sections/LND_WC_Settings_LND.php:106
 msgid "Channels"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:114
-#: admin/sections/LND_WC_Settings_LNDHUB.php:110
+#: admin/sections/LND_WC_Settings_LND.php:111
+#: admin/sections/LND_WC_Settings_LNDHUB.php:122
 #: admin/views/lndhub/withdraw.php:86 admin/views/lnd/withdraw.php:86
 msgid "Withdraw"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:201
-#: admin/sections/LND_WC_Settings_LNDHUB.php:206
+#: admin/sections/LND_WC_Settings_LND.php:198
+#: admin/sections/LND_WC_Settings_LNDHUB.php:221
 msgid "Invoice succesfully paid!"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:202
-#: admin/sections/LND_WC_Settings_LNDHUB.php:207
+#: admin/sections/LND_WC_Settings_LND.php:199
+#: admin/sections/LND_WC_Settings_LNDHUB.php:222
 #, php-format
 msgid "The amount of %s sats has successfully been transferred."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:203
-#: admin/sections/LND_WC_Settings_LNDHUB.php:208
+#: admin/sections/LND_WC_Settings_LND.php:200
+#: admin/sections/LND_WC_Settings_LNDHUB.php:223
 #, php-format
 msgid "Total %s sats paid in fees."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LND.php:214
-#: admin/sections/LND_WC_Settings_LNDHUB.php:219
+#: admin/sections/LND_WC_Settings_LND.php:211
+#: admin/sections/LND_WC_Settings_LNDHUB.php:234
 msgid "Error trying to pay invoice"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:18
+#: admin/sections/LND_WC_Settings_Main.php:20
 msgid "LND Main Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:36 admin/views/main/dashboard.php:16
+#: admin/sections/LND_WC_Settings_Main.php:43 admin/views/main/dashboard.php:16
 msgid "Main Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:39
+#: admin/sections/LND_WC_Settings_Main.php:46
 msgid "LND Provider"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:46
+#: admin/sections/LND_WC_Settings_Main.php:53
 msgid "Lnd server to be used."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:18
+#: admin/sections/LND_WC_Settings_Main.php:60
+msgid "Testing"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:205
+msgid "Setting Provider"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:206
+msgid "Authenticating Provider"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:207
+msgid "Getting Provider Info"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:208
+msgid "Get Current Exchange"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:209
+msgid "Get Ticker Rate"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:210
+msgid "Invoice to be created"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_Main.php:211
+msgid "Create Invoice"
+msgstr ""
+
+#: admin/sections/LND_WC_Settings_LNDHUB.php:20
 msgid "LNDHub Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:49
+#: admin/sections/LND_WC_Settings_LNDHUB.php:61
 msgid "Backup Config"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:52
+#: admin/sections/LND_WC_Settings_LNDHUB.php:64
 msgid "Backup String"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:54
+#: admin/sections/LND_WC_Settings_LNDHUB.php:66
 msgid "Leave blank for new account on BlueWallet server"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:56
+#: admin/sections/LND_WC_Settings_LNDHUB.php:68
 msgid ""
 "Backup URL by exporting wallet on BlueWallet starting with <i>lndhub://</i>. "
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:66
+#: admin/sections/LND_WC_Settings_LNDHUB.php:78
 msgid "lndhub.herokuapp.com"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:68
+#: admin/sections/LND_WC_Settings_LNDHUB.php:80
 msgid "LndHub host address, you can use <b>localhost</b>."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:75
+#: admin/sections/LND_WC_Settings_LNDHUB.php:87
 msgid "LndHub port, default is 3000"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:81
+#: admin/sections/LND_WC_Settings_LNDHUB.php:93
 msgid "Uses HTTPS?"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:86
+#: admin/sections/LND_WC_Settings_LNDHUB.php:98
 msgid "Authentication Credentials"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:89
-#: admin/sections/LND_WC_Settings_LNDHUB.php:92
+#: admin/sections/LND_WC_Settings_LNDHUB.php:101
+#: admin/sections/LND_WC_Settings_LNDHUB.php:104
 msgid "User ID"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:91
-#: admin/sections/LND_WC_Settings_LNDHUB.php:97
+#: admin/sections/LND_WC_Settings_LNDHUB.php:103
+#: admin/sections/LND_WC_Settings_LNDHUB.php:109
 msgid "Leave it blank to generate new one from server"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:92
-#: admin/sections/LND_WC_Settings_LNDHUB.php:98
+#: admin/sections/LND_WC_Settings_LNDHUB.php:104
+#: admin/sections/LND_WC_Settings_LNDHUB.php:110
 msgid ""
 "generated by lndhub, received when creating account first time or from "
 "backup string."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_LNDHUB.php:95
-#: admin/sections/LND_WC_Settings_LNDHUB.php:98
+#: admin/sections/LND_WC_Settings_LNDHUB.php:107
+#: admin/sections/LND_WC_Settings_LNDHUB.php:110
 msgid "Password"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:217
+#: admin/includes/LND_Settings_Page_Generator.php:214
 msgid "You need to be admin to access these settings"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:369
+#: admin/includes/LND_Settings_Page_Generator.php:366
 msgid "Invalid file format"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:375
+#: admin/includes/LND_Settings_Page_Generator.php:372
 msgid "Couldn't upload the file"
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:815
+#: admin/includes/LND_Settings_Page_Generator.php:812
 msgid "Unable to validate settings."
 msgstr ""
 
-#: admin/includes/LND_Settings_Page_Generator.php:903
+#: admin/includes/LND_Settings_Page_Generator.php:900
 msgid "Settings updated."
 msgstr ""
 
@@ -620,6 +652,18 @@ msgstr ""
 
 #: admin/views/main/dashboard.php:20
 msgid "Under construction"
+msgstr ""
+
+#: admin/views/main/test.php:17
+msgid "Testing payment process"
+msgstr ""
+
+#: admin/views/main/test.php:23
+msgid "OK"
+msgstr ""
+
+#: admin/views/main/test.php:23
+msgid "Error"
 msgstr ""
 
 #: admin/views/loop/dashboard.php:34
