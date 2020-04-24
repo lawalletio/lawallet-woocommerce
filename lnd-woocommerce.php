@@ -88,6 +88,7 @@ if (!function_exists('init_wc_lightning')) {
 
         if (is_admin()) {
           $this->admin = LND_Woocommerce_Admin::instance();
+          $this->admin->set_gateway($this);
         }
 
         if (is_admin() && $this->is_manage_section()) {
@@ -182,8 +183,8 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
         $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
 
+        $this->provider->authenticate();
         $invoice = $this->provider->createInvoice($invoiceInfo);
-        print_r($invoice);
 
         $invoice->value = $invoiceInfo['value'];
         return $invoice;
@@ -216,7 +217,6 @@ if (!function_exists('init_wc_lightning')) {
        * @return array
        */
       public function process_payment( $order_id ) {
-
         $order = wc_get_order($order_id);
         try {
           $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
@@ -225,9 +225,15 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
+        //$order->add_order_note(json_encode($ticker));
+        try {
+          $invoice = $this->create_invoice($order, $ticker);
+        } catch (\Exception $e) {
+          $invoice = (object) [
+            "error" => $e->getMessage()
+          ];
+        }
 
-        $order->add_order_note(json_encode($ticker)); // Remove
-        $invoice = $this->create_invoice($order, $ticker);
 
         if(property_exists($invoice, 'error')){
           wc_add_notice( __('Error: ') . $invoice->error, 'error' );
@@ -284,16 +290,20 @@ if (!function_exists('init_wc_lightning')) {
 
         $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
         //TODO: Set provider of invoice
-        if($this->check_payment($payHash)) {
-          $order->payment_complete();
-          $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
-          status_header(200);
-          wp_send_json(true);
-        } else {
-          status_header(402);
+        try {
+          if($this->check_payment($payHash)) {
+            $order->payment_complete();
+            $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
+            status_header(200);
+            wp_send_json(true);
+          } else {
+            status_header(402);
+            wp_send_json(false);
+          }
+        } catch (\Exception $e) {
+          status_header(500);
           wp_send_json(false);
         }
-
       }
 
       /**
@@ -382,6 +392,7 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       private function check_payment($paymentHash) {
+        $this->provider->authenticate();
         return $this->provider->checkPayment($paymentHash);
       }
 
@@ -400,6 +411,8 @@ if (!function_exists('init_wc_lightning')) {
        */
 
       protected static function format_msat($msat) {
+        //var_dump($msat);
+        //die();
         return rtrim(rtrim(number_format($msat/100000000, 8), '0'), '.') . ' BTC';
       }
 

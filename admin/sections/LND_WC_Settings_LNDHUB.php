@@ -13,6 +13,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
     protected static $structure = null;
     protected static $instance = null;
 
+    protected $notice = null;
     protected $lndhubCon = false;
 
     public function __construct() {
@@ -21,14 +22,24 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
         static::set_structure();
         parent::__construct();
 
-        $access = $this->getToken();
+        try {
+          $access = $this->getToken();
 
-        $this->lndhubCon = LndHub::instance();
-        $this->lndhubCon->setCredentials($this->getEndpoint($this->settings), $this->settings['userID'], $this->settings['password']);
-        $this->lndhubCon->setAccessToken($access);
-        $this->lndhubCon->setStoreTokenFunc([$this, 'setToken']);
-        if (isset($_POST['current_tab']) && $_POST['current_tab'] === 'settings' && $_POST['page'] === static::$prefix) {
-          $this->loadConfig($_POST[static::$prefix]);
+          $this->lndhubCon = LndHub::instance();
+          $this->lndhubCon->setCredentials($this->getEndpoint($this->settings), $this->settings['userID'], $this->settings['password']);
+          $this->lndhubCon->setAccessToken($access);
+          $this->lndhubCon->setStoreTokenFunc([$this, 'setToken']);
+
+          if (isset($_POST[static::$prefix])) {
+            $this->loadConfig($_POST[static::$prefix]);
+          }
+        } catch (\Exception $e) {
+          add_settings_error(
+              static::$prefix,
+              static::$prefix . '_error',
+              $e->getMessage(),
+              'error'
+          );
         }
     }
 
@@ -164,7 +175,10 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
       }
       $settings['ssl'] = isset($settings['ssl']) && $settings['ssl'];
       $this->lndhubCon->setCredentials($this->getEndpoint($settings));
-      $auth = $this->lndhubCon->createUser();
+
+      if (empty($settings['userID']) && empty($settings['userID'])) {
+        $auth = $this->lndhubCon->createUser();
+      }
       $_POST[static::$prefix]['userID'] = $auth->userID;
       $_POST[static::$prefix]['password'] = $auth->password;
     }
@@ -222,7 +236,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
       </div>
       <?
     }
-
+    
     /**
      * Handle $_POST withdraw
      */

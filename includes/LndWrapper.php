@@ -4,7 +4,6 @@ class LndWrapper {
 
     private $macaroonHex;
     private $endpoint;
-    private $coin = 'BTC';
     private $tlsPath;
     private $headers = [];
 
@@ -97,20 +96,8 @@ class LndWrapper {
         $this->headers = ['Grpc-Metadata-macaroon: ' . $this->macaroonHex , 'Content-type: application/json'];
     }
 
-    /**
-     * Sets the cryptocurrency to be used
-     * @param string $coin Symbol: BTC or LTC
-     */
-    public function setCoin ($coin) {
-        $this->coin = $coin;
-    }
-
-    /**
-     * Gets coin's symbol
-     * @return string Symbol: BTC or LTC
-     */
-    public function getCoin () {
-        return $this->coin;
+    public function authenticate() {
+      return true;
     }
 
     /**

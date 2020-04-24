@@ -8,6 +8,7 @@ require(__DIR__ . '/../exchanges/bitso.php');
 require(__DIR__ . '/../exchanges/bitex.php');
 
 class TickerManager {
+  private $currentExchange = null;
   /**
    * Call this method to get singleton
    */
@@ -32,7 +33,6 @@ class TickerManager {
       'bitex' => new Bitex(),
       'bitcoin_average' => new BitcoinAverage()
     ];
-    $this->currentExchange = null;
   }
 
   /**
@@ -118,6 +118,10 @@ class TickerManager {
       'rate' => $rate,
       'markup' => $markup
     );
+  }
+
+  public function getExchange() {
+    return $this->currentExchange;
   }
 
 }

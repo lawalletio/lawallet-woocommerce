@@ -5,6 +5,7 @@ class LND_Woocommerce_Admin {
 
   // Singleton instance
   protected static $instance = false;
+  protected $gateway = null;
 
   /**
    * Singleton control
@@ -40,6 +41,10 @@ class LND_Woocommerce_Admin {
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Main.php');
     add_action('admin_enqueue_scripts', [$this, 'enqueue_backend_assets'], 20);
 
+  }
+
+  public function set_gateway($gateway) {
+    $this->gateway = $gateway;
   }
 
   public function enqueue_backend_assets() {
@@ -104,6 +109,7 @@ class LND_Woocommerce_Admin {
 
   public function lnd_config_main() {
     $page = LND_WC_Settings_Main::instance();
+    $page->set_gateway($this->gateway);
     $page->print_settings_page();
   }
 

@@ -14,7 +14,7 @@ class LND_WC_Settings_LND extends LND_Settings_Page_Generator {
     protected static $instance = null;
 
     protected $lndCon = false;
-    private $notice = null;
+    protected $notice = null;
 
     public function __construct() {
         $this->title = __('LND Settings', 'lnd-woocommerce');

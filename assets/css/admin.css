@@ -101,3 +101,23 @@ div.wc_lnd_settings {
     padding: 20px !important;
     margin: 0;
 }
+
+ul.wc_lnd_settings_list {
+  padding: 22px;
+}
+
+ul.wc_lnd_settings_list li {
+  list-style: circle;
+  margin-left: 24px;
+}
+
+ul.wc_lnd_settings_list .text-success {
+  color: green;
+  display: inline-block;
+  max-width: 60%;
+  overflow: hidden;
+}
+
+ul.wc_lnd_settings_list .text-error {
+  color: red;
+}

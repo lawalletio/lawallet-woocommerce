@@ -6,7 +6,7 @@ class LndHub {
     private $password;
     private $accessToken;
     private $tokenExpiry;
-    private $tokenTTL = 86400;
+    private $defaultTokenTTL = 86400;
     private $endpoint;
     private $headers = [];
     private $updateTokenFunc = null;
@@ -139,13 +139,13 @@ class LndHub {
         //print_r($response);
         $token = (object) [
           'token' => $response->access_token,
-          'expiry' => time() + $this->tokenTTL,
+          'expiry' => time() + $this->defaultTokenTTL,
         ];
         return $this->setAccessToken($token, true);
     }
 
     public function authenticate() {
-      if ($this->accessToken === null || !$this->tokenExpiry || time() - $this->tokenExpiry - $this->tokenTTL <= 0) {
+      if ($this->accessToken === null || !$this->tokenExpiry || time() - $this->tokenExpiry - $this->defaultTokenTTL <= 0) {
         return $this->login();
       }
       return $this->getAccessToken();
