@@ -47,11 +47,6 @@ class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
     public static function set_structure() {
         // Define main settings
         static::$structure = [
-            'dashboard' => [
-                'title' => __('Dashboard', 'lnd-woocommerce'),
-                'template' => 'dashboard',
-                'children' => [],
-            ],
             'settings' => [
                 'title' => __('Config', 'lnd-woocommerce'),
                 'children' => array(
@@ -75,6 +70,11 @@ class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
                         ],
                     ),
                 ),
+            ],
+            'dashboard' => [
+                'title' => __('Dashboard', 'lnd-woocommerce'),
+                'template' => 'dashboard',
+                'children' => [],
             ],
             'info' => array(
                 'title' => __('Server Info', 'lnd-woocommerce'),
