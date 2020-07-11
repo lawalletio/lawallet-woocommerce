@@ -1,0 +1,350 @@
+<?php
+/*
+    Plugin Name: WooCommerce Lightning Gateway
+    Plugin URI:  https://joaoalmeida.me
+    Description: Enable instant and fee-reduced payments in BTC and LTC through Lightning Network.
+    Author:      João Almeida
+    Author URI:  https://joaoalmeida.me
+
+    Version:           0.1.0
+    GitHub Plugin URI: https://github.com/joaodealmeida/woocommerce-gateway-zap
+*/
+
+/*
+Exchanges Tickers for ARS
+ */
+require('exchanges/abstract.php');
+
+require('exchanges/satoshitango.php');
+require('exchanges/ripio.php');
+require('exchanges/bitso.php');
+require('exchanges/bitex.php');
+
+$exchangesList = [
+  'satoshi_tango' => new SatoshiTango(),
+  'ripio' => new Ripio(),
+  'bitso' => new Bitso(),
+  'bitex' => new Bitex(),
+];
+
+if ( ! defined( 'ABSPATH' ) ) {
+  exit;
+}
+
+register_activation_hook( __FILE__, function(){
+  if (!extension_loaded('gd') || !extension_loaded('curl')) {
+    die('The php-curl and php-gd extensions are required. Please contact your hosting provider for additional help.');
+  }
+});
+
+require_once 'Lnd_wrapper.php';
+
+if (!function_exists('init_wc_lightning')) {
+
+  function init_wc_lightning() {
+    if (!class_exists('WC_Payment_Gateway')) return;
+
+    class WC_Gateway_Lightning extends WC_Payment_Gateway {
+
+      public function __construct() {
+        $this->id                 = 'lightning';
+        $this->order_button_text  = __('Proceed to Lightning Payment', 'woocommerce');
+        $this->method_title       = __('Lightning', 'woocommerce');
+        $this->method_description = __('Lightning Network Payment');
+        $this->icon               = plugin_dir_url(__FILE__).'img/logo.png';
+        $this->supports           = array();
+
+        // Load the settings.
+        $this->init_form_fields();
+        $this->init_settings();
+
+        // Define user set variables.
+        $this->title       = $this->get_option('title');
+        $this->description = $this->get_option('description');
+        $this->endpoint = $this->get_option( 'endpoint' );
+        $this->macaroon = $this->get_option( 'macaroon' );
+        $this->lndCon = LndWrapper::instance();
+        $this->lndCon->setCredentials ( $this->get_option( 'endpoint' ), $this->get_option( 'macaroon' ), $this->get_option( 'ssl' ));
+        $this->lndCon->setCoin( $this->get_option( 'coin' ) );
+
+        add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
+        add_action('woocommerce_update_options_payment_gateways_lightning', array($this, 'process_admin_options'));
+        add_action('woocommerce_receipt_lightning', array($this, 'show_payment_info'));
+        add_action('woocommerce_thankyou_lightning', array($this, 'show_payment_info'));
+        add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
+        add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
+
+        echo $this->lndCon->generateAddress();
+        echo "Bueno bueno!!!";
+        die();
+      }
+
+      /**
+       * Initialise Gateway Settings Form Fields.
+       */
+      public function init_form_fields() {
+        global $exchangesList;
+
+        $tlsPath = plugin_dir_path(__FILE__).'tls/tls.cert';
+        $this->form_fields = array(
+          'enabled' => array(
+            'title'       => __( 'Enable/Disable', 'woocommerce-gateway-lightning' ),
+            'label'       => __( 'Enable Lightning payments', 'woocommerce-gateway-lightning' ),
+            'type'        => 'checkbox',
+            'description' => '',
+            'default'     => 'no',
+          ),
+          'title' => array(
+            'title'       => __('Title', 'lightning'),
+            'type'        => 'text',
+            'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lightning'),
+            'default'     => __('Bitcoin Lightning', 'lightning'),
+            'desc_tip'    => true,
+          ),
+         'coin' => array(
+           'title'       => __('Coin', 'lightning'),
+           'type'        => 'select',
+           'description' => __('Select the coin network your LND is connected to.', 'lightning'),
+           'default'     => __('BTC', 'lightning'),
+           'options'     => array(
+                          'BTC'   => __('BTC','lightning'),
+                          'LTC'  => __('LTC','lightning')
+           ),
+           'desc_tip'    => true,
+          ),
+          'ticker' => array(
+            'title'       => __('Ticker', 'lightning'),
+            'type'        => 'select',
+            'description' => __('Select Exchange for rate calculation.', 'lightning'),
+            'default'     => __('BTC', 'lightning'),
+            'options'     => array_map(function($exchange) {
+              return $exchange->name;
+            }, $exchangesList),
+            'desc_tip'    => true,
+          ),
+          'rate_markup' => array(
+            'title'       => __('Rate Markup', 'lightning'),
+            'type'        => 'text',
+            'description' => __('Increases exchange rate with a percentage', 'lightning'),
+            'default'     => 1, // 5 minutes
+            'desc_tip'    => true,
+          ),
+          'invoice_expiry' => array(
+            'title'       => __('Invoice Expiration', 'lightning'),
+            'type'        => 'text',
+            'description' => __('Invoice expiration time in seconds', 'lightning'),
+            'default'     => 300, // 5 minutes
+            'desc_tip'    => true,
+          ),
+          'endpoint' => array(
+            'title'       => __( 'Endpoint', 'lightning' ),
+            'type'        => 'textarea',
+            'description' => __( 'Place here the API endpoint', 'lightning' ),
+            'default'     => 'https://localhost:8080',
+            'desc_tip'    => true,
+          ),
+          'macaroon' => array(
+            'title'       => __('Macaroon Hex', 'lightning'),
+            'type'        => 'textarea',
+            'description' => __('Input Macaroon Hex to get access to LND API', 'lightning'),
+            'default'     => '',
+            'desc_tip'    => true,
+          ),
+          'description' => array(
+            'title'       => __('Customer Message', 'lightning'),
+            'type'        => 'textarea',
+            'description' => __('Message to explain how the customer will be paying for the purchase.', 'lightning'),
+            'default'     => 'You will pay using the Lightning Network.',
+            'desc_tip'    => true,
+          ),
+          'ssl' => array(
+            'title'       => __('SSL Certificate Path', 'lightning'),
+            'type'        => 'textarea',
+            'description' => __('Put your LND SSL certificate path.', 'lightning'),
+            'default'     => $tlsPath,
+            'desc_tip'    => true,
+          )
+
+        );
+      }
+      /**
+       * Get ticker from ARS Exchanges
+       * @return float Price
+       */
+      public function getAlternativePrice() {
+        global $exchangesList;
+        print_r($exchangesList);
+        $price = $exchangesList[$this->get_option('ticker')]->getPrice();
+        // echo "Price Modafakaaa!! : $price";
+        // die();
+        return $price;
+      }
+
+      /**
+       * Process the payment and return the result.
+       * @param  int $order_id
+       * @return array
+       */
+      public function process_payment( $order_id ) {
+        $order = wc_get_order($order_id);
+        $usedCurrency = get_woocommerce_currency();
+        $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
+        $markup = (float)$this->get_option('rate_markup')/100;
+        $livePrice = $livePrice/(1+$markup);
+
+        $invoiceInfo = array();
+        $btcPrice = $order->get_total() * ((float)1/ $livePrice);
+
+        $invoiceInfo['value'] = round($btcPrice * 100000000);
+        $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
+        $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
+
+        $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
+
+        if(property_exists($invoiceResponse, 'error')){
+          wc_add_notice( __('Error: ', 'lightning') . $invoiceResponse->error, 'error' );
+          return;
+        }
+
+        if(!property_exists($invoiceResponse, 'payment_request')) {
+          wc_add_notice( __('Error: ', 'lightning') . 'Lightning Node is not reachable at this time. Please contact the store administrator.', 'error' );
+          return;
+        }
+
+        update_post_meta( $order->get_id(), 'LN_RATE', $livePrice, true);
+        update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'), true);
+        update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value'], true);
+        update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request, true);
+        update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash, true);
+        $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
+
+        return array(
+          'result'   => 'success',
+          'redirect' => $order->get_checkout_payment_url(true)
+        );
+      }
+
+
+      /**
+       * JSON endpoint for long polling payment updates.
+       */
+      public function wait_invoice() {
+
+        $order = wc_get_order($_POST['invoice_id']);
+
+        if($order->get_status() == 'processing'){
+          status_header(200);
+          wp_send_json(true);
+          return;
+        }
+        /**
+         *
+         * Check if invoice is paid
+         */
+
+        $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
+
+        $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode( $payHash ) ) );
+        if(!property_exists( $callResponse, 'r_hash' )) {
+          status_header(410);
+          wp_send_json(false);
+          return;
+        }
+
+        $invoiceTime = $callResponse->creation_date + $callResponse->expiry;
+        if($invoiceTime < time()) {
+
+          //Invoice expired
+          $usedCurrency = get_woocommerce_currency();
+          $livePrice = $usedCurrency == 'ARS' ? $this->getAlternativePrice() : $this->lndCon->getLivePrice();
+          $markup = (float)$this->get_option('rate_markup')/100;
+          $livePrice = $livePrice/(1+$markup);
+
+          $invoiceInfo = array();
+          $btcPrice = $order->get_total() * ((float)1/ $livePrice);
+
+          $invoiceInfo['value'] = round($btcPrice * 100000000);
+          $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
+          $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
+
+          $invoiceResponse = $this->lndCon->createInvoice ( $invoiceInfo );
+          update_post_meta( $order->get_id(), 'LN_RATE', $livePrice);
+          update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
+          update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoiceInfo['value']);
+          update_post_meta( $order->get_id(), 'LN_INVOICE', $invoiceResponse->payment_request);
+          update_post_meta( $order->get_id(), 'LN_HASH', $invoiceResponse->r_hash);
+          $order->add_order_note("Awaiting payment of " . number_format((float)$btcPrice, 7, '.', '') . " " . $this->lndCon->getCoin() .  "@ 1 " . $this->lndCon->getCoin() . " ~ " . $livePrice ."(+" . $markup . "%) " . $usedCurrency . ". <br> Invoice ID: " . $invoiceResponse->payment_request);
+          status_header(410);
+          wp_send_json(false);
+          return;
+        }
+
+        if(!property_exists( $callResponse, 'settled' )){
+          status_header(402);
+          wp_send_json(false);
+          return;
+        }
+
+        if ($callResponse->settled) {
+          $order->payment_complete();
+          $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
+          status_header(200);
+          wp_send_json(true);
+          return;
+        }
+
+      }
+
+      /**
+       * Hooks into the checkout page to display Lightning-related payment info.
+       */
+      public function show_payment_info($order_id) {
+        global $wp, $exchangesList;
+
+        $order = wc_get_order($order_id);
+
+        if (!empty($wp->query_vars['order-received']) && $order->needs_payment()) {
+          // thankyou page requested, but order is still unpaid
+          wp_redirect($order->get_checkout_payment_url(true));
+          exit;
+        }
+
+        if ($order->has_status('cancelled')) {
+          // invoice expired, reload page to display expiry message
+          wp_redirect($order->get_checkout_payment_url(true));
+          exit;
+        }
+
+        if ($order->needs_payment()) {
+          //Prepare information for payment page
+          $qr_uri = $this->lndCon->generateQr( get_post_meta( $order_id, 'LN_INVOICE', true ) );
+          $payHash = get_post_meta( $order_id, 'LN_HASH', true );
+          $rate = number_format((float)get_post_meta( $order_id, 'LN_RATE', true ), 2, '.', ',');
+          $exchange = $exchangesList[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
+          $currency = $order->get_currency();
+          $callResponse = $this->lndCon->getInvoiceInfoFromHash( bin2hex(base64_decode($payHash)) );
+          require __DIR__.'/templates/payment.php';
+
+        } elseif ($order->has_status(array('processing', 'completed'))) {
+          require __DIR__.'/templates/completed.php';
+        }
+      }
+
+      /**
+       * Register as a WooCommerce gateway.
+       */
+      public function register_gateway($methods) {
+        $methods[] = $this;
+        return $methods;
+      }
+
+      protected static function format_msat($msat, $coin) {
+        return rtrim(rtrim(number_format($msat/100000000, 8), '0'), '.') . ' ' . $coin;
+      }
+    }
+
+    new WC_Gateway_Lightning();
+  }
+
+  add_action('plugins_loaded', 'init_wc_lightning');
+}

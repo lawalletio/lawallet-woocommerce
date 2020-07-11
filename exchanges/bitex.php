@@ -3,6 +3,7 @@ class Bitex extends Exchange {
   public $endpoint = 'https://bitex.la/api';
   public $name = "Bitex";
 
+<<<<<<< HEAD
   public $fiatList = ['ARS', 'USD'];
 
   /**
@@ -18,5 +19,11 @@ class Bitex extends Exchange {
   public function setCredentials($data) {
     throw new \Exception(__(printf("setCredentials for %s not implemented", $this->name), "lnd-woocommerce"), 1);
   }
+=======
+  public function getPrice($currency='ARS', $crypto='BTC') {
+    $content = json_decode($this->request($this->endpoint . "/tickers/" . strtolower($crypto . "_" . $currency)));
+    return $content->data->attributes->bid;
+  }
+>>>>>>> Minimal changes
 }
 ?>
