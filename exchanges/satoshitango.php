@@ -1,6 +1,5 @@
 <?
 class SatoshiTango extends Exchange {
-<<<<<<< HEAD
   public $endpoint = 'https://api.satoshitango.com/v3';
   public $name = "SatoshiTango";
   private $apiKey = "";
@@ -59,14 +58,5 @@ class SatoshiTango extends Exchange {
     ];
     $content = json_decode($this->request($this->endpoint . "/sellcrypto/exec"), $data);
   }
-=======
-  public $endpoint = 'https://apibeta.satoshitango.com/v3';
-  public $name = "SatoshiTango";
-
-  public function getPrice($currency='ARS', $crypto='BTC') {
-    $content = json_decode($this->request($this->endpoint . "/ticker/$currency/$crypto"));
-    return $content->data->ticker->BTC->bid;
-  }
->>>>>>> Minimal changes
 }
 ?>

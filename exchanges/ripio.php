@@ -3,7 +3,6 @@ class Ripio extends Exchange {
   public $endpoint = 'https://ripio.com/api/v1';
   public $name = "Ripio";
 
-<<<<<<< HEAD
   public $fiatList = ['ARS'];
 
   /**
@@ -12,9 +11,10 @@ class Ripio extends Exchange {
    * @return float           Rate
    */
   public function getRate($currency='ARS') {
-=======
+
+  }
+
   public function getPrice($currency='ARS', $crypto='BTC') {
->>>>>>> Minimal changes
     $content = json_decode($this->request($this->endpoint . "/rates/"));
     return $content->rates->{$currency . '_SELL'};
   }
