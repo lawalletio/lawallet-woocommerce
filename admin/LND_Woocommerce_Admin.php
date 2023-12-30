@@ -35,8 +35,8 @@ class LND_Woocommerce_Admin {
    */
   public function settings_init() {
 
-    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
-    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
+    // require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
+    // require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LNDHUB.php');
     require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Main.php');
     add_action('admin_enqueue_scripts', [$this, 'enqueue_backend_assets'], 20);
@@ -62,8 +62,8 @@ class LND_Woocommerce_Admin {
   public function add_menus() {
       add_submenu_page(
         WC_LND_NAME,
-        __('Settings', 'lnd-woocommerce'),
-        __('Settings', 'lnd-woocommerce'),
+        __('Settings', 'lawallet-woocommerce'),
+        __('Settings', 'lawallet-woocommerce'),
         'manage_woocommerce',
         WC_LND_NAME,
         [$this, 'lnd_config_main']
@@ -71,8 +71,8 @@ class LND_Woocommerce_Admin {
 
       // add top level menu page
       add_menu_page(
-          'Lightning WC',
-          'Lightning WC',
+          'LaWallet',
+          'LaWallet',
           'manage_options',
           WC_LND_NAME,
           [$this, 'lnd_config_main'],
@@ -81,30 +81,30 @@ class LND_Woocommerce_Admin {
 
       add_submenu_page(
         WC_LND_NAME,
-        __( 'LND Server', 'lnd-woocommerce' ),
-        __( 'LND Server', 'lnd-woocommerce' ),
-        'manage_options',
-        WC_LND_NAME .'_lnd_config',
-        [$this, 'lnd_config_page']
-      );
-
-      add_submenu_page(
-        WC_LND_NAME,
-        __( 'Loop Server', 'lnd-woocommerce' ),
-        __( 'Loop Server', 'lnd-woocommerce' ),
-        'manage_options',
-        WC_LND_NAME .'_loop_config',
-        [$this, 'loop_config_page']
-      );
-
-      add_submenu_page(
-        WC_LND_NAME,
-        __( 'LndHub', 'lnd-woocommerce' ),
-        __( 'LndHub', 'lnd-woocommerce' ),
+        __( 'LndHub', 'lawallet-woocommerce' ),
+        __( 'LndHub', 'lawallet-woocommerce' ),
         'manage_options',
         WC_LND_NAME .'_lndhub_config',
         [$this, 'lndhub_config_page']
       );
+
+      // add_submenu_page(
+      //   WC_LND_NAME,
+      //   __( 'LND Server', 'lawallet-woocommerce' ),
+      //   __( 'LND Server', 'lawallet-woocommerce' ),
+      //   'manage_options',
+      //   WC_LND_NAME .'_lnd_config',
+      //   [$this, 'lnd_config_page']
+      // );
+
+      // add_submenu_page(
+      //   WC_LND_NAME,
+      //   __( 'Loop Server', 'lawallet-woocommerce' ),
+      //   __( 'Loop Server', 'lawallet-woocommerce' ),
+      //   'manage_options',
+      //   WC_LND_NAME .'_loop_config',
+      //   [$this, 'loop_config_page']
+      // );
   }
 
   public function lnd_config_main() {
@@ -113,18 +113,18 @@ class LND_Woocommerce_Admin {
     $page->print_settings_page();
   }
 
-  public function lnd_config_page() {
-    $page = LND_WC_Settings_LND::instance();
-    $page->print_settings_page();
-  }
-
-  public function loop_config_page() {
-    $page = LND_WC_Settings_Loop::instance();
-    $page->print_settings_page();
-  }
-
   public function lndhub_config_page() {
     $page = LND_WC_Settings_LNDHUB::instance();
     $page->print_settings_page();
   }
+
+  // public function lnd_config_page() {
+  //   $page = LND_WC_Settings_LND::instance();
+  //   $page->print_settings_page();
+  // }
+
+  // public function loop_config_page() {
+  //   $page = LND_WC_Settings_Loop::instance();
+  //   $page->print_settings_page();
+  // }
 }

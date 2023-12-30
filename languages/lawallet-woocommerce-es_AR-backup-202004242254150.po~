@@ -14,33 +14,33 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.3.3; wp-5.4"
 
-#: lnd-woocommerce.php:52
+#: lawallet-woocommerce.php:52
 msgid "Proceed to Lightning Payment"
 msgstr "Pagar con Lightning"
 
-#: lnd-woocommerce.php:53
+#: lawallet-woocommerce.php:53
 msgid "Lightning"
 msgstr "Lightning"
 
-#: lnd-woocommerce.php:54
+#: lawallet-woocommerce.php:54
 msgid "Lightning Network Payment"
 msgstr "Pago con Lightning Network"
 
-#: lnd-woocommerce.php:114 admin/LND_Woocommerce_Admin.php:60
+#: lawallet-woocommerce.php:114 admin/LND_Woocommerce_Admin.php:60
 #: admin/LND_Woocommerce_Admin.php:61
 #: admin/sections/LND_WC_Settings_Main.php:33
 msgid "Settings"
 msgstr "Ajustes"
 
-#: lnd-woocommerce.php:127
+#: lawallet-woocommerce.php:127
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
 
-#: lnd-woocommerce.php:128
+#: lawallet-woocommerce.php:128
 msgid "Enable Lightning payments"
 msgstr "Habilitar Pagos con Lightning"
 
-#: lnd-woocommerce.php:136
+#: lawallet-woocommerce.php:136
 msgid ""
 "Controls the name of this payment method as displayed to the customer during "
 "checkout."
@@ -48,59 +48,59 @@ msgstr ""
 "Controla el nombre de este método de pago, como se muestra para el cliente "
 "durante el proceso de compra."
 
-#: lnd-woocommerce.php:137
+#: lawallet-woocommerce.php:137
 msgid "Bitcoin Lightning"
 msgstr "Bitcoin Lightning"
 
-#: lnd-woocommerce.php:141
+#: lawallet-woocommerce.php:141
 msgid "Ticker"
 msgstr "Cotización"
 
-#: lnd-woocommerce.php:143
+#: lawallet-woocommerce.php:143
 msgid "Select Exchange for rate calculation."
 msgstr "Seleccione el Exchange para el cálculo de cotización."
 
-#: lnd-woocommerce.php:151
+#: lawallet-woocommerce.php:151
 msgid "Rate Markup"
 msgstr "Markup de Cotización"
 
-#: lnd-woocommerce.php:153
+#: lawallet-woocommerce.php:153
 msgid "Increases exchange rate with a percentage"
 msgstr "Incrementa la cotización recibida con el porcentaje (1 = 1%)"
 
-#: lnd-woocommerce.php:158
+#: lawallet-woocommerce.php:158
 msgid "Invoice Expiration"
 msgstr "Expiración de Invoice"
 
-#: lnd-woocommerce.php:160
+#: lawallet-woocommerce.php:160
 msgid "Invoice expiration time in seconds"
 msgstr "Expiración de la invoice en segundos"
 
-#: lnd-woocommerce.php:165
+#: lawallet-woocommerce.php:165
 msgid "Customer Message"
 msgstr "Mensaje Del Cliente"
 
-#: lnd-woocommerce.php:167
+#: lawallet-woocommerce.php:167
 msgid "Message to explain how the customer will be paying for the purchase."
 msgstr "Mensaje para explicar cómo el cliente va a pagar por la compra."
 
-#: lnd-woocommerce.php:168
+#: lawallet-woocommerce.php:168
 msgid "You will pay using the Lightning Network."
 msgstr "Usted tendrá que pagar utilizando Lightning Network."
 
-#: lnd-woocommerce.php:210
+#: lawallet-woocommerce.php:210
 msgid "Awaiting payment of"
 msgstr "Esperando pago de"
 
-#: lnd-woocommerce.php:210
+#: lawallet-woocommerce.php:210
 msgid "applied"
 msgstr "aplicado"
 
-#: lnd-woocommerce.php:224
+#: lawallet-woocommerce.php:224
 msgid "Couldn't get quote from ticker."
 msgstr "No se pudo obtener la cotización del exchange"
 
-#: lnd-woocommerce.php:238
+#: lawallet-woocommerce.php:238
 msgid ""
 "Lightning Node is not reachable at this time. Please contact the store "
 "administrator."
@@ -108,7 +108,7 @@ msgstr ""
 "No puede conectarse al nodo de Lightning en este momento. Por favor, "
 "contactate con el administrador."
 
-#: lnd-woocommerce.php:441
+#: lawallet-woocommerce.php:441
 msgid "Already uploaded"
 msgstr "Archivo Subido"
 
@@ -459,7 +459,7 @@ msgid "Lnd server to be used."
 msgstr "Servidor Lnd a ser utilizado."
 
 #: admin/sections/LND_WC_Settings_LNDHUB.php:18
-msgid "LNDHub Settings"
+msgid "LaWallet Settings"
 msgstr "Configuración de LndHub"
 
 #: admin/sections/LND_WC_Settings_LNDHUB.php:49
@@ -726,8 +726,8 @@ msgstr ""
 "Lightning Network."
 
 #. URI of the plugin
-msgid "https://github.com/agustinkassis/lnd-woocommerce"
-msgstr "https://github.com/agustinkassis/lnd-woocommerce"
+msgid "https://github.com/agustinkassis/lawallet-woocommerce"
+msgstr "https://github.com/agustinkassis/lawallet-woocommerce"
 
 #. Author of the plugin
 msgid "Agustin Kassis"

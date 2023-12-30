@@ -1,16 +1,5 @@
 <?php
 /*
-    Plugin Name: WooCommerce Lightning Gateway
-    Plugin URI:  https://joaoalmeida.me
-    Description: Enable instant and fee-reduced payments in BTC and LTC through Lightning Network.
-    Author:      João Almeida
-    Author URI:  https://joaoalmeida.me
-
-    Version:           0.1.0
-    GitHub Plugin URI: https://github.com/joaodealmeida/woocommerce-gateway-zap
-*/
-
-/*
 Exchanges Tickers for ARS
  */
 require('exchanges/abstract.php');

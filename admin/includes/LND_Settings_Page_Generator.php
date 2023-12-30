@@ -211,7 +211,7 @@ class LND_Settings_Page_Generator {
      */
     public function print_settings_page() {
         if (!is_admin()) {
-          throw new \Exception(__('You need to be admin to access these settings', 'lnd-woocommerce'), 403);
+          throw new \Exception(__('You need to be admin to access these settings', 'lawallet-woocommerce'), 403);
         }
 
         // Get current tab
@@ -363,13 +363,13 @@ class LND_Settings_Page_Generator {
 
         $format = strtolower(pathinfo($_FILES[static::$prefix]['name'][$input_name], PATHINFO_EXTENSION));
         if (count($accept_format)>=0 && !in_array($format, $accept_format)) {
-          throw new \Exception(__('Invalid file format', 'lnd-woocommerce'), 415);
+          throw new \Exception(__('Invalid file format', 'lawallet-woocommerce'), 415);
         }
 
         if (move_uploaded_file($_FILES[static::$prefix]['tmp_name'][$input_name], $destination)) {
           return true;
         } else {
-          throw new \Exception(__("Couldn't upload the file", "lnd-woocommerce"), 500);
+          throw new \Exception(__("Couldn't upload the file", "lawallet-woocommerce"), 500);
         }
 
     }
@@ -809,7 +809,7 @@ class LND_Settings_Page_Generator {
 
             // Check if request came from a correct page
             if (empty($_POST['current_tab']) || !isset($structure[$_POST['current_tab']])) {
-                throw new Exception(__('Unable to validate settings.', 'lnd-woocommerce'));
+                throw new Exception(__('Unable to validate settings.', 'lawallet-woocommerce'));
             }
 
             // Reference current tab
@@ -897,7 +897,7 @@ class LND_Settings_Page_Generator {
                 add_settings_error(
                     static::$prefix,
                     static::$prefix . '_updated',
-                    __('Settings updated.', 'lnd-woocommerce'),
+                    __('Settings updated.', 'lawallet-woocommerce'),
                     'updated'
                 );
             }

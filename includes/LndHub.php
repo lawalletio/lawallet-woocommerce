@@ -129,7 +129,7 @@ class LndHub {
 
     public function login() {
         if ($this->userID === null || $this->password === null) {
-          throw new \Exception(__("Unable to login. UserID or password missing", "lnd-woocommerce"), 1);
+          throw new \Exception(__("Unable to login. UserID or password missing", "lawallet-woocommerce"), 1);
         }
         $data = (object)[
           "login" => $this->userID,
@@ -240,15 +240,15 @@ class LndHub {
       $verboseLog = stream_get_contents($verbose);
 
       if (strpos($verboseLog, 'HTTP/1.1 429')) {
-        throw new \Exception(__('Too many requests on Lndhub', 'lnd-woocommerce'), 429);
+        throw new \Exception(__('Too many requests on Lndhub', 'lawallet-woocommerce'), 429);
       }
       if (strpos($verboseLog, 'HTTP/1.1 200 OK') === false) {
-        throw new \Exception(__('Server is unreacheable, must be down or wrong port is given', 'lnd-woocommerce'), 501);
+        throw new \Exception(__('Server is unreacheable, must be down or wrong port is given', 'lawallet-woocommerce'), 501);
       }
 
       $errors = [
-        1 => __("Bad Authentication", "lnd-woocommerce"),
-        8 => __("Bad Arguments", "lnd-woocommerce"),
+        1 => __("Bad Authentication", "lawallet-woocommerce"),
+        8 => __("Bad Arguments", "lawallet-woocommerce"),
       ];
 
       if (isset($output->error) && $output->error) {

@@ -17,7 +17,7 @@ class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
     protected $loopCon = false;
 
     public function __construct() {
-        $this->title = __('Loop Settings', 'lnd-woocommerce');
+        $this->title = __('Loop Settings', 'lawallet-woocommerce');
 
         static::set_structure();
         parent::__construct();
@@ -48,36 +48,36 @@ class LND_WC_Settings_Loop extends LND_Settings_Page_Generator {
         // Define main settings
         static::$structure = [
             'settings' => [
-                'title' => __('Config', 'lnd-woocommerce'),
+                'title' => __('Config', 'lawallet-woocommerce'),
                 'children' => array(
                     'general_settings' => array(
-                        'title' => __('Server Config', 'lnd-woocommerce'),
+                        'title' => __('Server Config', 'lawallet-woocommerce'),
                         'children' => [
                             'host' => array(
-                                'title'     => __('Host', 'lnd-woocommerce'),
+                                'title'     => __('Host', 'lawallet-woocommerce'),
                                 'type'      => 'text',
-                                'default'   => __('localhost', 'lnd-woocommerce'),
+                                'default'   => __('localhost', 'lawallet-woocommerce'),
                                 'required'  => true,
-                                'hint'      => __('Loop host address, you can use <b>localhost</b>.', 'lnd-woocommerce'),
+                                'hint'      => __('Loop host address, you can use <b>localhost</b>.', 'lawallet-woocommerce'),
                             ),
                             'port' => array(
-                                'title'     => __('Port', 'lnd-woocommerce'),
+                                'title'     => __('Port', 'lawallet-woocommerce'),
                                 'type'      => 'text',
                                 'default'   => 8081,
                                 'required'  => true,
-                                'hint'      => __('Loop port, must be the same as <b>restlisten</b>. Please type just the port number.', 'lnd-woocommerce'),
+                                'hint'      => __('Loop port, must be the same as <b>restlisten</b>. Please type just the port number.', 'lawallet-woocommerce'),
                             ),
                         ],
                     ),
                 ),
             ],
             'dashboard' => [
-                'title' => __('Dashboard', 'lnd-woocommerce'),
+                'title' => __('Dashboard', 'lawallet-woocommerce'),
                 'template' => 'dashboard',
                 'children' => [],
             ],
             'info' => array(
-                'title' => __('Server Info', 'lnd-woocommerce'),
+                'title' => __('Server Info', 'lawallet-woocommerce'),
                 'template' => 'info',
                 'children' => [],
             ),

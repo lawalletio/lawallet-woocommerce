@@ -83,48 +83,48 @@ if (!defined('ABSPATH')) {
 <div class="wc_lnd_settings">
     <div class="wc_lnd_settings_container">
 
-        <h2><?=__('Withdraw', 'lnd-woocommerce')?></h2>
+        <h2><?=__('Withdraw', 'lawallet-woocommerce')?></h2>
         <form method="post" name="data">
           <table class="form-table" role="presentation">
             <tbody>
               <tr>
-                <th scope="row"><?=__('Available Balance', 'lnd-woocommerce')?></th>
+                <th scope="row"><?=__('Available Balance', 'lawallet-woocommerce')?></th>
                 <td>
                   <b id="wc_lnd_balance_amount"></b> sats (<i id="wc_lnd_balance_conversion"></i>)
-                  <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to send via Lightning', 'lnd-woocommerce')?></div>
+                  <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to send via Lightning', 'lawallet-woocommerce')?></div>
                 </td>
               </tr>
 
 
               <tr>
-                <th scope="row"><?=__('Payment Request', 'lnd-woocommerce')?></th>
+                <th scope="row"><?=__('Payment Request', 'lawallet-woocommerce')?></th>
                 <td>
                   <input id="wc_lnd_pay_req" type="text" name="pay_req" class="wc_lnd_setting wc_lnd_field_long " value="" />
-                  <div class="wc_lnd_settings_hint"><?=__('pay_req for the invoice to be paid', 'lnd-woocommerce')?></div>
+                  <div class="wc_lnd_settings_hint"><?=__('pay_req for the invoice to be paid', 'lawallet-woocommerce')?></div>
                 </td>
               </tr>
 
 
               <tr class="wc_lnd_invoice_data">
-                <th scope="row"><?=__('Amount', 'lnd-woocommerce')?></th>
+                <th scope="row"><?=__('Amount', 'lawallet-woocommerce')?></th>
                 <td>
                   <b id="wc_lnd_amount">12313</b> sats (<i id="wc_lnd_conversion"></i>)
-                  <div class="wc_lnd_settings_hint"><?=__('Amount of satoshis to be payed', 'lnd-woocommerce')?></div>
+                  <div class="wc_lnd_settings_hint"><?=__('Amount of satoshis to be payed', 'lawallet-woocommerce')?></div>
                 </td>
               </tr>
               <tr class="wc_lnd_invoice_data">
-                <th scope="row"><?=__('Expires', 'lnd-woocommerce')?></th>
+                <th scope="row"><?=__('Expires', 'lawallet-woocommerce')?></th>
                 <td>
                   <span id="wc_lnd_expires"></span>
-                  <div class="wc_lnd_settings_hint"><?=__('Invoice\'s expiration date', 'lnd-woocommerce')?></div>
+                  <div class="wc_lnd_settings_hint"><?=__('Invoice\'s expiration date', 'lawallet-woocommerce')?></div>
                 </td>
               </tr>
 
               <tr class="wc_lnd_invoice_data">
-                <th scope="row"><?=__('Node Key', 'lnd-woocommerce')?></th>
+                <th scope="row"><?=__('Node Key', 'lawallet-woocommerce')?></th>
                 <td>
                   <span id="wc_lnd_node_key"></span>
-                  <div class="wc_lnd_settings_hint"><?=__('Receiver Node key', 'lnd-woocommerce')?></div>
+                  <div class="wc_lnd_settings_hint"><?=__('Receiver Node key', 'lawallet-woocommerce')?></div>
                 </td>
               </tr>
 
@@ -135,7 +135,7 @@ if (!defined('ABSPATH')) {
 
             </tbody>
           </table>
-          <span id="wc_lnd_submit_wrap"><? submit_button(__('Transfer funds', 'lnd-woocommerce')); ?></span>
+          <span id="wc_lnd_submit_wrap"><? submit_button(__('Transfer funds', 'lawallet-woocommerce')); ?></span>
         </form>
 
     </div>

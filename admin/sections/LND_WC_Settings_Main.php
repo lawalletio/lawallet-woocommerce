@@ -17,7 +17,7 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
     protected $tests = [];
 
     public function __construct() {
-        $this->title = __('LND Main Settings', 'lnd-woocommerce');
+        $this->title = __('LND Main Settings', 'lawallet-woocommerce');
         self::set_structure();
         parent::__construct();
     }
@@ -37,27 +37,27 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
         // Define main settings
         static::$structure = array(
             'settings' => array(
-                'title' => __('Settings', 'lnd-woocommerce'),
+                'title' => __('Settings', 'lawallet-woocommerce'),
                 'children' => array(
                     'general_settings' => array(
-                        'title' => __('Main Settings', 'lnd-woocommerce'),
+                        'title' => __('Main Settings', 'lawallet-woocommerce'),
                         'children' => [
                             'provider' => array(
-                                'title'     => __('LND Provider', 'lnd-woocommerce'),
+                                'title'     => __('LND Provider', 'lawallet-woocommerce'),
                                 'type'      => 'select',
                                 'default'   => 'lnd',
                                 'options'   => [
                                   'lnd' => 'LND Server',
                                   'lndhub' => 'LndHub',
                                 ],
-                                'hint'      => __('Lnd server to be used.', 'lnd-woocommerce'),
+                                'hint'      => __('Lnd server to be used.', 'lawallet-woocommerce'),
                             )
                         ],
                     ),
                 ),
             ),
             'info' => array(
-                'title' => __('Testing', 'lnd-woocommerce'),
+                'title' => __('Testing', 'lawallet-woocommerce'),
                 'template' => 'test',
                 'children' => [],
             ),
@@ -202,13 +202,13 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
     private function start_test() {
       $results = [];
       $tests = [
-        'provider' => __("Setting Provider", "lnd-woocommerce"),
-        'provider_authenticate' => __("Authenticating Provider", "lnd-woocommerce"),
-        'provider_info' => __("Getting Provider Info", "lnd-woocommerce"),
-        'exchange' => __("Get Current Exchange", "lnd-woocommerce"),
-        'exchange_rate' => __("Get Ticker Rate", "lnd-woocommerce"),
-        'invoice_amount' => __("Invoice to be created", "lnd-woocommerce"),
-        'create_invoice' => __("Create Invoice", "lnd-woocommerce"),
+        'provider' => __("Setting Provider", "lawallet-woocommerce"),
+        'provider_authenticate' => __("Authenticating Provider", "lawallet-woocommerce"),
+        'provider_info' => __("Getting Provider Info", "lawallet-woocommerce"),
+        'exchange' => __("Get Current Exchange", "lawallet-woocommerce"),
+        'exchange_rate' => __("Get Ticker Rate", "lawallet-woocommerce"),
+        'invoice_amount' => __("Invoice to be created", "lawallet-woocommerce"),
+        'create_invoice' => __("Create Invoice", "lawallet-woocommerce"),
       ];
 
       foreach ($tests as $func => $title) {

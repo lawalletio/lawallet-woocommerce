@@ -1,14 +1,14 @@
 <?
 /*
-    Plugin Name: LND for WooCommerce
-    Plugin URI:  https://github.com/agustinkassis/lnd-woocommerce
-    Text Domain: lnd-woocommerce
+    Plugin Name: LaWallet for WooCommerce
+    Plugin URI:  https://github.com/agustinkassis/lawallet-woocommerce
+    Text Domain: lawallet-woocommerce
     Domain Path: /languages
     Description: Enable instant and fee-reduced payments in BTC through Lightning Network.
     Author:      Agustin Kassis
     Author URI:  https://github.com/agustinkassis
     Version:           0.1.0
-    GitHub Plugin URI: https://github.com/agustinkassis/lnd-woocommerce
+    GitHub Plugin URI: https://github.com/lawalletio/lawlalet-woocommerce
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'WC_LND_BASENAME' ) ) {
-  define('WC_LND_NAME', 'lnd-woocommerce');
+  define('WC_LND_NAME', 'lawallet-woocommerce');
   define('WC_LND_BASENAME', plugin_basename( __FILE__ ));
   define('WC_LND_PLUGIN_PATH', plugin_dir_path(__FILE__));
   define('WC_LND_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
@@ -49,9 +49,9 @@ if (!function_exists('init_wc_lightning')) {
 
       public function __construct() {
         $this->id                 = 'lightning';
-        $this->order_button_text  = __('Proceed to Lightning Payment', 'lnd-woocommerce');
-        $this->method_title       = __('Lightning', 'lnd-woocommerce');
-        $this->method_description = __('Lightning Network Payment', 'lnd-woocommerce');
+        $this->order_button_text  = __('Proceed to Lightning Payment', 'lawallet-woocommerce');
+        $this->method_title       = __('Lightning', 'lawallet-woocommerce');
+        $this->method_description = __('Lightning Network Payment', 'lawallet-woocommerce');
         $this->icon               = plugin_dir_url(__FILE__).'assets/img/logo.png';
         $this->supports           = array();
 
@@ -112,7 +112,7 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function lndwoocommerce_settings_link($links) {
           $plugin_links = [
-            '<b><a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=lightning') . '">' . __('Settings', 'lnd-woocommerce') . '</a></b>'
+            '<b><a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=lightning') . '">' . __('Settings', 'lawallet-woocommerce') . '</a></b>'
           ];
           return array_merge($links, $plugin_links);
       }
@@ -125,8 +125,8 @@ if (!function_exists('init_wc_lightning')) {
 
         $this->form_fields = array(
           'enabled' => array(
-            'title'       => __( 'Enable/Disable', 'lnd-woocommerce' ),
-            'label'       => __( 'Enable Lightning payments', 'lnd-woocommerce' ),
+            'title'       => __( 'Enable/Disable', 'lawallet-woocommerce' ),
+            'label'       => __( 'Enable Lightning payments', 'lawallet-woocommerce' ),
             'type'        => 'checkbox',
             'description' => '',
             'default'     => 'no',
@@ -134,14 +134,14 @@ if (!function_exists('init_wc_lightning')) {
           'title' => array(
             'title'       => __('Title'),
             'type'        => 'text',
-            'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lnd-woocommerce'),
-            'default'     => __('Bitcoin Lightning', 'lnd-woocommerce'),
+            'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lawallet-woocommerce'),
+            'default'     => __('Bitcoin Lightning', 'lawallet-woocommerce'),
             'desc_tip'    => true,
           ),
           'ticker' => array(
-            'title'       => __('Ticker', 'lnd-woocommerce'),
+            'title'       => __('Ticker', 'lawallet-woocommerce'),
             'type'        => 'select',
-            'description' => __('Select Exchange for rate calculation.', 'lnd-woocommerce'),
+            'description' => __('Select Exchange for rate calculation.', 'lawallet-woocommerce'),
             'default'     => 'satoshi_tango',
             'options'     => array_map(function($exchange) {
               return $exchange->name;
@@ -149,24 +149,24 @@ if (!function_exists('init_wc_lightning')) {
             'desc_tip'    => true,
           ),
           'rate_markup' => array(
-            'title'       => __('Rate Markup', 'lnd-woocommerce'),
+            'title'       => __('Rate Markup', 'lawallet-woocommerce'),
             'type'        => 'text',
-            'description' => __('Increases exchange rate with a percentage', 'lnd-woocommerce'),
+            'description' => __('Increases exchange rate with a percentage', 'lawallet-woocommerce'),
             'default'     => 1, // 5 minutes
             'desc_tip'    => true,
           ),
           'invoice_expiry' => array(
-            'title'       => __('Invoice Expiration', 'lnd-woocommerce'),
+            'title'       => __('Invoice Expiration', 'lawallet-woocommerce'),
             'type'        => 'text',
-            'description' => __('Invoice expiration time in seconds', 'lnd-woocommerce'),
+            'description' => __('Invoice expiration time in seconds', 'lawallet-woocommerce'),
             'default'     => 300, // 5 minutes
             'desc_tip'    => true,
           ),
           'description' => array(
-            'title'       => __('Customer Message', 'lnd-woocommerce'),
+            'title'       => __('Customer Message', 'lawallet-woocommerce'),
             'type'        => 'textarea',
-            'description' => __('Message to explain how the customer will be paying for the purchase.', 'lnd-woocommerce'),
-            'default'     => __('You will pay using the Lightning Network.', 'lnd-woocommerce'),
+            'description' => __('Message to explain how the customer will be paying for the purchase.', 'lawallet-woocommerce'),
+            'default'     => __('You will pay using the Lightning Network.', 'lawallet-woocommerce'),
             'desc_tip'    => true,
           ),
 
@@ -208,7 +208,7 @@ if (!function_exists('init_wc_lightning')) {
         $order->add_order_note('LN_HASH: ' . $invoice->payment_hash);
 
         $btcPrice = $this->format_msat($invoice->value);
-        $order->add_order_note(__('Awaiting payment of', 'lnd-woocommerce') . ' ' .  $invoice->value . ' sats (' . $btcPrice . ')' . " @ 1 BTC ~ " . number_format($ticker->rate, 2) . " " . $ticker->currency . " (+" . $ticker->markup . "% " . __("applied", "lnd-woocommerce") . "). <br> Invoice ID: " . $invoice->payment_request);
+        $order->add_order_note(__('Awaiting payment of', 'lawallet-woocommerce') . ' ' .  $invoice->value . ' sats (' . $btcPrice . ')' . " @ 1 BTC ~ " . number_format($ticker->rate, 2) . " " . $ticker->currency . " (+" . $ticker->markup . "% " . __("applied", "lawallet-woocommerce") . "). <br> Invoice ID: " . $invoice->payment_request);
       }
 
       /**
@@ -221,7 +221,7 @@ if (!function_exists('init_wc_lightning')) {
         try {
           $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
         } catch (\Exception $e) {
-          wc_add_notice( __('Error: ') . __('Couldn\'t get quote from ticker.', 'lnd-woocommerce'), 'error' );
+          wc_add_notice( __('Error: ') . __('Couldn\'t get quote from ticker.', 'lawallet-woocommerce'), 'error' );
           return;
         }
 
@@ -241,7 +241,7 @@ if (!function_exists('init_wc_lightning')) {
         }
 
         if(!property_exists($invoice, 'payment_request')) {
-          wc_add_notice( __('Error: ') . __('Lightning Node is not reachable at this time. Please contact the store administrator.', 'lnd-woocommerce'), 'error' );
+          wc_add_notice( __('Error: ') . __('Lightning Node is not reachable at this time. Please contact the store administrator.', 'lawallet-woocommerce'), 'error' );
           return;
         }
 
@@ -451,7 +451,7 @@ if (!function_exists('init_wc_lightning')) {
     			<td class="forminp">
     				<fieldset>
     					<legend class="screen-reader-text"><span><?=wp_kses_post( $data['title'] ); ?></span></legend>
-              <span <?=$data['uploaded']?'':'class="hidden"'?> id="uploaded_label_<?=$key?>"><b><?=__('Already uploaded', 'lnd-woocommerce') ?></b></span>
+              <span <?=$data['uploaded']?'':'class="hidden"'?> id="uploaded_label_<?=$key?>"><b><?=__('Already uploaded', 'lawallet-woocommerce') ?></b></span>
               <input type="file" id="<?=esc_attr( $key )?>" name="<?=esc_attr( $key )?>" <?=$this->get_custom_attribute_html( $data ); ?> />
     					<?=$this->get_description_html( $data ); ?>
     				</fieldset>

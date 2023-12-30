@@ -16,7 +16,7 @@ class Bitex extends Exchange {
   }
 
   public function setCredentials($data) {
-    throw new \Exception(__(printf("setCredentials for %s not implemented", $this->name), "lnd-woocommerce"), 1);
+    throw new \Exception(__(printf("setCredentials for %s not implemented", $this->name), "lawallet-woocommerce"), 1);
   }
 
   public function getPrice($currency='ARS', $crypto='BTC') {

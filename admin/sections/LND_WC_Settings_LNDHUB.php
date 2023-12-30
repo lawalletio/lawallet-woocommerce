@@ -17,7 +17,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
     protected $lndhubCon = false;
 
     public function __construct() {
-        $this->title = __('LNDHub Settings', 'lnd-woocommerce');
+        $this->title = __('LaWallet Settings', 'lawallet-woocommerce');
 
         static::set_structure();
         parent::__construct();
@@ -54,72 +54,72 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
         // Define main settings
         static::$structure = [
             'settings' => [
-                'title' => __('Config', 'lnd-woocommerce'),
+                'title' => __('Config', 'lawallet-woocommerce'),
                 'template' => 'config',
                 'children' => array(
                   'backup_settings' => array(
-                        'title' => __('Backup Config', 'lnd-woocommerce'),
+                        'title' => __('Backup Config', 'lawallet-woocommerce'),
                         'children' => [
                             'backup_string' => array(
-                                'title'     => __('Backup String', 'lnd-woocommerce'),
+                                'title'     => __('Backup String', 'lawallet-woocommerce'),
                                 'type'      => 'text',
-                                'placeholder' => __('Leave blank for new account on BlueWallet server', 'lnd-woocommerce'),
+                                'placeholder' => __('Leave blank for new account on BlueWallet server', 'lawallet-woocommerce'),
                                 'default'   => 'lndhub://:',
-                                'hint'      => __('Backup URL by exporting wallet on BlueWallet starting with <i>lndhub://</i>. ', 'lnd-woocommerce'),
+                                'hint'      => __('Backup URL by exporting wallet on BlueWallet starting with <i>lndhub://</i>. ', 'lawallet-woocommerce'),
                             ),
                         ],
                     ),
                     'general_settings' => array(
-                        'title' => __('Server Config', 'lnd-woocommerce'),
+                        'title' => __('Server Config', 'lawallet-woocommerce'),
                         'children' => [
                             'host' => array(
-                                'title'     => __('Host', 'lnd-woocommerce'),
+                                'title'     => __('Host', 'lawallet-woocommerce'),
                                 'type'      => 'text',
-                                'default'   => __('lndhub.herokuapp.com', 'lnd-woocommerce'),
+                                'default'   => __('lndhub.herokuapp.com', 'lawallet-woocommerce'),
                                 'required'  => true,
-                                'hint'      => __('LndHub host address, you can use <b>localhost</b>.', 'lnd-woocommerce'),
+                                'hint'      => __('LndHub host address, you can use <b>localhost</b>.', 'lawallet-woocommerce'),
                             ),
                             'port' => array(
-                                'title'     => __('Port', 'lnd-woocommerce'),
+                                'title'     => __('Port', 'lawallet-woocommerce'),
                                 'type'      => 'text',
                                 'default'   => 443,
                                 'required'  => true,
-                                'hint'      => __('LndHub port, default is 3000', 'lnd-woocommerce'),
+                                'hint'      => __('LndHub port, default is 3000', 'lawallet-woocommerce'),
                             ),
                             'ssl' => array(
-                                'title'     => __('SSL Enabled', 'lnd-woocommerce'),
+                                'title'     => __('SSL Enabled', 'lawallet-woocommerce'),
                                 'type'      => 'checkbox',
                                 'default'   => '1',
-                                'hint'      => __('Uses HTTPS?', 'lnd-woocommerce'),
+                                'hint'      => __('Uses HTTPS?', 'lawallet-woocommerce'),
                             ),
                         ],
                     ),
                     'credential_settings' => array(
-                        'title' => __('Authentication Credentials', 'lnd-woocommerce'),
+                        'title' => __('Authentication Credentials', 'lawallet-woocommerce'),
                         'children' => [
                             'userID' => array(
-                                'title'     => __('User ID', 'lnd-woocommerce'),
+                                'title'     => __('User ID', 'lawallet-woocommerce'),
                                 'type'      => 'text',
-                                'placeholder' => __('Leave it blank to generate new one from server', 'lnd-woocommerce'),
-                                'hint'      => __('User ID', 'lnd-woocommerce') . ' ' . __('generated by lndhub, received when creating account first time or from backup string.', 'lnd-woocommerce'),
+                                'placeholder' => __('Leave it blank to generate new one from server', 'lawallet-woocommerce'),
+                                'hint'      => __('User ID', 'lawallet-woocommerce') . ' ' . __('generated by lndhub, received when creating account first time or from backup string.', 'lawallet-woocommerce'),
                             ),
                             'password' => array(
-                                'title'     => __('Password', 'lnd-woocommerce'),
+                                'title'     => __('Password', 'lawallet-woocommerce'),
                                 'type'      => 'text',
-                                'placeholder' => __('Leave it blank to generate new one from server', 'lnd-woocommerce'),
-                                'hint'      => __('Password', 'lnd-woocommerce') . ' ' . __('generated by lndhub, received when creating account first time or from backup string.', 'lnd-woocommerce'),
+                                'placeholder' => __('Leave it blank to generate new one from server', 'lawallet-woocommerce'),
+                                'hint'      => __('Password', 'lawallet-woocommerce') . ' ' . __('generated by lndhub, received when creating account first time or from backup string.', 'lawallet-woocommerce'),
                             ),
                         ],
                     ),
                 ),
             ],
             'info' => array(
-                'title' => __('Server Info', 'lnd-woocommerce'),
+                'title' => __('Server Info', 'lawallet-woocommerce'),
                 'template' => 'info',
                 'children' => [],
             ),
             'withdraw' => array(
-                'title' => __('Withdraw', 'lnd-woocommerce'),
+                'title' => __('Withdraw', 'lawallet-woocommerce'),
                 'template' => 'withdraw',
                 'children' => [],
             ),
@@ -218,9 +218,9 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
       $fees = $this->notice->payment_route->total_fees;
       ?>
       <div class="notice notice-success">
-        <h3><?=__('Invoice succesfully paid!', 'lnd-woocommerce')?></h3>
-        <p><?=sprintf(__( 'The amount of %s sats has successfully been transferred.', 'lnd-woocommerce' ), '<b>' . $amount . '</b>'); ?></p>
-        <p><?=sprintf(__( 'Total %s sats paid in fees.', 'lnd-woocommerce' ), '<b>' . $fees . '</b>'); ?></p>
+        <h3><?=__('Invoice succesfully paid!', 'lawallet-woocommerce')?></h3>
+        <p><?=sprintf(__( 'The amount of %s sats has successfully been transferred.', 'lawallet-woocommerce' ), '<b>' . $amount . '</b>'); ?></p>
+        <p><?=sprintf(__( 'Total %s sats paid in fees.', 'lawallet-woocommerce' ), '<b>' . $fees . '</b>'); ?></p>
       </div>
       <?
     }
@@ -231,7 +231,7 @@ class LND_WC_Settings_LNDHUB extends LND_Settings_Page_Generator {
     public function notice_withdraw_error() {
       ?>
       <div class="notice notice-error">
-        <h3><?=__('Error trying to pay invoice', 'lnd-woocommerce')?></h3>
+        <h3><?=__('Error trying to pay invoice', 'lawallet-woocommerce')?></h3>
         <p><?=$this->notice->getMessage(); ?></p>
       </div>
       <?

@@ -65,11 +65,11 @@ class ChannelManager {
       $terms = $this->getTerms();
       $amt = intval($amt);
       if ($amt > $terms->max_swap_amount) {
-        throw new \Exception(__('Amount greater than max_swap_amount terms from Loop', 'lnd-woocommerce'), 1);
+        throw new \Exception(__('Amount greater than max_swap_amount terms from Loop', 'lawallet-woocommerce'), 1);
       }
 
       if ($amt < $terms->min_swap_amount) {
-        throw new \Exception(__('Amount lesser than min_swap_amount terms from Loop', 'lnd-woocommerce'), 1);
+        throw new \Exception(__('Amount lesser than min_swap_amount terms from Loop', 'lawallet-woocommerce'), 1);
       }
 
       $operation = [
@@ -85,13 +85,13 @@ class ChannelManager {
 
     private function requireLnd() {
       if ($this->lndCon === false) {
-        throw new \Exception(__('LND server must be set to be able to execute this ChannelManager function', 'lnd-woocommerce'), 1);
+        throw new \Exception(__('LND server must be set to be able to execute this ChannelManager function', 'lawallet-woocommerce'), 1);
       }
     }
 
     private function requireLoop() {
       if ($this->loopCon === false) {
-        throw new \Exception(__('Loop server must be set to be able to execute this ChannelManager function', 'lnd-woocommerce'), 1);
+        throw new \Exception(__('Loop server must be set to be able to execute this ChannelManager function', 'lawallet-woocommerce'), 1);
       }
     }
 

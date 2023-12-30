@@ -129,7 +129,7 @@ class LndWrapper {
 
         if ($response->payment_error !== "") {
           if ($response->payment_error === 'invoice is already paid') {
-            $response->payment_error = __('Invoice is already paid', 'lnd-woocommerce');
+            $response->payment_error = __('Invoice is already paid', 'lawallet-woocommerce');
           }
           throw new \Exception($response->payment_error, 1);
         }
@@ -139,7 +139,7 @@ class LndWrapper {
     public function checkPayment($paymentHash) {
       $invoice = $this->getInvoiceInfoFromHash($paymentHash);
       if(!$invoice) {
-        throw new \Exception(__('Invoice not found', 'lnd-woocommerce'), 404);
+        throw new \Exception(__('Invoice not found', 'lawallet-woocommerce'), 404);
       }
 
       return property_exists($invoice, 'settled') && $invoice->settled;
@@ -191,12 +191,12 @@ class LndWrapper {
       }
 
       $errors = [
-        ["Failed to connect to", __("Server is unreacheable, must be down or wrong port is given", "lnd-woocommerce"), 1],
-        ["Recv failure: Connection reset by peer", __("Server reached but is not a LND server or you've set an invalid port", "lnd-woocommerce"), 1],
-        ["HTTP/1.0 400 Bad Request", __("Server reached but is not a Loop server or invalid port (must be restlisten)", "lnd-woocommerce"), 400],
-        ["HTTP/1.1 404 Not Found", __("Got a 404 response from server, please check if lnd wallet is created and already unlocked", "lnd-woocommerce"), 404],
-        ["Empty reply from server", __("Server reached but is not LND restlisten port. Looks like rpcport", "lnd-woocommerce"), 1],
-        ["Connection reset by peer", __("Server reached but is not LND restlisten port", "lnd-woocommerce"), 1],
+        ["Failed to connect to", __("Server is unreacheable, must be down or wrong port is given", "lawallet-woocommerce"), 1],
+        ["Recv failure: Connection reset by peer", __("Server reached but is not a LND server or you've set an invalid port", "lawallet-woocommerce"), 1],
+        ["HTTP/1.0 400 Bad Request", __("Server reached but is not a Loop server or invalid port (must be restlisten)", "lawallet-woocommerce"), 400],
+        ["HTTP/1.1 404 Not Found", __("Got a 404 response from server, please check if lnd wallet is created and already unlocked", "lawallet-woocommerce"), 404],
+        ["Empty reply from server", __("Server reached but is not LND restlisten port. Looks like rpcport", "lawallet-woocommerce"), 1],
+        ["Connection reset by peer", __("Server reached but is not LND restlisten port", "lawallet-woocommerce"), 1],
       ];
 
       foreach ($errors as $value) {
@@ -206,10 +206,10 @@ class LndWrapper {
       }
 
       $messages = [
-        ["signature mismatch after caveat verification", __("Signature mismatch tls.cert not accepted on server", "lnd-woocommerce")],
-        ["permission denied", __("Permission denied from LND server, please check your macaroon file", "lnd-woocommerce")],
-        ["invoice expired", __("Invoice expired", "lnd-woocommerce")],
-        ["payment hash must be exactly", __("Invalid Payment Hash format", "lnd-woocommerce")],
+        ["signature mismatch after caveat verification", __("Signature mismatch tls.cert not accepted on server", "lawallet-woocommerce")],
+        ["permission denied", __("Permission denied from LND server, please check your macaroon file", "lawallet-woocommerce")],
+        ["invoice expired", __("Invoice expired", "lawallet-woocommerce")],
+        ["payment hash must be exactly", __("Invalid Payment Hash format", "lawallet-woocommerce")],
       ];
 
       foreach ($messages as $value) {

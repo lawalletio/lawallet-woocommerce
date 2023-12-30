@@ -14,38 +14,38 @@ if (!defined('ABSPATH')) {
 <div class="wc_lnd_settings">
     <div class="wc_lnd_settings_container">
 
-        <h2><?=__('Summary', 'lnd-woocommerce')?></h2>
+        <h2><?=__('Summary', 'lawallet-woocommerce')?></h2>
 
         <table class="form-table" role="presentation">
           <tbody>
             <tr>
-              <th scope="row"><?=__('Inbound capacity', 'lnd-woocommerce')?></th>
+              <th scope="row"><?=__('Inbound capacity', 'lawallet-woocommerce')?></th>
               <td>
                 <b><?=$balance->remote_balance?></b> sats <i>(<?=LND_WC_Helpers::convertSats($balance->remote_balance, $ticker)?>)</i>
-                <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to receive via Lightning', 'lnd-woocommerce')?></div>
+                <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to receive via Lightning', 'lawallet-woocommerce')?></div>
               </td>
             </tr>
             <tr>
-              <th scope="row"><?=__('Outbound capacity', 'lnd-woocommerce')?></th>
+              <th scope="row"><?=__('Outbound capacity', 'lawallet-woocommerce')?></th>
               <td>
                 <b><?=$balance->local_balance?></b> sats <i>(<?=LND_WC_Helpers::convertSats($balance->local_balance, $ticker)?>)</i>
-                <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to send via Lightning', 'lnd-woocommerce')?></div>
+                <div class="wc_lnd_settings_hint"><?=__('Total satoshis you are able to send via Lightning', 'lawallet-woocommerce')?></div>
               </td>
             </tr>
           </tbody>
         </table>
 
-        <h2><?=__('Open Channels', 'lnd-woocommerce')?></h2>
+        <h2><?=__('Open Channels', 'lawallet-woocommerce')?></h2>
 
         <table class="form-table" role="presentation">
           <tbody>
             <tr>
-              <th><?=__('Channel ID', 'lnd-woocommerce')?></th>
-              <th><?=__('Capacity', 'lnd-woocommerce')?></th>
-              <th><?=__('Inbound', 'lnd-woocommerce')?></th>
-              <th><?=__('Outbound', 'lnd-woocommerce')?></th>
-              <th><?=__('Sent', 'lnd-woocommerce')?></th>
-              <th><?=__('Received', 'lnd-woocommerce')?></th>
+              <th><?=__('Channel ID', 'lawallet-woocommerce')?></th>
+              <th><?=__('Capacity', 'lawallet-woocommerce')?></th>
+              <th><?=__('Inbound', 'lawallet-woocommerce')?></th>
+              <th><?=__('Outbound', 'lawallet-woocommerce')?></th>
+              <th><?=__('Sent', 'lawallet-woocommerce')?></th>
+              <th><?=__('Received', 'lawallet-woocommerce')?></th>
             </tr>
             <? foreach ($channels as $channel): ?>
             <tr>

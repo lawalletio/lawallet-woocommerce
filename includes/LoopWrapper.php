@@ -117,11 +117,11 @@ class LoopWrapper {
       }
 
       $errors = [
-        ["Failed to connect to", __("Server is unreacheable, must be down or wrong port is given", "lnd-woocommerce")],
-        ["Recv failure: Connection reset by peer", __("Server reached but is not a loop server or you've set an invalid port", "lnd-woocommerce")],
-        ["HTTP/1.0 400 Bad Request", __("Server reached but is not a Loop server or invalid port (must be restlisten)", "lnd-woocommerce")],
-        ["Empty reply from server", __("Server reached but is not Loop restlisten port. Looks like rpcport", "lnd-woocommerce")],
-        ["Connection reset by peer", __("Server reached but is not Loop restlisten port. Looks like LND listen or restport", "lnd-woocommerce")],
+        ["Failed to connect to", __("Server is unreacheable, must be down or wrong port is given", "lawallet-woocommerce")],
+        ["Recv failure: Connection reset by peer", __("Server reached but is not a loop server or you've set an invalid port", "lawallet-woocommerce")],
+        ["HTTP/1.0 400 Bad Request", __("Server reached but is not a Loop server or invalid port (must be restlisten)", "lawallet-woocommerce")],
+        ["Empty reply from server", __("Server reached but is not Loop restlisten port. Looks like rpcport", "lawallet-woocommerce")],
+        ["Connection reset by peer", __("Server reached but is not Loop restlisten port. Looks like LND listen or restport", "lawallet-woocommerce")],
       ];
 
       foreach ($errors as $value) {
