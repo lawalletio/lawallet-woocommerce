@@ -29,7 +29,7 @@ msgstr ""
 
 #: lawallet-woocommerce.php:115 admin/LND_Woocommerce_Admin.php:65
 #: admin/LND_Woocommerce_Admin.php:66
-#: admin/sections/LND_WC_Settings_Main.php:40
+#: admin/sections/LAWALLET_WC_Settings_Main.php:40
 msgid "Settings"
 msgstr ""
 
@@ -413,51 +413,51 @@ msgstr ""
 msgid "Error trying to pay invoice"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:20
+#: admin/sections/LAWALLET_WC_Settings_Main.php:20
 msgid "LND Main Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:43 admin/views/main/dashboard.php:16
+#: admin/sections/LAWALLET_WC_Settings_Main.php:43 admin/views/main/dashboard.php:16
 msgid "Main Settings"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:46
+#: admin/sections/LAWALLET_WC_Settings_Main.php:46
 msgid "LND Provider"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:53
+#: admin/sections/LAWALLET_WC_Settings_Main.php:53
 msgid "Lnd server to be used."
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:60
+#: admin/sections/LAWALLET_WC_Settings_Main.php:60
 msgid "Testing"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:205
+#: admin/sections/LAWALLET_WC_Settings_Main.php:205
 msgid "Setting Provider"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:206
+#: admin/sections/LAWALLET_WC_Settings_Main.php:206
 msgid "Authenticating Provider"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:207
+#: admin/sections/LAWALLET_WC_Settings_Main.php:207
 msgid "Getting Provider Info"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:208
+#: admin/sections/LAWALLET_WC_Settings_Main.php:208
 msgid "Get Current Exchange"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:209
+#: admin/sections/LAWALLET_WC_Settings_Main.php:209
 msgid "Get Ticker Rate"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:210
+#: admin/sections/LAWALLET_WC_Settings_Main.php:210
 msgid "Invoice to be created"
 msgstr ""
 
-#: admin/sections/LND_WC_Settings_Main.php:211
+#: admin/sections/LAWALLET_WC_Settings_Main.php:211
 msgid "Create Invoice"
 msgstr ""
 
@@ -732,7 +732,7 @@ msgid ""
 msgstr ""
 
 #. URI of the plugin
-msgid "https://github.com/agustinkassis/lawallet-woocommerce"
+msgid "https://github.com/lawalletio/lawallet-woocommerce"
 msgstr ""
 
 #. Author of the plugin

@@ -7,9 +7,9 @@ if (!defined('ABSPATH')) {
 
 require_once(WC_LND_PLUGIN_PATH . '/admin/includes/LND_Settings_Page_Generator.php');
 
-if (!class_exists('LND_WC_Settings_Main')) {
+if (!class_exists('LAWALLET_WC_Settings_Main')) {
 
-class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
+class LAWALLET_WC_Settings_Main extends LND_Settings_Page_Generator {
     public static $prefix = WC_LND_NAME;
     protected static $structure = null;
     protected static $instance = null;
@@ -17,7 +17,7 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
     protected $tests = [];
 
     public function __construct() {
-        $this->title = __('LND Main Settings', 'lawallet-woocommerce');
+        $this->title = __('LaWallet Main Settings', 'lawallet-woocommerce');
         self::set_structure();
         parent::__construct();
     }
@@ -41,26 +41,23 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
                 'children' => array(
                     'general_settings' => array(
                         'title' => __('Main Settings', 'lawallet-woocommerce'),
-                        'children' => [
-                            'provider' => array(
-                                'title'     => __('LND Provider', 'lawallet-woocommerce'),
-                                'type'      => 'select',
-                                'default'   => 'lnd',
-                                'options'   => [
-                                  'lnd' => 'LND Server',
-                                  'lndhub' => 'LndHub',
-                                ],
-                                'hint'      => __('Lnd server to be used.', 'lawallet-woocommerce'),
-                            )
+                          'children' => [
+                            'relay_url' => array(
+                              'title'     => __('Relay URL', 'lawallet-woocommerce'),
+                              'type'      => 'text',
+                              // 'placeholder' => __('Leave blank for new account on BlueWallet server', 'lawallet-woocommerce'),
+                              'default'   => 'wss://relay.lawallet.ar',
+                              'hint'      => __('The URL for the WSS Nostr Relay', 'lawallet-woocommerce'),
+                          ),
                         ],
                     ),
                 ),
             ),
-            'info' => array(
-                'title' => __('Testing', 'lawallet-woocommerce'),
-                'template' => 'test',
-                'children' => [],
-            ),
+            // 'info' => array(
+            //     'title' => __('Testing', 'lawallet-woocommerce'),
+            //     'template' => 'test',
+            //     'children' => [],
+            // ),
 
         );
         return self::$structure;
@@ -226,5 +223,5 @@ class LND_WC_Settings_Main extends LND_Settings_Page_Generator {
 
 
 }
-LND_WC_Settings_Main::instance();
+LAWALLET_WC_Settings_Main::instance();
 }

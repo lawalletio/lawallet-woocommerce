@@ -34,11 +34,8 @@ class LND_Woocommerce_Admin {
    * custom option and settings
    */
   public function settings_init() {
-
-    // require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LND.php');
-    // require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Loop.php');
-    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_LNDHUB.php');
-    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LND_WC_Settings_Main.php');
+    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LAWALLET_WC_Settings.php');
+    require_once(WC_LND_PLUGIN_PATH . '/admin/sections/LAWALLET_WC_Settings_Main.php');
     add_action('admin_enqueue_scripts', [$this, 'enqueue_backend_assets'], 20);
 
   }
@@ -81,11 +78,11 @@ class LND_Woocommerce_Admin {
 
       add_submenu_page(
         WC_LND_NAME,
-        __( 'LndHub', 'lawallet-woocommerce' ),
-        __( 'LndHub', 'lawallet-woocommerce' ),
+        __( 'Destination', 'lawallet-woocommerce' ),
+        __( 'Destination', 'lawallet-woocommerce' ),
         'manage_options',
         WC_LND_NAME .'_lndhub_config',
-        [$this, 'lndhub_config_page']
+        [$this, 'lawallet_config_page']
       );
 
       // add_submenu_page(
@@ -108,13 +105,13 @@ class LND_Woocommerce_Admin {
   }
 
   public function lnd_config_main() {
-    $page = LND_WC_Settings_Main::instance();
-    $page->set_gateway($this->gateway);
+    $page = LAWALLET_WC_Settings_Main::instance();
+    // $page->set_gateway($this->gateway);
     $page->print_settings_page();
   }
 
-  public function lndhub_config_page() {
-    $page = LND_WC_Settings_LNDHUB::instance();
+  public function lawallet_config_page() {
+    $page = LAWALLET_WC_Settings::instance();
     $page->print_settings_page();
   }
 

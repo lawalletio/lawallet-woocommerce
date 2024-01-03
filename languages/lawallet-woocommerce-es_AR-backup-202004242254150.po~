@@ -28,7 +28,7 @@ msgstr "Pago con Lightning Network"
 
 #: lawallet-woocommerce.php:114 admin/LND_Woocommerce_Admin.php:60
 #: admin/LND_Woocommerce_Admin.php:61
-#: admin/sections/LND_WC_Settings_Main.php:33
+#: admin/sections/LAWALLET_WC_Settings_Main.php:33
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -442,19 +442,19 @@ msgstr "Total de %s sats pagados en fees."
 msgid "Error trying to pay invoice"
 msgstr "Error al intentar pagar la invoice"
 
-#: admin/sections/LND_WC_Settings_Main.php:18
+#: admin/sections/LAWALLET_WC_Settings_Main.php:18
 msgid "LND Main Settings"
 msgstr "Ajustes principales de LND"
 
-#: admin/sections/LND_WC_Settings_Main.php:36 admin/views/main/dashboard.php:16
+#: admin/sections/LAWALLET_WC_Settings_Main.php:36 admin/views/main/dashboard.php:16
 msgid "Main Settings"
 msgstr "Ajustes Principales"
 
-#: admin/sections/LND_WC_Settings_Main.php:39
+#: admin/sections/LAWALLET_WC_Settings_Main.php:39
 msgid "LND Provider"
 msgstr "Proveedor LND"
 
-#: admin/sections/LND_WC_Settings_Main.php:46
+#: admin/sections/LAWALLET_WC_Settings_Main.php:46
 msgid "Lnd server to be used."
 msgstr "Servidor Lnd a ser utilizado."
 
@@ -726,8 +726,8 @@ msgstr ""
 "Lightning Network."
 
 #. URI of the plugin
-msgid "https://github.com/agustinkassis/lawallet-woocommerce"
-msgstr "https://github.com/agustinkassis/lawallet-woocommerce"
+msgid "https://github.com/lawalletio/lawallet-woocommerce"
+msgstr "https://github.com/lawalletio/lawallet-woocommerce"
 
 #. Author of the plugin
 msgid "Agustin Kassis"

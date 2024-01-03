@@ -1,14 +1,14 @@
 <?
 /*
     Plugin Name: LaWallet for WooCommerce
-    Plugin URI:  https://github.com/agustinkassis/lawallet-woocommerce
+    Plugin URI:  https://github.com/lawalletio/lawallet-woocommerce
     Text Domain: lawallet-woocommerce
     Domain Path: /languages
     Description: Enable instant and fee-reduced payments in BTC through Lightning Network.
     Author:      Agustin Kassis
     Author URI:  https://github.com/agustinkassis
     Version:           0.1.0
-    GitHub Plugin URI: https://github.com/lawalletio/lawlalet-woocommerce
+    GitHub Plugin URI: https://github.com/lawalletio/lawallet-woocommerce
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -21,24 +21,17 @@ if ( ! defined( 'WC_LND_BASENAME' ) ) {
   define('WC_LND_PLUGIN_PATH', plugin_dir_path(__FILE__));
   define('WC_LND_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
   define('WC_LND_VERSION', '0.9.1');
-
-  define('WC_LND_TLS_FILE', WC_LND_PLUGIN_PATH . 'creds/lnd.cert');
-  define('WC_LND_MACAROON_FILE', WC_LND_PLUGIN_PATH . 'creds/lnd.macaroon');
 }
 
-register_activation_hook( __FILE__, function(){
-  if (!extension_loaded('gd') || !extension_loaded('curl')) {
-    die('The php-curl and php-gd extensions are required. Please contact your hosting provider for additional help.');
-  }
-});
+// register_activation_hook( __FILE__, function(){
+//   if (!extension_loaded('gd') || !extension_loaded('curl')) {
+//     die('The php-curl and php-gd extensions are required. Please contact your hosting provider for additional help.');
+//   }
+// });
 
 // Providers
-require_once(WC_LND_PLUGIN_PATH . 'includes/LndWrapper.php');
-require_once(WC_LND_PLUGIN_PATH . 'includes/LndHub.php');
-require_once(WC_LND_PLUGIN_PATH . 'includes/LND_WC_Helpers.php');
-
 require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
-require_once(WC_LND_PLUGIN_PATH . 'admin/LND_Woocommerce_Admin.php');
+// require_once(WC_LND_PLUGIN_PATH . 'admin/LND_Woocommerce_Admin.php');
 
 if (!function_exists('init_wc_lightning')) {
 
@@ -46,14 +39,12 @@ if (!function_exists('init_wc_lightning')) {
     if (!class_exists('WC_Payment_Gateway')) return;
 
     class WC_Gateway_Lightning extends WC_Payment_Gateway {
+      private TickerManager $tickerManager;
+      // private LND_Woocommerce_Admin $admin;
 
       public function __construct() {
-        $this->id                 = 'lightning';
-        $this->order_button_text  = __('Proceed to Lightning Payment', 'lawallet-woocommerce');
-        $this->method_title       = __('Lightning', 'lawallet-woocommerce');
-        $this->method_description = __('Lightning Network Payment', 'lawallet-woocommerce');
-        $this->icon               = plugin_dir_url(__FILE__).'assets/img/logo.png';
-        $this->supports           = array();
+        // Setup general properties
+        $this->setup_properties();
 
         // Load the settings.
         $this->init_form_fields();
@@ -62,59 +53,44 @@ if (!function_exists('init_wc_lightning')) {
         // Define user set variables.
         $this->title       = $this->get_option('title');
         $this->description = $this->get_option('description');
-        $this->endpoint = LND_WC_Helpers::generateEndpoint($this->get_lnd_config());
+        $this->enabled = $this->get_option('enabled');
+        $this->testmode = true;
 
-        $this->settings = get_option(WC_LND_NAME, ['enabled'=> true, 'provider' => 'lnd']);
+        add_filter('woocommerce_payment_gateways', array($this, 'register_gateway'));
 
-        $this->tickerManager = TickerManager::instance();
-
-        try {
-          $this->setup_provider();
-          $this->tickerManager->setExchange($this->get_option('ticker'));
-        } catch (\Exception $e) {
-          $this->enabled = 'no';
-        }
-
-        add_filter('plugin_action_links_' . WC_LND_BASENAME, array($this, 'lndwoocommerce_settings_link'));
-
-        add_action('woocommerce_payment_gateways', array($this, 'register_gateway'));
-        add_action('woocommerce_update_options_payment_gateways_lightning', array($this, 'process_admin_options'));
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
         add_action('woocommerce_receipt_lightning', array($this, 'show_payment_info'));
         add_action('woocommerce_thankyou_lightning', array($this, 'show_payment_info'));
         add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
 
-        add_action('wp_ajax_ln_upload_file', array($this, 'upload_file'));
 
+        // Is Admin
         if (is_admin()) {
-          $this->admin = LND_Woocommerce_Admin::instance();
-          $this->admin->set_gateway($this);
-        }
+          // $this->admin = LND_Woocommerce_Admin::instance();
+          // $this->admin->set_gateway($this);
 
-        if (is_admin() && $this->is_manage_section()) {
-          add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
+          if ($this->is_manage_section()) {
+            add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
+          }
         }
       }
 
-      public function get_lnd_config() {
-        return get_option(WC_LND_NAME . '_lnd_config');
-      }
-
-      public function get_lnd_host() {
-        $conf = $this->get_lnd_config();
-        return 'http' . ($conf['ssl']=='1'?'s':'') . '://' . $conf['host'] . ':' . $conf['port'];
+      public function is_available() {
+        return true;
       }
 
       /**
-       * Adds settings page link in plugins section
-       * @param  array $links Current links
-       * @return array        Returns the merged array
+       * Setup general properties for the gateway.
        */
-      public function lndwoocommerce_settings_link($links) {
-          $plugin_links = [
-            '<b><a href="' . admin_url('admin.php?page=wc-settings&tab=checkout&section=lightning') . '">' . __('Settings', 'lawallet-woocommerce') . '</a></b>'
-          ];
-          return array_merge($links, $plugin_links);
+      protected function setup_properties() {
+        $this->id                 = 'lightning';
+        $this->order_button_text  = __('Proceed to LaWallet', 'lawallet-woocommerce');
+        $this->method_title       = __('LaWallet', 'lawallet-woocommerce');
+        $this->method_description = __('Lightning Network Payment', 'lawallet-woocommerce');
+        $this->icon               = plugin_dir_url(__FILE__).'assets/img/logo.png';
+        $this->supports           = array('products');
+        $this->has_fields         = false;
       }
 
       /**
@@ -135,7 +111,7 @@ if (!function_exists('init_wc_lightning')) {
             'title'       => __('Title'),
             'type'        => 'text',
             'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lawallet-woocommerce'),
-            'default'     => __('Bitcoin Lightning', 'lawallet-woocommerce'),
+            'default'     => __('Lawallet', 'lawallet-woocommerce'),
             'desc_tip'    => true,
           ),
           'ticker' => array(
@@ -173,6 +149,12 @@ if (!function_exists('init_wc_lightning')) {
         );
       }
 
+      /**
+       * Creates an invoice in the Lightning Network
+       * @param  object $order  Order data
+       * @param  array $ticker Ticker data
+       * @return object         Invoice data
+       */
       public function create_invoice($order, $ticker) {
         $livePrice = $ticker->rate;
 
@@ -307,43 +289,6 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       /**
-       * Uploads a file, called from ajax
-       */
-      public function upload_file() {
-        switch ($_POST['name']) {
-          case 'macaroon':
-            $requiredFormat = 'macaroon';
-            $destination = WC_LND_MACAROON_FILE;
-          break;
-          case 'tls':
-            $requiredFormat = 'cert';
-            $destination = WC_LND_TLS_FILE;
-          break;
-
-          default:
-            status_header(400);
-            wp_send_json(true);
-            return;
-        }
-
-        $format = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
-        if ($format != $requiredFormat) {
-          status_header(415);
-          wp_send_json(true);
-          return;
-        }
-
-        if (move_uploaded_file($_FILES['file']['tmp_name'], $destination)) {
-          status_header(200);
-          wp_send_json(true);
-        } else {
-          status_header(500);
-          wp_send_json(true);
-        }
-
-      }
-
-      /**
        * Hooks into the checkout page to display Lightning-related payment info.
        */
       public function show_payment_info($order_id) {
@@ -425,43 +370,6 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       /**
-       * Generates upload field for Woocommerce init_form_fields
-       * @param  string $key
-       * @param  array $data
-       * @return string
-       */
-      public function generate_upload_html( $key, $data ) {
-    		$defaults = array(
-    			'css'               => '',
-    			'custom_attributes' => [],
-    			'description'       => '',
-    			'title'             => 'Upload file',
-    			'uploaded'            => false,
-    		);
-    		$data = wp_parse_args( $data, $defaults );
-        $filePath = $key === 'tls' ? WC_LND_TLS_FILE : WC_LND_MACAROON_FILE;
-
-    		ob_start();
-    		?>
-    		<tr valign="top">
-    			<th scope="row" class="titledesc">
-    				<label for="<?=esc_attr( $key ) ?>"><?=wp_kses_post( $data['title'] ); ?></label>
-    				<?=$this->get_tooltip_html( $data ); ?>
-    			</th>
-    			<td class="forminp">
-    				<fieldset>
-    					<legend class="screen-reader-text"><span><?=wp_kses_post( $data['title'] ); ?></span></legend>
-              <span <?=$data['uploaded']?'':'class="hidden"'?> id="uploaded_label_<?=$key?>"><b><?=__('Already uploaded', 'lawallet-woocommerce') ?></b></span>
-              <input type="file" id="<?=esc_attr( $key )?>" name="<?=esc_attr( $key )?>" <?=$this->get_custom_attribute_html( $data ); ?> />
-    					<?=$this->get_description_html( $data ); ?>
-    				</fieldset>
-    			</td>
-    		</tr>
-    		<?
-    		return ob_get_clean();
-    	}
-
-      /**
        * Generates QR code image with Google's API
        * @param  string $paymentRequest Invoice payment request
        * @return string                 Remote Image's URL
@@ -473,38 +381,11 @@ if (!function_exists('init_wc_lightning')) {
           return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
       }
 
-      private function setup_provider() {
-        $this->provider = call_user_func([$this, 'set_provider_' . $this->settings['provider']]);
-      }
-
-      private function set_provider_lnd() {
-        $lnd = LndWrapper::instance();
-        // For LND
-        if (file_exists(WC_LND_TLS_FILE) && file_exists(WC_LND_MACAROON_FILE)) {
-          $lnd->setCredentials ( $this->endpoint, WC_LND_MACAROON_FILE, WC_LND_TLS_FILE);
-        } else {
-          $this->enabled = 'no';
-        }
-        return $lnd;
-      }
-
-      private function set_provider_lndhub() {
-        $lndhub = LndHub::instance();
-        $access = get_option(WC_LND_NAME . '_lndhub_config' . '_token'); //TODO: Link with LND_WC_Settings_LNDHUB $prefix
-        $settings = get_option(WC_LND_NAME . '_lndhub_config');
-        $lndhub->setCredentials(LND_WC_Helpers::generateEndpoint($settings), $settings['userID'], $settings['password']);
-        $lndhub->setAccessToken($access);
-        $lndhub->setStoreTokenFunc([$this, 'setLndHubToken']);
-
-        return $lndhub;
-      }
-
-      //TODO: Doesnt belong here, duplication on LND_WC_Settings_LNDHUB
-      public function setLndHubToken($data) {
-        update_option(WC_LND_NAME . '_lndhub_config' . '_token', $data); //TODO: Link with LND_WC_Settings_LNDHUB $prefix
-        return $data;
-      }
-
+      /**
+       * Generates endpoint URL
+       * @param  array $settings Plugin settings
+       * @return string          Endpoint URL
+       */
       public function generate_endpoint($settings) {
         $protocol = $settings['ssl'] ? 'https' : 'http';
         $host = $settings['host'] ? $settings['host'] : '';

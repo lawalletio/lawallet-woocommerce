@@ -9,6 +9,9 @@ require(__DIR__ . '/../exchanges/bitex.php');
 
 class TickerManager {
   private $currentExchange = null;
+  private string $fiat;
+  private string $currency;
+  private $exchangesList;
   /**
    * Call this method to get singleton
    */
