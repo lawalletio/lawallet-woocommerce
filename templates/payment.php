@@ -1,38 +1,17 @@
 <link rel="stylesheet" href="<? echo plugins_url('assets/css/payment.css', dirname(__FILE__))?>" type="text/css">
 <noscript><style>.yesscript{display:none}</style></noscript>
-<<<<<<< HEAD
-=======
-<?php
-$expiry_datestr = $callResponse->creation_date + $callResponse->expiry;
-$payReq = $callResponse->payment_request;
-?>
->>>>>>> Minimal changes
 
 <div class="ln-pay">
   <h1><?=__('Pay with Lightning', 'lawallet-woocommerce')?></h1>
   <h3>
-<<<<<<< HEAD
-    <? if ($order->get_currency() !== 'BTC'): ?> <? echo $order->get_total() ?> <?=$currency ?> = <? endif ?>
-    <? echo self::format_msat($sats) ?>
-  </h3>
-  <h4>
-    <b><?=__('Rate', 'lawallet-woocommerce')?></b>: <?=$currency . ' ' . $rate . ' ' . __('taken from', 'lawallet-woocommerce') . ' ' . $exchange?>
-  </h4>
-  <div class="qr_container">
-    <svg style="display: none" xmlns="http://www.w3.org/2000/svg" class="check" width="250" height="250" viewBox="-40 -10 246 180.9"><path d="M0.3 96l62.4 54.1L165.6 0.3"/></svg>
-    <img class="qr" src="<? echo $qr_uri ?>">
-  </div>
-  <code class="payreq"><? echo $payReq ?></code>
-=======
     <?php if ($order->get_currency() !== 'BTC'): ?> <?php echo $order->get_total() ?> <?=$currency ?> = <?php endif ?>
-    <?php echo self::format_msat($callResponse->value, $this->lndCon->getCoin()) ?>
+    <?php echo $sats ?> sats
   </h3>
   <h4>
     <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
   </h4>
   <img class="qr" src="<?php echo $qr_uri ?>">
   <code class="payreq"><?php echo $payReq ?></code>
->>>>>>> Minimal changes
   <p>
     <noscript>Your browser has JavaScript turned off. Please refresh the page manually after making the payment.</noscript>
     <span class="yesscript"><img src="<? echo plugins_url( '../assets/img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">

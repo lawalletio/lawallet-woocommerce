@@ -1,0 +1,29 @@
+{
+  "name": "agustinkassis/lawallet-woocommerce",
+  "description": "Enable instant and fee-reduced payments in BTC through Lightning Network",
+  "type": "woocommmerce-plugin",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Agustinkassis\\LawalletWoocommerce\\": "./"
+    }
+  },
+  "authors": [
+    {
+      "name": "Agustin Kassis",
+      "email": "webmaster@masize.com"
+    }
+  ],
+  "require-dev": {
+    "wp-coding-standards/wpcs": "^2.3",
+    "phpcompatibility/phpcompatibility-wp": "^2.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "require": {
+    "swentel/nostr-php": "^1.2"
+  }
+}

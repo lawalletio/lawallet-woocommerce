@@ -54,7 +54,6 @@ if (!function_exists('init_wc_lightning')) {
         $this->title       = $this->get_option('title');
         $this->description = $this->get_option('description');
         $this->enabled = $this->get_option('enabled');
-        $this->testmode = true;
 
         add_filter('woocommerce_payment_gateways', array($this, 'register_gateway'));
 
@@ -142,7 +141,7 @@ if (!function_exists('init_wc_lightning')) {
             'title'       => __('Customer Message', 'lawallet-woocommerce'),
             'type'        => 'textarea',
             'description' => __('Message to explain how the customer will be paying for the purchase.', 'lawallet-woocommerce'),
-            'default'     => __('You will pay using the Lightning Network.', 'lawallet-woocommerce'),
+            'default'     => __('You will pay using the Lightning Network. Powered by LaWallet', 'lawallet-woocommerce'),
             'desc_tip'    => true,
           ),
 
@@ -161,14 +160,22 @@ if (!function_exists('init_wc_lightning')) {
         $invoiceInfo = array();
         $btcPrice = $order->get_total() * ((float)1/ $livePrice);
 
-        $invoiceInfo['value'] = round($btcPrice * 100000000);
+        $invoiceInfo['value'] = round($btcPrice * 100000000) * 1000;
         $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
         $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
 
-        $this->provider->authenticate();
-        $invoice = $this->provider->createInvoice($invoiceInfo);
+        $response = file_get_contents("https://api.lawallet.ar/lnurlp/a1b0f9fdc84a81e1fa3b0289de83486792d68407f9e13baf22850f1f1f9b61b2/callback?amount=" . (string) $invoiceInfo['value']);
 
+        
+        $paymentRequest = json_decode($response, true);
+
+        $invoice = new stdClass();
+        
+        $invoice->payment_request = $paymentRequest["pr"];
         $invoice->value = $invoiceInfo['value'];
+
+        var_dump($paymentRequest);
+
         return $invoice;
       }
 
@@ -183,7 +190,7 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
-        update_post_meta( $order->get_id(), 'LN_HASH', $invoice->payment_hash);
+        // update_post_meta( $order->get_id(), 'LN_HASH', $invoice->payment_hash);
         update_post_meta( $order->get_id(), 'LN_EXPIRY', $invoice->expiry);
         update_post_meta( $order->get_id(), 'LN_INVOICE_JSON', json_encode($invoice));
 
@@ -200,6 +207,8 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
+
+        $this->tickerManager->setExchange("ripio");
         try {
           $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
         } catch (\Exception $e) {
@@ -270,12 +279,12 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        $payHash = get_post_meta( $_POST['invoice_id'], 'LN_HASH', true );
+        $payReq = get_post_meta( $_POST['invoice_id'], 'LN_INVOICE', true );
         //TODO: Set provider of invoice
         try {
-          if($this->check_payment($payHash)) {
+          if($this->check_payment($payReq)) {
             $order->payment_complete();
-            $order->add_order_note('Lightning Payment received on ' . $callResponse->settle_date);
+            $order->add_order_note('Lightning Payment received on $callResponse->settle_date');
             status_header(200);
             wp_send_json(true);
           } else {
@@ -310,8 +319,7 @@ if (!function_exists('init_wc_lightning')) {
 
         //TODO: get_metadata function gets all in one query
         $payReq = get_post_meta( $order_id, 'LN_INVOICE', true);
-        $payHash = get_post_meta( $order_id, 'LN_HASH', true );
-        $sats = get_post_meta( $order_id, 'LN_AMOUNT', true);
+        $sats = intval(get_post_meta( $order_id, 'LN_AMOUNT', true))/1000;
 
         if ($order->needs_payment()) {
           //Prepare information for payment page
@@ -337,6 +345,9 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       private function check_payment($paymentHash) {
+
+        echo "check Payment not implemented";
+        var_dump($paymentHash);
         $this->provider->authenticate();
         return $this->provider->checkPayment($paymentHash);
       }
