@@ -18,6 +18,7 @@ class LUD16 {
     protected $senderPubkey;
     protected $orderKey;
     protected $senderPrivkey;
+    protected $relays = [RELAY_URL];
 
     protected $loaded = false;
 
@@ -85,7 +86,6 @@ class LUD16 {
         // TODO: Create private key once
         $key = new Key();
         $private_key = $key->generatePrivateKey();
-        // $private_key = "00b4bdc19d8a0c797d9c70998a78a1f26119eccb4737374608f63b2ce1ed41d0";
 
         $this->senderPubkey = $key->getPublicKey($private_key);
 
@@ -93,7 +93,7 @@ class LUD16 {
         $event = new Event();
         $event->setKind(9734);
         $event->setContent('');
-        $event->addTag(['relays', RELAY_URL]);
+        $event->addTag(['relays', ...$this->relays]);
         $event->addTag(['amount', (string) $amount]);
         $event->addTag(['lnurl', $this->address]);
         $event->addTag(['p', $this->nostrPubkey]);
@@ -119,6 +119,7 @@ class LUD16 {
             "maxSendable" => $this->maxSendable,
             "senderPubkey" => $this->senderPubkey,
             "orderKey" => $this->orderKey,
+            "relays" => $this->relays,
         ];
     }
 
