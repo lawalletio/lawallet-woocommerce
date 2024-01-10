@@ -254,29 +254,6 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        /**
-         * Check if invoice is paid
-         */
-        if($expiry < time()) {
-          //Invoice expired
-          try {
-            $this->tickerManager->setExchange($postMeta["LN_EXCHANGE"][0]);
-            $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
-          } catch (\Exception $e) { // Can't get ticker
-            status_header(500);
-            wp_send_json(false);
-            return;
-          }
-
-          $order->add_order_note(json_encode($ticker)); // Remove
-          $invoice = $this->create_invoice($order, $ticker);
-          $this->update_post_meta($order, $invoice, $ticker);
-
-          status_header(410);
-          wp_send_json(false);
-          return;
-        }
-
         try {
           if($this->check_payment($lud16)) {
             $order->payment_complete();
@@ -284,6 +261,27 @@ if (!function_exists('init_wc_lightning')) {
             status_header(200);
             wp_send_json(true);
           } else {
+            // Check if invoice expired
+            if($expiry < time()) {
+              //Invoice expired
+              try {
+                $this->tickerManager->setExchange($postMeta["LN_EXCHANGE"][0]);
+                $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
+              } catch (\Exception $e) { // Can't get ticker
+                status_header(500);
+                wp_send_json(false);
+                return;
+              }
+    
+              $order->add_order_note(json_encode($ticker)); // Remove
+              $invoice = $this->create_invoice($order, $ticker);
+              $this->update_post_meta($order, $invoice, $ticker);
+    
+              status_header(410);
+              wp_send_json(false);
+              return;
+            }
+
             status_header(402);
             wp_send_json(false);
           }
