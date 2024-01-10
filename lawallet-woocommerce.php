@@ -1,4 +1,4 @@
-<?
+<?php
 /*
     Plugin Name: LaWallet for WooCommerce
     Plugin URI:  https://github.com/lawalletio/lawallet-woocommerce
@@ -22,6 +22,8 @@ if ( ! defined( 'WC_LND_BASENAME' ) ) {
   define('WC_LND_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
   define('WC_LND_VERSION', '0.9.1');
 }
+
+require_once(WC_LND_PLUGIN_PATH . 'vendor/autoload.php');
 
 // register_activation_hook( __FILE__, function(){
 //   if (!extension_loaded('gd') || !extension_loaded('curl')) {

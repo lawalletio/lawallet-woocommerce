@@ -1,4 +1,4 @@
-<?
+<?php
 class SatoshiTango extends Exchange {
   public $endpoint = 'https://api.satoshitango.com/v3';
   public $name = "SatoshiTango";

@@ -1,4 +1,4 @@
-<?
+<?php
 class Bitso extends Exchange {
   public $endpoint = 'https://api.bitso.com/v3/';
   public $name = "Bitso";

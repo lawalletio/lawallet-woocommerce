@@ -1,4 +1,4 @@
-<?
+<?php
 class Exchange {
   protected $fiatList = [];
   protected $headers = [];

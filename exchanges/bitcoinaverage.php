@@ -1,4 +1,4 @@
-<?
+<?php
 class BitcoinAverage extends Exchange {
   public $endpoint = 'https://ripio.com/api/v1';
   public $name = "Bitcoin Average";

@@ -1,4 +1,4 @@
-<?
+<?php
 define('WC_LND_ADMIN_PATH', WC_LND_PLUGIN_PATH . 'admin');
 
 class LND_Woocommerce_Admin {

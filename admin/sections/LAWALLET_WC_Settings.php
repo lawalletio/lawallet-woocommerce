@@ -1,4 +1,4 @@
-<?
+<?php
 
 // Exit if accessed directly
 if (!defined('ABSPATH')) {
@@ -122,7 +122,7 @@ class LAWALLET_WC_Settings extends LND_Settings_Page_Generator {
         <p><?=sprintf(__( 'The amount of %s sats has successfully been transferred.', 'lawallet-woocommerce' ), '<b>' . $amount . '</b>'); ?></p>
         <p><?=sprintf(__( 'Total %s sats paid in fees.', 'lawallet-woocommerce' ), '<b>' . $fees . '</b>'); ?></p>
       </div>
-      <?
+      <?php
     }
 
     /**
@@ -134,7 +134,7 @@ class LAWALLET_WC_Settings extends LND_Settings_Page_Generator {
         <h3><?=__('Error trying to pay invoice', 'lawallet-woocommerce')?></h3>
         <p><?=$this->notice->getMessage(); ?></p>
       </div>
-      <?
+      <?php
     }
     
     /**

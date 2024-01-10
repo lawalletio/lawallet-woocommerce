@@ -1,4 +1,4 @@
-<?
+<?php
 require('Exchange.php');
 
 require(__DIR__ . '/../exchanges/bitcoinaverage.php');
@@ -76,7 +76,7 @@ class TickerManager {
         </p>
       </div>
     </div>
-    <?
+    <?php
   }
 
   /**

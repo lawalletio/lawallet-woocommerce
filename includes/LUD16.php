@@ -1,4 +1,4 @@
-<?
+<?php
 class LUD16 {
 
     const $RELAY_URL = "wss://nos.lol";

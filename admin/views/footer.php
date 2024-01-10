@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  * View for Settings page footer

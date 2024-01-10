@@ -1,4 +1,4 @@
-<?
+<?php
 class Bitex extends Exchange {
   public $endpoint = 'https://bitex.la/api';
   public $name = "Bitex";

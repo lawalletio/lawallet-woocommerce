@@ -1,4 +1,4 @@
-<?
+<?php
 class Exchange {
 
   public function request($url, $action='GET', $data=null) {
