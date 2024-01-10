@@ -25,15 +25,11 @@ if ( ! defined( 'WC_LND_BASENAME' ) ) {
 
 require_once(WC_LND_PLUGIN_PATH . 'vendor/autoload.php');
 
-// register_activation_hook( __FILE__, function(){
-//   if (!extension_loaded('gd') || !extension_loaded('curl')) {
-//     die('The php-curl and php-gd extensions are required. Please contact your hosting provider for additional help.');
-//   }
-// });
 
-// Providers
+// Dependecies
 require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
-// require_once(WC_LND_PLUGIN_PATH . 'admin/LND_Woocommerce_Admin.php');
+require_once(WC_LND_PLUGIN_PATH . 'includes/LUD16.php');
+require_once(WC_LND_PLUGIN_PATH . 'includes/LaWallet.php');
 
 if (!function_exists('init_wc_lightning')) {
 
@@ -161,23 +157,18 @@ if (!function_exists('init_wc_lightning')) {
 
         $invoiceInfo = array();
         $btcPrice = $order->get_total() * ((float)1/ $livePrice);
-
-        $invoiceInfo['value'] = round($btcPrice * 100000000) * 1000;
-        $invoiceInfo['expiry'] = $this->get_option('invoice_expiry');
-        $invoiceInfo['memo'] = "Order key: " . $order->get_checkout_order_received_url();
-
-        $response = file_get_contents("https://api.lawallet.ar/lnurlp/a1b0f9fdc84a81e1fa3b0289de83486792d68407f9e13baf22850f1f1f9b61b2/callback?amount=" . (string) $invoiceInfo['value']);
-
-        
-        $paymentRequest = json_decode($response, true);
+        $orderKey = hash('sha256', $order->get_checkout_order_received_url());
+        $amount = round($btcPrice * 100000000) * 1000;
+        $lud16 = LUD16::fromAddress("agustin@lawallet.ar");
 
         $invoice = new stdClass();
         
-        $invoice->payment_request = $paymentRequest["pr"];
-        $invoice->value = $invoiceInfo['value'];
+        $invoice->payment_request = $lud16->createInvoice($amount, $orderKey);
 
-        var_dump($paymentRequest);
-
+        $invoice->lud16 = $lud16->toJson();
+        $invoice->value = $amount;
+        $invoice->expiry = time() + 60 * 5;
+        $invoice->memo = "Order key: " . $order->get_checkout_order_received_url();
         return $invoice;
       }
 
@@ -193,10 +184,11 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
         // update_post_meta( $order->get_id(), 'LN_HASH', $invoice->payment_hash);
+        update_post_meta( $order->get_id(), 'LN_LUD16', json_encode($invoice->lud16));
         update_post_meta( $order->get_id(), 'LN_EXPIRY', $invoice->expiry);
         update_post_meta( $order->get_id(), 'LN_INVOICE_JSON', json_encode($invoice));
 
-        $order->add_order_note('LN_HASH: ' . $invoice->payment_hash);
+        $order->add_order_note('LUD16 Data: ' . json_encode($invoice->lud16));
 
         $btcPrice = $this->format_msat($invoice->value);
         $order->add_order_note(__('Awaiting payment of', 'lawallet-woocommerce') . ' ' .  $invoice->value . ' sats (' . $btcPrice . ')' . " @ 1 BTC ~ " . number_format($ticker->rate, 2) . " " . $ticker->currency . " (+" . $ticker->markup . "% " . __("applied", "lawallet-woocommerce") . "). <br> Invoice ID: " . $invoice->payment_request);
@@ -251,6 +243,10 @@ if (!function_exists('init_wc_lightning')) {
        */
       public function wait_invoice() {
         $order = wc_get_order($_POST['invoice_id']);
+        
+        $postMeta = get_post_meta($_POST['invoice_id']);
+        $expiry = intval($postMeta['LN_EXPIRY'][0]);
+        $lud16 = json_decode($postMeta["LN_LUD16"][0]);
 
         if($order->get_status() == 'processing') {
           status_header(200);
@@ -261,10 +257,10 @@ if (!function_exists('init_wc_lightning')) {
         /**
          * Check if invoice is paid
          */
-        $invoiceTime = intval(get_post_meta( $_POST['invoice_id'], 'LN_EXPIRY', true ));
-        if($invoiceTime < time()) {
+        if($expiry < time()) {
           //Invoice expired
           try {
+            $this->tickerManager->setExchange($postMeta["LN_EXCHANGE"][0]);
             $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
           } catch (\Exception $e) { // Can't get ticker
             status_header(500);
@@ -281,10 +277,8 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        $payReq = get_post_meta( $_POST['invoice_id'], 'LN_INVOICE', true );
-        //TODO: Set provider of invoice
         try {
-          if($this->check_payment($payReq)) {
+          if($this->check_payment($lud16)) {
             $order->payment_complete();
             $order->add_order_note('Lightning Payment received on $callResponse->settle_date');
             status_header(200);
@@ -325,12 +319,13 @@ if (!function_exists('init_wc_lightning')) {
 
         if ($order->needs_payment()) {
           //Prepare information for payment page
-
-          $expiry = get_post_meta( $order_id, 'LN_EXPIRY', true);
-          $rate = number_format((float)get_post_meta( $order_id, 'LN_RATE', true ), 2, '.', ',');
-          $exchange = $this->tickerManager->getAll()[get_post_meta( $order_id, 'LN_EXCHANGE', true )]->name;
+          $postMeta = get_post_meta($order_id);
+          $expiry = intval($postMeta['LN_EXPIRY'][0]);
+          $rate = number_format((float)$postMeta['LN_RATE'], 2, '.', ',');
+          $exchange = $this->tickerManager->getAll()[$postMeta['LN_EXCHANGE'][0]]->name;
           $qr_uri = $this->generate_qr($payReq); // TODO: Generate it on clientside
           $currency = $order->get_currency();
+          $lud16 = json_decode($postMeta['LN_LUD16'][0]);
           require __DIR__.'/templates/payment.php';
 
         } elseif ($order->has_status(array('processing', 'completed'))) {
@@ -346,12 +341,21 @@ if (!function_exists('init_wc_lightning')) {
         return $methods;
       }
 
-      private function check_payment($paymentHash) {
+      private function check_payment($lud16) {
+        $filter = [
+          'kinds' => [9735],
+          'authors' => [$lud16->nostrPubkey],
+          '#e' => [$lud16->orderKey],
+          'limit' => 1
+        ];
 
-        echo "check Payment not implemented";
-        var_dump($paymentHash);
-        $this->provider->authenticate();
-        return $this->provider->checkPayment($paymentHash);
+        $federation = new LaWallet("https://api.$lud16->federationId");
+        $events = $federation->fetchByFilter($filter);
+        
+        if(count($events) == 0) {
+          return false;
+        }
+        return true;
       }
 
       /**
