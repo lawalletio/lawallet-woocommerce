@@ -31,6 +31,11 @@ require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
 require_once(WC_LND_PLUGIN_PATH . 'includes/LUD16.php');
 require_once(WC_LND_PLUGIN_PATH . 'includes/LaWallet.php');
 
+
+if ( is_wc_endpoint_url('order-pay') ) {
+  // do something
+}
+
 if (!function_exists('init_wc_lightning')) {
 
   function init_wc_lightning() {
