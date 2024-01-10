@@ -1,7 +1,12 @@
 <?php
-class LUD16 {
 
-    const $RELAY_URL = "wss://nos.lol";
+use swentel\nostr\Event\Event;
+use swentel\nostr\Sign\Sign;
+use swentel\nostr\Key\Key;
+
+const RELAY_URL = "wss://nos.lol";
+
+class LUD16 {
     protected $address;
     protected $callbackUrl;
     protected $allowsNostr;
@@ -10,6 +15,9 @@ class LUD16 {
     protected $accountPubKey;
     protected $minSendable;
     protected $maxSendable;
+    protected $senderPubkey;
+    protected $orderKey;
+    protected $senderPrivkey;
 
     protected $loaded = false;
 
@@ -34,62 +42,73 @@ class LUD16 {
             throw new Exception("nostrPubkey not found in LUD16", 1);
         }
 
-        if (!isset($json['callbackUrl'])) {
+        if (!isset($json['callback'])) {
             throw new Exception("callback not found in LUD16", 1);
         }
 
-        $instance->fill( $json );
+        $instance->fromJSON((object) $json);
         return $instance;
     }
 
     public function fromJSON(stdClass $json) {
-        $this->address = $json['address'];
-        $this->callbackUrl = $json['callback'];
-        $this->nostrPubkey = $json['nostrPubkey'];
-        $this->allowsNostr = $json['allowsNostr'];
-        $this->federationId = $json['federationId'];
-        $this->accountPubKey = $json['accountPubKey'];
-        $this->minSendable = $json['minSendable'];
-        $this->maxSendable = $json['maxSendable'];
+        $this->address = $json->address;
+        $this->callbackUrl = $json->callback;
+        $this->nostrPubkey = $json->nostrPubkey;
+        $this->allowsNostr = $json->allowsNostr;
+        $this->federationId = $json->federationId;
+        $this->accountPubKey = $json->accountPubKey;
+        $this->minSendable = $json->minSendable;
+        $this->maxSendable = $json->maxSendable;
 
         $this->loaded = true;
     }
 
-    public function createInvoice(int $amount) {
+    public function createInvoice(int $amount, $orderKey=null) {
         if (!$this->loaded) {
             throw new Exception("LUD16 not loaded", 1);
         }
 
-        $zapRequestEvent = $this->generateZapRequestEvent($amount);
-        $encodedZapRequestEvent = rawurlencode($zapRequestEvent);
+        $zapRequestEvent = $this->generateZapRequestEvent($amount, $orderKey);
+        $encodedZapRequestEvent = urlencode((string) $zapRequestEvent->toJson());
 
-        $response = file_get_contents($this->callbackUrl . "?amount=$amount&event=$encodedZapRequestEvent&lnurl=$this->address");
+        $url = $this->callbackUrl . "?amount=$amount&nostr=$encodedZapRequestEvent&lnurl=$this->address";
+
+        $response = file_get_contents($url);
         $json = json_decode($response, true);
+
+        $this->orderKey = $orderKey;
 
         return $json['pr'];
     }
 
-    public function generateZapRequestEvent(int $amount) {
-        $senderPubkey = "";
-        $event = (object) [
-            "kind" => 9734,
-            "content" => "",
-            "pubkey" => $senderPubkey,
-            "created_at" => time(),
-            "tags" => [
-                ["relays", $this->RELAY_URL],
-                ["amount", $amount],
-                ["lnurl", $this->address],
-                ["p", $this->nostrPubkey],
-            ]
-        ];
+    public function generateZapRequestEvent(int $amount, string $eventId=null) {
+        // TODO: Create private key once
+        $key = new Key();
+        $private_key = $key->generatePrivateKey();
+        // $private_key = "00b4bdc19d8a0c797d9c70998a78a1f26119eccb4737374608f63b2ce1ed41d0";
+
+        $this->senderPubkey = $key->getPublicKey($private_key);
+
+        // Generate Event
+        $event = new Event();
+        $event->setKind(9734);
+        $event->setContent('');
+        $event->addTag(['relays', RELAY_URL]);
+        $event->addTag(['amount', (string) $amount]);
+        $event->addTag(['lnurl', $this->address]);
+        $event->addTag(['p', $this->nostrPubkey]);
+        if ($eventId) {
+            $event->addTag(['e', $eventId]);
+        }
 
         // sign event
+        $signer = new Sign();
+        $signer->signEvent($event, $private_key);
 
         return $event;
     }
 
-    public function toJSON() {
+    public function toJson() {
         return (object) [
             "callback" => $this->callbackUrl,
             "nostrPubkey" => $this->nostrPubkey,
@@ -97,16 +116,18 @@ class LUD16 {
             "federationId" => $this->federationId,
             "accountPubKey" => $this->accountPubKey,
             "minSendable" => $this->minSendable,
-            "maxSendable" => $this->maxSendable
-        ]
+            "maxSendable" => $this->maxSendable,
+            "senderPubkey" => $this->senderPubkey,
+            "orderKey" => $this->orderKey,
+        ];
     }
 
 
     static function generateUrl($address) {
-        $parts = explode('@', $email);
+        $parts = explode('@', $address);
 
         if (count($parts) !== 2) {
-            throw new Exception("Invalid address", 1);
+            throw new Exception("Invalid address '$address'", 1);
         }
         $username = $parts[0];
         $domain = $parts[1];
