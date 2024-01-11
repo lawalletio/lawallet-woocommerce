@@ -31,11 +31,6 @@ require_once(WC_LND_PLUGIN_PATH . 'includes/TickerManager.php');
 require_once(WC_LND_PLUGIN_PATH . 'includes/LUD16.php');
 require_once(WC_LND_PLUGIN_PATH . 'includes/LaWallet.php');
 
-
-if ( is_wc_endpoint_url('order-pay') ) {
-  // do something
-}
-
 if (!function_exists('init_wc_lightning')) {
 
   function init_wc_lightning() {
@@ -56,7 +51,7 @@ if (!function_exists('init_wc_lightning')) {
         // Define user set variables.
         $this->title       = $this->get_option('title');
         $this->description = $this->get_option('description');
-        $this->enabled = $this->get_option('enabled');
+        $this->enabled     = $this->get_option('enabled');
 
         add_filter('woocommerce_payment_gateways', array($this, 'register_gateway'));
 
@@ -66,12 +61,12 @@ if (!function_exists('init_wc_lightning')) {
         add_action('wp_ajax_ln_wait_invoice', array($this, 'wait_invoice'));
         add_action('wp_ajax_nopriv_ln_wait_invoice', array($this, 'wait_invoice'));
 
+        add_filter('woocommerce_is_checkout', array($this, 'on_checkout') );
 
         // Is Admin
         if (is_admin()) {
           // $this->admin = LND_Woocommerce_Admin::instance();
           // $this->admin->set_gateway($this);
-
           if ($this->is_manage_section()) {
             add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
           }
@@ -188,7 +183,6 @@ if (!function_exists('init_wc_lightning')) {
         update_post_meta( $order->get_id(), 'LN_EXCHANGE', $this->get_option('ticker'));
         update_post_meta( $order->get_id(), 'LN_AMOUNT', $invoice->value);
         update_post_meta( $order->get_id(), 'LN_INVOICE', $invoice->payment_request);
-        // update_post_meta( $order->get_id(), 'LN_HASH', $invoice->payment_hash);
         update_post_meta( $order->get_id(), 'LN_LUD16', json_encode($invoice->lud16));
         update_post_meta( $order->get_id(), 'LN_EXPIRY', $invoice->expiry);
         update_post_meta( $order->get_id(), 'LN_INVOICE_JSON', json_encode($invoice));
@@ -362,11 +356,25 @@ if (!function_exists('init_wc_lightning')) {
       }
 
       /**
-       * Loads js scripts
+       * Loads admin js scripts
        */
       public function load_admin_script() {
       	wp_register_script( WC_LND_NAME, plugins_url( 'assets/js/script.js', __FILE__ ));
         wp_enqueue_script(WC_LND_NAME);
+      }
+
+      /**
+       * Loads payment js scripts
+       */
+      public function load_payment_script() {
+      	wp_register_script( WC_LND_NAME, plugins_url( 'assets/js/nostr.js', __FILE__ ));
+        wp_enqueue_script(WC_LND_NAME);
+      }
+
+
+      public function on_checkout() {
+        // TODO: Check if this gateway is being used
+        $this->load_payment_script();
       }
 
       /**
@@ -399,18 +407,6 @@ if (!function_exists('init_wc_lightning')) {
           $margin = "0";
           $encoding = "UTF-8";
           return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
-      }
-
-      /**
-       * Generates endpoint URL
-       * @param  array $settings Plugin settings
-       * @return string          Endpoint URL
-       */
-      public function generate_endpoint($settings) {
-        $protocol = $settings['ssl'] ? 'https' : 'http';
-        $host = $settings['host'] ? $settings['host'] : '';
-        $port = $settings['port'] ? $settings['port'] : ($protocol == 'https' ? '443' : '80');
-        return $protocol . '://' . $host . ':' . $port;
       }
     }
 

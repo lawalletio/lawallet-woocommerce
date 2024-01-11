@@ -11,12 +11,14 @@
   <h4>
     <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
   </h4>
-  <img class="qr" src="<?php echo $qr_uri ?>">
+  <div class="qr_container">
+    <img id="qr" src="<?php echo $qr_uri ?>">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 326 326" id="check-svg">
+      <circle cx="163" cy="163" r="150"/>
+      <polyline points="100 170 150 210 230 120" />
+    </svg>
+  </div>
   <code class="payreq"><?php echo $payReq ?></code>
-  <hr />
-  <p>
-    <code><?php echo json_encode($lud16) ?></code>
-  </p>
   <p>
     <noscript>Your browser has JavaScript turned off. Please refresh the page manually after making the payment.</noscript>
     <span class="yesscript"><img src="<?=plugins_url( '../assets/img/loader.gif', __FILE__ ) ?>" class="loader" alt="loading">
@@ -31,17 +33,15 @@
 
 <script type="text/javascript">
   (function($, ajax_url, invoice_id, redir_url, expires_at){
-    var first_check = false;
+    const lud16 = <?=json_encode($lud16) ?>;
 
-    var intervalId = null;
+    var first_check = false;
 
     function poll() {
       $.post(ajax_url, { action: 'ln_wait_invoice', invoice_id: invoice_id })
         .success((code, state, res) => {
           first_check = true;
           if (res.responseJSON === true) {
-            playPayedAnimation();
-            intervalId && clearInterval(intervalId);
             return document.location = redir_url;
           }
           throw new Error('succesful response, but not the expected one')
@@ -69,18 +69,17 @@
     }
 
     function playPayedAnimation() {
-      $('.ln-pay .check').css({
-        display: 'block'
-      });
-      $('.ln-pay .qr').css({
-        opacity: 0.3
-      });
+      $('#qr').addClass("active");
+      $("#check-svg").addClass("active");
     }
 
     $(function () {
-      intervalId = setInterval(() => {
+      const zapListener = new ZapListener(lud16.relays[0], lud16.nostrPubkey, lud16.orderKey, (event) => {
+        console.dir(event);
+        playPayedAnimation();
         poll();
-      }, 2000);
+      });
+      zapListener.connect()
     })
     
 

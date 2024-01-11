@@ -1,5 +1,6 @@
 /* Hide WooCommerce default title payment details */
-header.entry-header, .order_details {
+header.entry-header,
+.order_details {
   display: none;
 }
 
@@ -7,20 +8,17 @@ header.entry-header, .order_details {
   margin-bottom: 0;
 }
 
-.ln-pay { margin-bottom: 2em; }
+.ln-pay {
+  margin-bottom: 2em;
+}
 
-.ln-pay h2 { margin-bottom: 0; }
+.ln-pay h2 {
+  margin-bottom: 0;
+}
 
 .ln-pay h4 {
   color: #999;
   clear: none;
-}
-
-.ln-pay .qr {
-  /* display: block;
-  float: right;
-  width: 300px;
-  margin-top: -10px; */
 }
 
 .ln-pay .payreq {
@@ -43,51 +41,102 @@ header.entry-header, .order_details {
 }
 
 @media (max-width: 550px) {
-  .ln-pay { text-align: center; }
-  .ln-pay .qr { float: none; margin: 0 auto; }
-  .ln-pay .payreq { margin-right: 0; }
+  .ln-pay {
+    text-align: center;
+  }
+  #qr {
+    float: none;
+    margin: 0 auto;
+  }
+  .ln-pay .payreq {
+    margin-right: 0;
+  }
 }
 
 .qr_container {
-  /* position: relative; */
+  position: relative;
   display: block;
   float: right;
   width: 300px;
   margin-top: -10px;
 }
 
+#qr {
+  transition: opacity 0.3s ease-in-out;
+  opacity: 1;
+}
+
+#qr.active {
+  opacity: 0.1;
+}
+
 /*
 Check Animation
  */
 
-.ln-pay .check {
+#check-svg {
+  height: 200px;
+  width: 200px;
   position: absolute;
-  z-index: 1;
-  margin: 25px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
-.ln-pay .check path {
-    fill:none;
-    stroke:#2ABA66;
-    stroke-miterlimit:10;
-    stroke-width: 35px;
-
-
-    margin: 40px;
-    stroke-dasharray: 500;
-    stroke-dashoffset: 500;
-    animation: draw 1.2s linear forwards;
-
+#check-svg circle,
+#check-svg polyline {
+  stroke: green;
+  fill: none;
+  stroke-width: 24px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  border-color: #f0a;
 }
 
-.ln-pay svg { overflow:visible }
+#check-svg circle {
+  stroke-dashoffset: 960;
+  stroke-dasharray: 960;
+}
 
-@keyframes draw {
-    from {
-        stroke-linecap: round;
-    }
-    to {
-        stroke-linecap: round;
-        stroke-dashoffset: 0;
-    }
+#check-svg polyline {
+  stroke-dashoffset: 200;
+  stroke-dasharray: 200;
+}
+
+#check-svg.active circle {
+  animation-name: circle_animation;
+  animation-delay: 100ms;
+  animation-duration: 400ms;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-direction: normal;
+  transform-origin: 50% 50%;
+}
+
+#check-svg.active polyline {
+  animation-name: draw-line-2;
+  animation-delay: 550ms;
+  animation-duration: 200ms;
+  animation-timing-function: ease-in;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes draw-line-2 {
+  from {
+    stroke-dashoffset: 200;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes circle_animation {
+  0% {
+    stroke-dashoffset: 960;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
