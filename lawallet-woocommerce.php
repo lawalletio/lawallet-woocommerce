@@ -246,7 +246,8 @@ if (!function_exists('init_wc_lightning')) {
         $postMeta = get_post_meta($_POST['invoice_id']);
         $expiry = intval($postMeta['LN_EXPIRY'][0]);
         $lud16 = json_decode($postMeta["LN_LUD16"][0]);
-
+        $pr = $postMeta["LN_INVOICE"][0];
+        
         if($order->get_status() == 'processing') {
           status_header(200);
           wp_send_json(true);
@@ -254,7 +255,7 @@ if (!function_exists('init_wc_lightning')) {
         }
 
         try {
-          if($this->check_payment($lud16)) {
+          if($this->check_payment($lud16, $pr)) {
             $order->payment_complete();
             $order->add_order_note('Lightning Payment received on $callResponse->settle_date');
             status_header(200);
@@ -338,7 +339,7 @@ if (!function_exists('init_wc_lightning')) {
         return $methods;
       }
 
-      private function check_payment($lud16) {
+      private function check_payment($lud16, $pr) {
         $filter = [
           'kinds' => [9735],
           'authors' => [$lud16->nostrPubkey],
@@ -352,7 +353,10 @@ if (!function_exists('init_wc_lightning')) {
         if(count($events) == 0) {
           return false;
         }
-        return true;
+
+        $event = $events[0];
+        $bolt11 = array_values(array_filter($event->tags, static function ($tag) {return $tag[0]=== "bolt11";}))[0][1];
+        return $pr === $bolt11;
       }
 
       /**
