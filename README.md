@@ -5,18 +5,13 @@ using [LND](https://github.com/lightningnetwork/lnd).
 
 ## Installation
 
-Requires PHP >= 5.6 and the `php-curl` and `php-gd` extensions.
+Requires PHP >= 5.6, Woocommerce and the `php-gmp` extension.
 
-1. Setup a [LND] node (https://github.com/lightningnetwork/lnd).
+1. Install Woocommerce in your Wordpresss [Woocommerce Plugin](https://wordpress.org/plugins/woocommerce).
 
-2. Get the Node server IP and macaroon key
+2. Install this and enable the plugin on your WordPress installation.
 
-3. Install and enable the plugin on your WordPress installation.
-
-4. Under the WordPress administration panel, go to `WooCommerce -> Settings -> Checkout -> Lightning` and set LND endpoint.
-
-5. Upload LND tls.cert and invoice.macaroon.
-
+3. Under the WordPress administration panel, go to `WooCommerce -> Settings -> Checkout -> Lightning` and set your LUD16 handle.
 
 The payment option should now be available in your checkout page.
 
