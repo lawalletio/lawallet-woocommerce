@@ -64,6 +64,7 @@ header.entry-header,
 #qr {
   transition: opacity 0.3s ease-in-out;
   opacity: 1;
+  padding: 13px;
 }
 
 #qr.active {

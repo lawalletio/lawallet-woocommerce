@@ -4,7 +4,7 @@ use swentel\nostr\Event\Event;
 use swentel\nostr\Sign\Sign;
 use swentel\nostr\Key\Key;
 
-const RELAY_URL = "wss://nos.lol";
+const RELAY_URL = "wss://relay.lawallet.ar";
 
 class LUD16 {
     protected $address;

@@ -321,7 +321,6 @@ if (!function_exists('init_wc_lightning')) {
           $expiry = intval($postMeta['LN_EXPIRY'][0]);
           $rate = number_format((float)$postMeta['LN_RATE'], 2, '.', ',');
           $exchange = $this->tickerManager->getAll()[$postMeta['LN_EXCHANGE'][0]]->name;
-          $qr_uri = $this->generate_qr($payReq); // TODO: Generate it on clientside
           $currency = $order->get_currency();
           $lud16 = json_decode($postMeta['LN_LUD16'][0]);
           require __DIR__.'/templates/payment.php';
@@ -399,18 +398,6 @@ if (!function_exists('init_wc_lightning')) {
        */
       protected function is_manage_section() {
         return (isset($_GET['section']) && $_GET['section']==='lightning');
-      }
-
-      /**
-       * Generates QR code image with Google's API
-       * @param  string $paymentRequest Invoice payment request
-       * @return string                 Remote Image's URL
-       */
-      private function generate_qr($paymentRequest) {
-          $size = "300x300";
-          $margin = "0";
-          $encoding = "UTF-8";
-          return 'https://chart.googleapis.com/chart?cht=qr' . '&chs=' . $size . '&chld=|' . $margin . '&chl=' . $paymentRequest . '&choe=' . $encoding;
       }
     }
 

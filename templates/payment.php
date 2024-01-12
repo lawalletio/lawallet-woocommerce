@@ -1,5 +1,7 @@
 
 <link rel="stylesheet" href="<?=plugins_url('assets/css/payment.css', dirname(__FILE__))?>" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
 <noscript><style>.yesscript{display:none}</style></noscript>
 
 <div class="ln-pay">
@@ -12,7 +14,7 @@
     <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
   </h4>
   <div class="qr_container">
-    <img id="qr" src="<?php echo $qr_uri ?>">
+    <div id="qr"></div>
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 326 326" id="check-svg">
       <circle cx="163" cy="163" r="150"/>
       <polyline points="100 170 150 210 230 120" />
@@ -79,7 +81,17 @@
         playPayedAnimation();
         poll();
       });
-      zapListener.connect()
+      zapListener.connect();
+
+
+      new QRCode(document.getElementById("qr"), {
+          text: "<?=$payReq ?>",
+          width: 300,
+          height: 300,
+          colorDark : "#000000",
+          colorLight : "#ffffff",
+          // correctLevel : QRCode.CorrectLevel.H
+      })
     })
     
 
