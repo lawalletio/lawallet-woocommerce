@@ -11,7 +11,7 @@
     <?php echo $sats ?> sats
   </h3>
   <h4>
-    <b><?=__('Rate')?></b>: <?=$currency . ' ' . $rate . ' ' . __('from') . ' ' . $exchange?>
+    <b><?=__('Rate')?></b>: 1 SAT = <?=$currency . ' ' . $rate . ' ' . '<i>' . __('from') . ' ' . $exchange . '</i>'?>
   </h4>
   <div class="qr_container">
     <div id="qr"></div>
@@ -37,12 +37,9 @@
   (function($, ajax_url, invoice_id, redir_url, expires_at){
     const lud16 = <?=json_encode($lud16) ?>;
 
-    var first_check = false;
-
-    function poll() {
-      $.post(ajax_url, { action: 'ln_wait_invoice', invoice_id: invoice_id })
+    async function poll() {
+      return $.post(ajax_url, { action: 'ln_wait_invoice', invoice_id: invoice_id })
         .success((code, state, res) => {
-          first_check = true;
           if (res.responseJSON === true) {
             return document.location = redir_url;
           }
@@ -58,12 +55,13 @@
         })
     };
     
-    function updateExpiry() {
+    async function updateExpiry() {
       var left = expires_at - (+new Date()/1000|0)
       if (left <= 0) {
-        alert("RESTARTING");
+        await poll();
         if (first_check) return location.reload();
         $('#invoice_expires_label').text('<?=__('Generating new invoice', 'lawallet-woocommerce')?>...');
+        return;
       } else {
         $('#expiry-timer').text('<?=__('in', 'lawallet-woocommerce')?> '+left)
       }
@@ -94,7 +92,7 @@
       })
     })
     
-
+    updateExpiry();
   })(jQuery, <?=json_encode(admin_url( 'admin-ajax.php' )) ?>, <?=json_encode($order->get_id()) ?>,
             <?=json_encode($order->get_checkout_order_received_url()) ?>, <?=$expiry ?>)
 
