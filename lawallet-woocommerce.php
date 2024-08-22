@@ -115,7 +115,7 @@ if (!function_exists('init_wc_lightning')) {
             'title'       => __('Ticker', 'lawallet-woocommerce'),
             'type'        => 'select',
             'description' => __('Select Exchange for rate calculation.', 'lawallet-woocommerce'),
-            'default'     => 'satoshi_tango',
+            'default'     => 'yadio',
             'options'     => array_map(function($exchange) {
               return $exchange->name;
             }, $this->tickerManager->getValid()),
@@ -201,7 +201,7 @@ if (!function_exists('init_wc_lightning')) {
       public function process_payment( $order_id ) {
         $order = wc_get_order($order_id);
 
-        $this->tickerManager->setExchange("ripio");
+        $this->tickerManager->setExchange("yadio");
         try {
           $ticker = $this->tickerManager->getTicker($this->get_option('rate_markup'));
         } catch (\Exception $e) {
@@ -316,13 +316,16 @@ if (!function_exists('init_wc_lightning')) {
         $sats = intval(get_post_meta( $order_id, 'LN_AMOUNT', true))/1000;
 
         if ($order->needs_payment()) {
+          
           //Prepare information for payment page
           $postMeta = get_post_meta($order_id);
+          
           $expiry = intval($postMeta['LN_EXPIRY'][0]);
-          $rate = number_format((float)$postMeta['LN_RATE'], 2, '.', ',');
+          $rate = number_format((float)$postMeta['LN_RATE'][0]/100000000,4, ",",".");
           $exchange = $this->tickerManager->getAll()[$postMeta['LN_EXCHANGE'][0]]->name;
           $currency = $order->get_currency();
           $lud16 = json_decode($postMeta['LN_LUD16'][0]);
+
           require __DIR__.'/templates/payment.php';
 
         } elseif ($order->has_status(array('processing', 'completed'))) {

@@ -1,11 +1,8 @@
 <?php
 require('Exchange.php');
 
-require(__DIR__ . '/../exchanges/bitcoinaverage.php');
-require(__DIR__ . '/../exchanges/satoshitango.php');
-require(__DIR__ . '/../exchanges/ripio.php');
 require(__DIR__ . '/../exchanges/bitso.php');
-require(__DIR__ . '/../exchanges/bitex.php');
+require(__DIR__ . '/../exchanges/yadio.php');
 
 class TickerManager {
   private $currentExchange = null;
@@ -30,11 +27,8 @@ class TickerManager {
     $this->currency = 'BTC';
 
     $this->exchangesList = [
-      'satoshi_tango' => new SatoshiTango(),
-      'ripio' => new Ripio(),
+      'yadio' => new Yadio(),
       'bitso' => new Bitso(),
-      'bitex' => new Bitex(),
-      'bitcoin_average' => new BitcoinAverage()
     ];
   }
 
