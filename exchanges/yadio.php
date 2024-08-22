@@ -1,7 +1,7 @@
 <?php
-class SatoshiTango extends Exchange {
-  public $endpoint = 'https://api.satoshitango.com/v3';
-  public $name = "SatoshiTango";
+class Yadio extends Exchange {
+  public $endpoint = 'https://api.yadio.io/exrates/btc';
+  public $name = "Yadio";
   private $apiKey = "";
 
   protected $fiatList = ['ARS', 'USD'];
@@ -12,21 +12,23 @@ class SatoshiTango extends Exchange {
    * @return float           Rate
    */
   public function getRate($currency='ARS') {
-    $content = json_decode($this->request($this->endpoint . "/ticker/$currency/BTC"));
-    return $content->data->ticker->BTC->bid;
+    $content = json_decode($this->request($this->endpoint ));
+    $list = $content->BTC;
+    if (!$list) {
+      throw new Exception("BTC object missing on response", 1);
+    }
+    return $list->{$currency};
   }
 
   private function generateHeaders() {
     return [
       "Content-Type: application/json",
-      "Authorization: Bearer " . $this->apiKey,
       "cache-control: no-cache"
     ];
   }
 
   public function setCredentials($data) {
-    $this->apiKey = $data->apiKey;
-    $this->addHeaders(generateHeaders());
+    return;
   }
 
   public function quote($amount) {
@@ -52,11 +54,7 @@ class SatoshiTango extends Exchange {
   }
 
   public function sell($amount, $currency='ARS') {
-    $quote = $this->quote($amount, $currency);
-    $data = (object) [
-      "opid" => $quote->opid
-    ];
-    $content = json_decode($this->request($this->endpoint . "/sellcrypto/exec"), $data);
+    trigger_error(__('sell not implemented for this class yet'), E_USER_WARNING);
   }
 }
 ?>

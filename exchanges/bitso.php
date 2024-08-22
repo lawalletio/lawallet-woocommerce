@@ -11,7 +11,7 @@ class Bitso extends Exchange {
    * @return float           Rate
    */
   public function getRate($currency='ARS') {
-    $content = json_decode($this->request($this->endpoint . "/ticker/?book=" . strtolower("btc_" . $currency)));
+    return $this->getPrice($currency, "BTC");
   }
   public function getPrice($currency='ARS', $crypto='BTC') {
     $content = json_decode($this->request($this->endpoint . "/ticker/?book=" . strtolower($crypto . "_" . $currency)));
