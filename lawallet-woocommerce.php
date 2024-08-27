@@ -128,6 +128,13 @@ if (!function_exists('init_wc_lightning')) {
             'default'     => 1, // 5 minutes
             'desc_tip'    => true,
           ),
+          'lightning_address_destination' => array(
+            'title'       => __('Destination Address', 'lawallet-woocommerce'),
+            'type'        => 'text',
+            'description' => __('Lightning address of the recipient', 'lawallet-woocommerce'),
+            'default'     => "gorila@lawallet.ar",
+            'desc_tip'    => true,
+          ),
           'invoice_expiry' => array(
             'title'       => __('Invoice Expiration', 'lawallet-woocommerce'),
             'type'        => 'text',
@@ -159,7 +166,7 @@ if (!function_exists('init_wc_lightning')) {
         $btcPrice = $order->get_total() * ((float)1/ $livePrice);
         $orderKey = hash('sha256', $order->get_checkout_order_received_url());
         $amount = round($btcPrice * 100000000) * 1000;
-        $lud16 = LUD16::fromAddress("agustin@lawallet.ar");
+        $lud16 = LUD16::fromAddress($this->get_option('lightning_address_destination'));
 
         $invoice = new stdClass();
         
@@ -209,7 +216,7 @@ if (!function_exists('init_wc_lightning')) {
           return;
         }
 
-        //$order->add_order_note(json_encode($ticker));
+        $order->add_order_note(json_encode($ticker));
         try {
           $invoice = $this->create_invoice($order, $ticker);
         } catch (\Exception $e) {
