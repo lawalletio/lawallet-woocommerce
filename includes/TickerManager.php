@@ -38,6 +38,7 @@ class TickerManager {
    */
   public function setExchange($exchangeSlug) {
     if (!array_key_exists($exchangeSlug, $this->exchangesList)) {
+      /* translators: %s: exchange slug */
       throw new \Exception(sprintf(__( 'Exchange name "%s" not found.', 'lawallet-woocommerce' ), $exchangeSlug ), 1);
     }
     $exchange = $this->exchangesList[$exchangeSlug];
