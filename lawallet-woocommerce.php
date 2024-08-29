@@ -108,7 +108,7 @@ if (!function_exists('init_wc_lightning')) {
             'title'       => __('Title'),
             'type'        => 'text',
             'description' => __('Controls the name of this payment method as displayed to the customer during checkout.', 'lawallet-woocommerce'),
-            'default'     => __('Lawallet', 'lawallet-woocommerce'),
+            'default'     => __('LaWallet', 'lawallet-woocommerce'),
             'desc_tip'    => true,
           ),
           'ticker' => array(

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-24 22:52+0000\n"
-"PO-Revision-Date: 2024-08-29 15:29+0000\n"
+"PO-Revision-Date: 2024-08-29 15:23+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish (Argentina)\n"
 "Language: es_AR\n"
@@ -232,17 +232,21 @@ msgstr "Fecha de Expiración de la Invoice"
 msgid "lacrypta@lawallet.ar"
 msgstr "lacrypta@lawallet.ar"
 
-#: lawallet-woocommerce.php:86 lawallet-woocommerce.php:111
+#: lawallet-woocommerce.php:86
 msgid "LaWallet"
 msgstr "LaWallet"
 
+#: lawallet-woocommerce.php:111
+msgid "Lawallet"
+msgstr ""
+
 #. Name of the plugin
 msgid "LaWallet for WooCommerce"
-msgstr "LaWallet para WooCommerce"
+msgstr ""
 
 #: admin/sections/LAWALLET_WC_Settings_Main.php:20
 msgid "LaWallet Main Settings"
-msgstr "Configuración principal de LaWallet"
+msgstr ""
 
 #: admin/sections/LAWALLET_WC_Settings.php:18
 msgid "LaWallet Settings"
@@ -250,7 +254,7 @@ msgstr "Configuración de LndHub"
 
 #: lawallet-woocommerce.php:134
 msgid "Lightning address of the recipient"
-msgstr "Lightning address del destino"
+msgstr ""
 
 #: lawallet-woocommerce.php:87
 msgid "Lightning Network Payment"
@@ -323,11 +327,11 @@ msgstr "Request de Pago"
 
 #: lawallet-woocommerce.php:85
 msgid "Proceed to LaWallet"
-msgstr "Continuar con LaWallet"
+msgstr ""
 
 #: templates/payment.php:80
 msgid "Processing payment..."
-msgstr "Procesando pago..."
+msgstr ""
 
 #: lawallet-woocommerce.php:125
 msgid "Rate Markup"
@@ -343,7 +347,7 @@ msgstr "Node key del Receptor"
 
 #: admin/sections/LAWALLET_WC_Settings_Main.php:46
 msgid "Relay URL"
-msgstr "URL del Relay"
+msgstr ""
 
 #: lawallet-woocommerce.php:117
 msgid "Select Exchange for rate calculation."
@@ -368,7 +372,7 @@ msgstr "Configuración actualizada."
 
 #: admin/sections/LAWALLET_WC_Settings.php:57
 msgid "Should be LUD16 address."
-msgstr "Debe ser una dirección LUD16."
+msgstr ""
 
 #: admin/views/lnd/channels.php:17 admin/views/loop/dashboard.php:16
 msgid "Summary"
@@ -401,7 +405,7 @@ msgstr "La invoice vence"
 
 #: admin/sections/LAWALLET_WC_Settings_Main.php:50
 msgid "The URL for the WSS Nostr Relay"
-msgstr "The URL for the WSS Nostr Relay"
+msgstr ""
 
 #: lawallet-woocommerce.php:115
 msgid "Ticker"
@@ -471,4 +475,3 @@ msgstr ""
 #: lawallet-woocommerce.php:149
 msgid "You will pay using the Lightning Network. Powered by LaWallet"
 msgstr ""
-"El pago se va a realizar a traves de Lightning Network. Powered by LaWallet"
