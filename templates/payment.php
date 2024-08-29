@@ -77,6 +77,7 @@
       const zapListener = new ZapListener(lud16.relays[0], lud16.nostrPubkey, lud16.orderKey, (event) => {
         console.dir(event);
         playPayedAnimation();
+        $('#expiry-timer').text('<?=__('Processing payment...', 'lawallet-woocommerce')?>')
         poll();
       });
       zapListener.connect();
