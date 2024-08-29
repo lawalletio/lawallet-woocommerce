@@ -17,4 +17,4 @@ The payment option should now be available in your checkout page.
 
 ## License
 
-MIT
+GPLv2

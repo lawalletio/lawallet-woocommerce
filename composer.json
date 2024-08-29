@@ -2,7 +2,7 @@
   "name": "agustinkassis/lawallet-woocommerce",
   "description": "Enable instant and fee-reduced payments in BTC through Lightning Network",
   "type": "woocommmerce-plugin",
-  "license": "MIT",
+  "license": "GPLv2",
   "autoload": {
     "psr-4": {
       "Agustinkassis\\LawalletWoocommerce\\": "./"
