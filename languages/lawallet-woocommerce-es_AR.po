@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: LND for WooCommerce\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-04-24 22:52+0000\n"
-"PO-Revision-Date: 2024-08-29 15:29+0000\n"
+"PO-Revision-Date: 2024-08-29 15:37+0000\n"
 "Last-Translator: \n"
 "Language-Team: Spanish (Argentina)\n"
 "Language: es_AR\n"
@@ -18,63 +18,23 @@ msgstr ""
 msgid "Agustin Kassis"
 msgstr "Pagar con Lightning"
 
-#: admin/views/lndhub/withdraw.php:109 admin/views/lnd/withdraw.php:109
-msgid "Amount"
-msgstr "Monto"
-
-#: admin/views/lndhub/withdraw.php:112 admin/views/lnd/withdraw.php:112
-msgid "Amount of satoshis to be payed"
-msgstr "Monto en satoshis a pagar"
-
-#: lawallet-woocommerce.php:200
+#: lawallet-woocommerce.php:197
 msgid "applied"
 msgstr "aplicado"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:203
-msgid "Authenticating Provider"
-msgstr "Autenticando Proveedor"
-
-#: admin/views/lndhub/withdraw.php:91 admin/views/lnd/withdraw.php:91
-msgid "Available Balance"
-msgstr "Balance Disponible"
 
 #: templates/payment.php:28
 msgid "Awaiting payment"
 msgstr "Esperando pago"
 
-#: lawallet-woocommerce.php:200
+#: lawallet-woocommerce.php:197
 msgid "Awaiting payment of"
 msgstr "Esperando pago de"
-
-#: admin/views/loop/dashboard.php:77
-msgid "Bitcoin Address"
-msgstr "Dirección de Bitcoin"
-
-#: admin/views/loop/dashboard.php:80
-msgid "Bitcoin address to get the transaction"
-msgstr "Dirección de Bitcoin para recibir la transacción"
 
 #: includes/TickerManager.php:49
 msgid "Can't load Exchange."
 msgstr "No se pudo cargar el Exchange"
 
-#: admin/views/lnd/channels.php:44
-msgid "Capacity"
-msgstr "Capacidad"
-
-#: admin/views/loop/dashboard.php:34
-msgid "Capacity available"
-msgstr "Capacidad disponible"
-
-#: admin/views/lnd/channels.php:43
-msgid "Channel ID"
-msgstr "Channel ID"
-
-#: admin/sections/LAWALLET_WC_Settings.php:46
-msgid "Config"
-msgstr "Configuración"
-
-#: lawallet-woocommerce.php:110
+#: lawallet-woocommerce.php:107
 msgid ""
 "Controls the name of this payment method as displayed to the customer during "
 "checkout."
@@ -82,42 +42,17 @@ msgstr ""
 "Controla el nombre de este método de pago, como se muestra para el cliente "
 "durante el proceso de compra."
 
-#: lawallet-woocommerce.php:215
+#: lawallet-woocommerce.php:212
 msgid "Couldn't get quote from ticker."
 msgstr "No se pudo obtener la cotización del exchange"
 
-#: admin/includes/LND_Settings_Page_Generator.php:372
-msgid "Couldn't upload the file"
-msgstr "No se pudo subir el archivo"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:208
-msgid "Create Invoice"
-msgstr "Crear Invoice"
-
-#: admin/views/loop/dashboard.php:44
-msgid "Currently open channels"
-msgstr "Canales abiertos actualmente"
-
-#: lawallet-woocommerce.php:146
+#: lawallet-woocommerce.php:143
 msgid "Customer Message"
 msgstr "Mensaje Del Cliente"
 
-#: admin/views/lnd/debug.php:17
-msgid "Debug Page"
-msgstr "Debug"
-
-#: admin/LND_Woocommerce_Admin.php:81 admin/LND_Woocommerce_Admin.php:82
-#: admin/sections/LAWALLET_WC_Settings.php:53
-msgid "Destination"
-msgstr "Destino"
-
-#: lawallet-woocommerce.php:132
+#: lawallet-woocommerce.php:129
 msgid "Destination Address"
 msgstr "Dirección de destino"
-
-#: admin/sections/LAWALLET_WC_Settings.php:50
-msgid "Destination Config"
-msgstr "Configuración de Destino"
 
 #. Description of the plugin
 msgid ""
@@ -126,50 +61,22 @@ msgstr ""
 "Habilita pagos instantáneos y de tarifa reducida con BTC a través de "
 "Lightning Network."
 
-#: lawallet-woocommerce.php:102
+#: lawallet-woocommerce.php:99
 msgid "Enable Lightning payments"
 msgstr "Habilitar Pagos con Lightning"
 
-#: lawallet-woocommerce.php:101
+#: lawallet-woocommerce.php:98
 msgid "Enable/Disable"
 msgstr "Habilitar/Deshabilitar"
-
-#: admin/views/main/test.php:23
-msgid "Error"
-msgstr "Error"
-
-#: admin/views/error.php:16
-msgid "Error connecting to the Server"
-msgstr "Error al intentar conectar con el servidor"
-
-#: admin/sections/LAWALLET_WC_Settings.php:134
-msgid "Error trying to pay invoice"
-msgstr "Error al intentar pagar la invoice"
 
 #: includes/TickerManager.php:41
 #, php-format
 msgid "Exchange name \"%s\" not found."
 msgstr "No fué encontrado un Exchange con el nombre \"%s\""
 
-#: admin/views/lndhub/withdraw.php:116 admin/views/lnd/withdraw.php:116
-msgid "Expires"
-msgstr "Expira"
-
 #: templates/payment.php:63
 msgid "Generating new invoice"
 msgstr "Generando nueva invoice"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:205
-msgid "Get Current Exchange"
-msgstr "Obteniendo Exchange asignado"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:206
-msgid "Get Ticker Rate"
-msgstr "Obteniendo Cotización"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:204
-msgid "Getting Provider Info"
-msgstr "GetInfo al Proveedor"
 
 #. Author URI of the plugin
 msgid "https://github.com/agustinkassis"
@@ -183,56 +90,23 @@ msgstr "https://github.com/lawalletio/lawallet-woocommerce"
 msgid "in"
 msgstr "en"
 
-#: admin/views/lnd/channels.php:45
-msgid "Inbound"
-msgstr "Entrante"
-
-#: admin/views/lnd/channels.php:22 admin/views/loop/dashboard.php:20
-msgid "Inbound capacity"
-msgstr "Capacidad entrante"
-
-#: lawallet-woocommerce.php:127
+#: lawallet-woocommerce.php:124
 msgid "Increases exchange rate with a percentage"
 msgstr "Incrementa la cotización recibida con el porcentaje (1 = 1%)"
-
-#: admin/views/lndhub/info.php:16 admin/views/lnd/info.php:17
-#: admin/views/loop/info.php:16
-msgid "Info Page"
-msgstr "Página de Información"
-
-#: admin/includes/LND_Settings_Page_Generator.php:366
-msgid "Invalid file format"
-msgstr "Formato de archivo inválido"
 
 #: templates/completed.php:4
 msgid "Invoice amount"
 msgstr "Monto de Invoice"
 
-#: lawallet-woocommerce.php:139
+#: lawallet-woocommerce.php:136
 msgid "Invoice Expiration"
 msgstr "Expiración de Invoice"
 
-#: lawallet-woocommerce.php:141
+#: lawallet-woocommerce.php:138
 msgid "Invoice expiration time in seconds"
 msgstr "Expiración de la invoice en segundos"
 
-#: admin/sections/LAWALLET_WC_Settings.php:121
-msgid "Invoice succesfully paid!"
-msgstr "Invoice pagada exitosamente!"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:207
-msgid "Invoice to be created"
-msgstr "Invoice a ser creada"
-
-#: admin/views/lndhub/withdraw.php:119 admin/views/lnd/withdraw.php:119
-msgid "Invoice's expiration date"
-msgstr "Fecha de Expiración de la Invoice"
-
-#: admin/sections/LAWALLET_WC_Settings.php:55
-msgid "lacrypta@lawallet.ar"
-msgstr "lacrypta@lawallet.ar"
-
-#: lawallet-woocommerce.php:86 lawallet-woocommerce.php:111
+#: lawallet-woocommerce.php:83 lawallet-woocommerce.php:108
 msgid "LaWallet"
 msgstr "LaWallet"
 
@@ -240,23 +114,15 @@ msgstr "LaWallet"
 msgid "LaWallet for WooCommerce"
 msgstr "LaWallet para WooCommerce"
 
-#: admin/sections/LAWALLET_WC_Settings_Main.php:20
-msgid "LaWallet Main Settings"
-msgstr "Configuración principal de LaWallet"
-
-#: admin/sections/LAWALLET_WC_Settings.php:18
-msgid "LaWallet Settings"
-msgstr "Configuración de LndHub"
-
-#: lawallet-woocommerce.php:134
+#: lawallet-woocommerce.php:131
 msgid "Lightning address of the recipient"
 msgstr "Lightning address del destino"
 
-#: lawallet-woocommerce.php:87
+#: lawallet-woocommerce.php:84
 msgid "Lightning Network Payment"
 msgstr "Pago con Lightning Network"
 
-#: lawallet-woocommerce.php:235
+#: lawallet-woocommerce.php:232
 msgid ""
 "Lightning Node is not reachable at this time. Please contact the store "
 "administrator."
@@ -268,60 +134,19 @@ msgstr ""
 msgid "LND Woocommerce disabled"
 msgstr "LND Woocommerce deshabilitado"
 
-#: admin/sections/LAWALLET_WC_Settings_Main.php:43
-#: admin/views/main/dashboard.php:16
-msgid "Main Settings"
-msgstr "Ajustes Principales"
-
-#: admin/views/loop/dashboard.php:58
-msgid "Maximum amount of satoshis for swaping "
-msgstr "Monto máximo del swap en satoshis"
-
-#: lawallet-woocommerce.php:148
+#: lawallet-woocommerce.php:145
 msgid "Message to explain how the customer will be paying for the purchase."
 msgstr "Mensaje para explicar cómo el cliente va a pagar por la compra."
-
-#: admin/views/loop/dashboard.php:51
-msgid "Minimum amount of satoshis for swaping "
-msgstr "Monto mínimo del swap en satoshis"
-
-#: admin/views/lndhub/withdraw.php:124 admin/views/lnd/withdraw.php:124
-msgid "Node Key"
-msgstr "Node Key"
-
-#: admin/views/main/test.php:23
-msgid "OK"
-msgstr "OK"
-
-#: admin/views/lnd/channels.php:38
-msgid "Open Channels"
-msgstr "Canales abiertos"
-
-#: admin/views/lnd/channels.php:46
-msgid "Outbound"
-msgstr "Saliente"
-
-#: admin/views/lnd/channels.php:29 admin/views/loop/dashboard.php:27
-msgid "Outbound capacity"
-msgstr "Capacidad saliente"
 
 #: templates/payment.php:8 templates/payment.php:33
 msgid "Pay with Lightning"
 msgstr "Pagar con Lightning"
 
-#: admin/views/lndhub/withdraw.php:103 admin/views/lnd/withdraw.php:103
-msgid "pay_req for the invoice to be paid"
-msgstr "pay_req de la invoice a pagar"
-
 #: templates/completed.php:1
 msgid "Payment completed successfully"
 msgstr "Pago recibido exitosamente"
 
-#: admin/views/lndhub/withdraw.php:100 admin/views/lnd/withdraw.php:100
-msgid "Payment Request"
-msgstr "Request de Pago"
-
-#: lawallet-woocommerce.php:85
+#: lawallet-woocommerce.php:82
 msgid "Proceed to LaWallet"
 msgstr "Continuar con LaWallet"
 
@@ -329,136 +154,21 @@ msgstr "Continuar con LaWallet"
 msgid "Processing payment..."
 msgstr "Procesando pago..."
 
-#: lawallet-woocommerce.php:125
+#: lawallet-woocommerce.php:122
 msgid "Rate Markup"
 msgstr "Markup de Cotización"
 
-#: admin/views/lnd/channels.php:48
-msgid "Received"
-msgstr "Recibido"
-
-#: admin/views/lndhub/withdraw.php:127 admin/views/lnd/withdraw.php:127
-msgid "Receiver Node key"
-msgstr "Node key del Receptor"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:46
-msgid "Relay URL"
-msgstr "URL del Relay"
-
-#: lawallet-woocommerce.php:117
+#: lawallet-woocommerce.php:114
 msgid "Select Exchange for rate calculation."
 msgstr "Seleccione el Exchange para el cálculo de cotización."
-
-#: admin/views/lnd/channels.php:47
-msgid "Sent"
-msgstr "Enviado"
-
-#: admin/sections/LAWALLET_WC_Settings_Main.php:202
-msgid "Setting Provider"
-msgstr "Asignando Proveedor"
-
-#: admin/LND_Woocommerce_Admin.php:62 admin/LND_Woocommerce_Admin.php:63
-#: admin/sections/LAWALLET_WC_Settings_Main.php:40
-msgid "Settings"
-msgstr "Ajustes"
-
-#: admin/includes/LND_Settings_Page_Generator.php:900
-msgid "Settings updated."
-msgstr "Configuración actualizada."
-
-#: admin/sections/LAWALLET_WC_Settings.php:57
-msgid "Should be LUD16 address."
-msgstr "Debe ser una dirección LUD16."
-
-#: admin/views/lnd/channels.php:17 admin/views/loop/dashboard.php:16
-msgid "Summary"
-msgstr "Resumen"
-
-#: admin/views/loop/dashboard.php:64
-msgid "Swap Capacity (Loop Out)"
-msgstr "Capacidad de Swap (Loop Out)"
-
-#: admin/views/loop/dashboard.php:55
-msgid "Swap max amount"
-msgstr "Monto máximo del swap"
-
-#: admin/views/loop/dashboard.php:48
-msgid "Swap min amount"
-msgstr "Monto mínimo del swap"
-
-#: admin/views/main/test.php:17
-msgid "Testing payment process"
-msgstr "Probando proceso de pago"
-
-#: admin/sections/LAWALLET_WC_Settings.php:122
-#, php-format
-msgid "The amount of %s sats has successfully been transferred."
-msgstr "El monto %s sats fué transferido exitosamente."
 
 #: templates/payment.php:29
 msgid "The invoice expires"
 msgstr "La invoice vence"
 
-#: admin/sections/LAWALLET_WC_Settings_Main.php:50
-msgid "The URL for the WSS Nostr Relay"
-msgstr "The URL for the WSS Nostr Relay"
-
-#: lawallet-woocommerce.php:115
+#: lawallet-woocommerce.php:112
 msgid "Ticker"
 msgstr "Cotización"
-
-#: admin/sections/LAWALLET_WC_Settings.php:123
-#, php-format
-msgid "Total %s sats paid in fees."
-msgstr "Total de %s sats pagados en fees."
-
-#: admin/views/loop/dashboard.php:41
-msgid "Total Channels"
-msgstr "Total de Canales"
-
-#: admin/views/loop/dashboard.php:37
-msgid "Total inbound capacity related to total channel balance"
-msgstr ""
-"Capacidad entrante total en relación con el balance total de los canales"
-
-#: admin/views/loop/dashboard.php:70
-msgid "Total satoshis"
-msgstr "Total satoshis"
-
-#: admin/views/loop/dashboard.php:73
-msgid "Total satoshis to loop out and get on-chain transaction"
-msgstr ""
-"Cantidad total de satoshis para hacer loop out y recibir una transacción on-"
-"chain"
-
-#: admin/views/lnd/channels.php:25 admin/views/loop/dashboard.php:23
-msgid "Total satoshis you are able to receive via Lightning"
-msgstr "Total de satoshis que es posible recibir por Lightning"
-
-#: admin/views/lndhub/withdraw.php:94 admin/views/lnd/channels.php:32
-#: admin/views/lnd/withdraw.php:94 admin/views/loop/dashboard.php:30
-msgid "Total satoshis you are able to send via Lightning"
-msgstr "Total de satoshis que es posible enviar por Lightning"
-
-#: admin/includes/LND_Settings_Page_Generator.php:812
-msgid "Unable to validate settings."
-msgstr "No se puede validar la configuración"
-
-#: admin/views/main/dashboard.php:20
-msgid "Under construction"
-msgstr "En construcción"
-
-#: admin/views/lnd/debug.php:21
-msgid "Under construction..."
-msgstr "En construcción..."
-
-#: admin/views/lndhub/withdraw.php:86 admin/views/lnd/withdraw.php:86
-msgid "Withdraw"
-msgstr "Extraer"
-
-#: admin/includes/LND_Settings_Page_Generator.php:214
-msgid "You need to be admin to access these settings"
-msgstr "Debe ser administrador para acceder a esta configuración"
 
 #: includes/TickerManager.php:68
 msgid ""
@@ -468,7 +178,7 @@ msgstr ""
 "Debe seleccionarse otro exchange o cambiar la moneda FIAT seleccionada en "
 "Woocommerce."
 
-#: lawallet-woocommerce.php:149
+#: lawallet-woocommerce.php:146
 msgid "You will pay using the Lightning Network. Powered by LaWallet"
 msgstr ""
 "El pago se va a realizar a traves de Lightning Network. Powered by LaWallet"
