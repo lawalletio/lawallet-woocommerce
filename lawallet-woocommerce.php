@@ -38,7 +38,6 @@ if (!function_exists('init_wc_lightning')) {
 
     class WC_Gateway_Lightning extends WC_Payment_Gateway {
       private TickerManager $tickerManager;
-      // private LND_Woocommerce_Admin $admin;
 
       public function __construct() {
         // Setup general properties
@@ -65,8 +64,6 @@ if (!function_exists('init_wc_lightning')) {
 
         // Is Admin
         if (is_admin()) {
-          // $this->admin = LND_Woocommerce_Admin::instance();
-          // $this->admin->set_gateway($this);
           if ($this->is_manage_section()) {
             add_action('admin_enqueue_scripts', array($this, 'load_admin_script'));
           }
